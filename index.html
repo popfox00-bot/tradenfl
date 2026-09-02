@@ -371,6 +371,124 @@
     padding:9px;border-radius:4px;cursor:pointer;
   }
   .load-btn:hover{background:#f0b354;}
+
+  /* ---------- tabs ---------- */
+  .tabbar{
+    display:flex;gap:4px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:26px;
+  }
+  .tab-btn{
+    background:transparent;border:none;
+    color:var(--chalk-faint);
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14.5px;
+    padding:11px 4px;margin-right:26px;
+    cursor:pointer;
+    border-bottom:2px solid transparent;
+    margin-bottom:-1px;
+  }
+  .tab-btn:hover{color:var(--chalk-dim);}
+  .tab-btn.active{color:var(--chalk);border-bottom-color:var(--amber);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  /* ---------- trade magic ---------- */
+  .magic-intro h3{font-size:17px;font-weight:700;margin:0 0 6px;}
+  .magic-intro .suggestions-sub{max-width:760px;margin-bottom:22px;}
+  .magic-setup{margin-bottom:22px;}
+  .magic-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:16px;
+    margin-bottom:32px;
+  }
+  @media (max-width:880px){.magic-grid{grid-template-columns:1fr;}}
+  .magic-col{
+    background:var(--turf-1);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px;
+  }
+  .magic-col h4{margin:0 0 3px;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;}
+  .magic-sub{color:var(--chalk-faint);font-size:12px;margin-bottom:12px;}
+  .magic-col .roster-scroll{max-height:420px;padding:0;}
+
+  .target-search{
+    width:100%;
+    background:var(--turf-0);
+    border:1px solid var(--line);
+    color:var(--chalk);
+    padding:9px 11px;
+    font-family:'Archivo',sans-serif;font-size:13px;
+    border-radius:4px;
+    margin-bottom:8px;
+  }
+  .target-search:focus{outline:1px solid var(--amber);}
+  .target-search-results{
+    max-height:180px;overflow-y:auto;
+    margin-bottom:14px;
+  }
+  .target-search-results:empty{margin-bottom:0;}
+  .target-result-row{
+    display:flex;align-items:center;gap:8px;
+    padding:6px 4px;
+    border-bottom:1px solid var(--line);
+    font-size:12.5px;
+  }
+  .target-result-row .tr-name{flex:1;}
+  .target-result-row .tr-team{color:var(--chalk-faint);font-size:11px;}
+  .add-btn{
+    background:transparent;border:1px solid var(--amber-dim);color:var(--amber);
+    font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;cursor:pointer;
+    flex:none;
+  }
+  .add-btn:hover{background:rgba(232,163,61,0.12);}
+  .target-list-head{
+    font-size:10.5px;text-transform:uppercase;letter-spacing:0.08em;color:var(--chalk-faint);
+    font-weight:600;margin-bottom:8px;padding-top:10px;border-top:1px solid var(--line);
+  }
+  .target-list-items{display:flex;flex-direction:column;gap:6px;}
+  .target-chip{
+    display:flex;align-items:center;gap:8px;
+    background:var(--turf-2);border:1px solid var(--line);border-radius:3px;
+    padding:7px 9px;font-size:12.5px;
+  }
+  .target-chip .tc-name{flex:1;}
+  .target-chip .tc-team{color:var(--chalk-faint);font-size:11px;}
+  .remove-btn{
+    background:transparent;border:none;color:var(--chalk-faint);
+    font-size:15px;line-height:1;cursor:pointer;padding:0 2px;
+    flex:none;
+  }
+  .remove-btn:hover{color:var(--bad);}
+
+  .magic-results{display:flex;flex-direction:column;gap:14px;}
+  .mr-card{
+    background:var(--turf-1);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px 18px;
+  }
+  .mr-head{display:flex;align-items:center;gap:9px;margin-bottom:12px;}
+  .mr-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;}
+  .mr-team{color:var(--chalk-faint);font-size:12px;}
+  .mr-value{margin-left:auto;font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--amber);font-size:13px;}
+
+  .mr-path{
+    border-left:2px solid var(--good);
+    padding:4px 0 4px 14px;
+    margin-bottom:10px;
+  }
+  .mr-path.chain{border-left-color:var(--amber);}
+  .mr-path-label{font-weight:700;font-size:12.5px;margin-bottom:6px;}
+  .mr-path.direct .mr-path-label{color:var(--good);}
+  .mr-path.chain .mr-path-label{color:var(--amber);}
+  .mr-step{font-size:12.5px;color:var(--chalk-dim);margin-bottom:8px;line-height:1.55;}
+  .mr-step b{color:var(--chalk);}
+  .mr-step-moves{margin:6px 0;display:flex;flex-direction:column;gap:4px;}
+  .mr-fair{font-size:11.5px;color:var(--chalk-faint);margin-top:4px;}
+  .mr-none{color:var(--chalk-faint);font-size:13px;padding:6px 0;}
+  .mr-load-btn{
+    margin-top:8px;
+    background:transparent;border:1px solid var(--amber-dim);color:var(--amber);
+    font-family:'Archivo',sans-serif;font-weight:700;font-size:11.5px;
+    padding:6px 12px;border-radius:4px;cursor:pointer;
+  }
+  .mr-load-btn:hover{background:rgba(232,163,61,0.12);}
 </style>
 </head>
 <body>
@@ -387,46 +505,94 @@
 </header>
 
 <main>
-  <div class="setup">
-    <div class="field">
-      <label>Trade size</label>
-      <div class="toggle-group" id="sizeToggle">
-        <button data-n="2" class="active">2-Team</button>
-        <button data-n="3">3-Team</button>
-      </div>
-    </div>
-    <div class="field" id="teamSelectors"></div>
-    <div class="field" style="margin-left:auto;">
-      <label>&nbsp;</label>
-      <button class="reset-btn" id="resetBtn">Clear trade</button>
-    </div>
+  <div class="tabbar" id="tabbar">
+    <button class="tab-btn active" data-tab="engine">Trade Engine</button>
+    <button class="tab-btn" data-tab="suggested">Suggested Trades</button>
+    <button class="tab-btn" data-tab="magic">Trade Magic</button>
   </div>
 
-  <div class="board" id="board"></div>
-
-  <div class="verdict-panel" id="verdictPanel"></div>
-
-  <section class="suggestions-panel">
-    <div class="suggestions-head">
-      <div>
-        <h3>Suggested trades</h3>
-        <div class="suggestions-sub">League-wide scan · ranked by combined starting-lineup gain, filtered to trades within reasonable value balance</div>
-      </div>
+  <div class="tab-panel active" id="tab-engine">
+    <div class="setup">
       <div class="field">
-        <label>Filter by team</label>
-        <select id="suggFilter">
-          <option value="ALL">All teams</option>
-        </select>
+        <label>Trade size</label>
+        <div class="toggle-group" id="sizeToggle">
+          <button data-n="2" class="active">2-Team</button>
+          <button data-n="3">3-Team</button>
+        </div>
+      </div>
+      <div class="field" id="teamSelectors"></div>
+      <div class="field" style="margin-left:auto;">
+        <label>&nbsp;</label>
+        <button class="reset-btn" id="resetBtn">Clear trade</button>
       </div>
     </div>
-    <div class="suggestions-list" id="suggestionsList">
-      <div class="sugg-loading">Scanning the league for fits…</div>
-    </div>
-  </section>
+
+    <div class="board" id="board"></div>
+
+    <div class="verdict-panel" id="verdictPanel"></div>
+  </div>
+
+  <div class="tab-panel" id="tab-suggested">
+    <section class="suggestions-panel">
+      <div class="suggestions-head">
+        <div>
+          <h3>Suggested trades</h3>
+          <div class="suggestions-sub">League-wide scan · ranked by combined starting-lineup gain, filtered to trades within reasonable value balance</div>
+        </div>
+        <div class="field">
+          <label>Filter by team</label>
+          <select id="suggFilter">
+            <option value="ALL">All teams</option>
+          </select>
+        </div>
+      </div>
+      <div class="suggestions-list" id="suggestionsList">
+        <div class="sugg-loading">Scanning the league for fits…</div>
+      </div>
+    </section>
+  </div>
+
+  <div class="tab-panel" id="tab-magic">
+    <section class="magic-panel">
+      <div class="magic-intro">
+        <h3>Trade Magic</h3>
+        <div class="suggestions-sub">Set what you'd move and who you want. The chain-trading engine checks direct offers first, then looks for a two-step path — another team acquires your target from its current owner in a fair deal of its own, then you flip something from your block to get it from them.</div>
+      </div>
+
+      <div class="magic-setup">
+        <div class="field">
+          <label>My team</label>
+          <select id="myTeamSelect">
+            <option value="">Select your team…</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="magic-grid" id="magicGrid" style="display:none;">
+        <div class="magic-col">
+          <h4>Trade block</h4>
+          <div class="magic-sub">Click players on your roster you'd be willing to move</div>
+          <div class="roster-scroll" id="blockRosterList"></div>
+        </div>
+        <div class="magic-col">
+          <h4>Target list</h4>
+          <div class="magic-sub">Search any other roster for players you want</div>
+          <input type="text" id="targetSearch" class="target-search" placeholder="Search players…" autocomplete="off">
+          <div class="target-search-results" id="targetSearchResults"></div>
+          <div class="target-list-head">On your list</div>
+          <div class="target-list-items" id="targetListItems">
+            <div class="sugg-loading" style="padding:14px;">Nothing targeted yet</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="magic-results" id="magicResults"></div>
+    </section>
+  </div>
 </main>
 
 <footer>
-  Value is driven primarily by each player's overall consensus rank (FantasyPros ECR), converted through a decay curve so being a WR7 overall means meaningfully more than being an RB7 overall by rank alone — a modest position-scarcity multiplier (RB and TE run slightly hotter, since they're scarcer at the replacement level) and a starter-tier premium then nudge value up for players who'd actually crack a typical 10-team starting lineup, and down for pure bench depth, since bench production doesn't score points. Starting-lineup impact assumes a 1 QB · 2 RB · 2 WR · 1 TE · 1 FLEX · 1 K · 1 DEF lineup and compares each team's best possible starters before and after the deal.
+  Value is driven primarily by each player's overall consensus rank (FantasyPros ECR), converted through a decay curve so being a WR7 overall means meaningfully more than being an RB7 overall by rank alone — a modest position-scarcity multiplier (RB and TE run slightly hotter, since they're scarcer at the replacement level) and a starter-tier premium then nudge value up for players who'd actually crack a typical 10-team starting lineup, and down for pure bench depth, since bench production doesn't score points. Starting-lineup impact assumes a 1 QB · 2 RB · 2 WR · 1 TE · 1 FLEX · 1 K · 1 DEF lineup and compares each team's best possible starters before and after the deal. Chain paths are two independent, sequential trades — the first happens on its own merits between two other teams, the second is your follow-up once they've actually made it — not a single combined transaction.
 </footer>
 
 <script id="league-data" type="application/json">
@@ -442,7 +608,10 @@ const state = {
   size: 2,
   teams: [TEAM_NAMES[0], TEAM_NAMES[1], TEAM_NAMES[2]],
   // moves: array of {player, from, to}
-  moves: []
+  moves: [],
+  myTeam: '',
+  tradeBlock: [],   // player names on my roster I'd move
+  targets: []       // [{team, name}]
 };
 
 // ---------- helpers ----------
@@ -1154,6 +1323,349 @@ TEAM_NAMES.forEach(t=>{
 suggFilterEl.addEventListener('change', renderSuggestions);
 
 renderSuggestions();
+
+// =====================================================================
+// TABS
+// =====================================================================
+document.getElementById('tabbar').addEventListener('click', (e)=>{
+  const btn = e.target.closest('.tab-btn');
+  if(!btn) return;
+  const tab = btn.dataset.tab;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b===btn));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id === 'tab-' + tab));
+});
+
+function switchToTab(tab){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id === 'tab-' + tab));
+}
+
+// =====================================================================
+// TRADE MAGIC: trade block, target list, chain-trading engine
+// =====================================================================
+
+// populate "my team" selector
+const myTeamSelectEl = document.getElementById('myTeamSelect');
+TEAM_NAMES.forEach(t=>{
+  const opt = document.createElement('option');
+  opt.value = t; opt.textContent = t;
+  myTeamSelectEl.appendChild(opt);
+});
+myTeamSelectEl.addEventListener('change', (e)=>{
+  state.myTeam = e.target.value;
+  state.tradeBlock = [];
+  state.targets = [];
+  document.getElementById('targetSearch').value = '';
+  renderMagicTab();
+});
+
+document.getElementById('targetSearch').addEventListener('input', renderTargetSearchResults);
+
+function renderMagicTab(){
+  const grid = document.getElementById('magicGrid');
+  if(!state.myTeam){
+    grid.style.display = 'none';
+    document.getElementById('magicResults').innerHTML = '';
+    return;
+  }
+  grid.style.display = 'grid';
+  renderBlockRoster();
+  renderTargetSearchResults();
+  renderTargetListItems();
+  runChainEngine();
+}
+
+function renderBlockRoster(){
+  const wrap = document.getElementById('blockRosterList');
+  wrap.innerHTML = '';
+  const roster = [...LEAGUE[state.myTeam]].sort((a,b)=>b.value-a.value);
+  roster.forEach(p=>{
+    const onBlock = state.tradeBlock.includes(p.name);
+    const row = document.createElement('div');
+    row.className = 'player-row' + (onBlock ? ' selected' : '');
+    row.innerHTML = `
+      <span class="checkmark"><svg viewBox="0 0 10 10"><polyline points="1,5 4,8 9,1.5" fill="none" stroke="#0c1410" stroke-width="1.8"/></svg></span>
+      <span class="poschip ${p.pos}">${p.pos}</span>
+      <span class="player-name">${p.name}</span>
+      <span class="player-meta">${p.pos}${p.posRank} · #${p.ovrRank} ovr</span>
+      <span class="player-val">${fmt(p.value)}</span>
+    `;
+    row.addEventListener('click', ()=>{
+      if(onBlock){
+        state.tradeBlock = state.tradeBlock.filter(n=>n!==p.name);
+      } else {
+        state.tradeBlock.push(p.name);
+      }
+      renderBlockRoster();
+      runChainEngine();
+    });
+    wrap.appendChild(row);
+  });
+}
+
+function renderTargetSearchResults(){
+  const q = document.getElementById('targetSearch').value.trim().toLowerCase();
+  const box = document.getElementById('targetSearchResults');
+  if(!q){ box.innerHTML = ''; return; }
+
+  const already = new Set(state.targets.map(t=>t.team+':'+t.name));
+  const results = [];
+  for(const t of TEAM_NAMES){
+    if(t === state.myTeam) continue;
+    for(const p of LEAGUE[t]){
+      if(already.has(t+':'+p.name)) continue;
+      if(p.name.toLowerCase().includes(q)){
+        results.push({...p, team: t});
+      }
+    }
+  }
+  results.sort((a,b)=>b.value-a.value);
+  const top = results.slice(0, 8);
+
+  if(top.length === 0){
+    box.innerHTML = `<div class="target-result-row" style="color:var(--chalk-faint);">No matches</div>`;
+    return;
+  }
+  box.innerHTML = '';
+  top.forEach(p=>{
+    const row = document.createElement('div');
+    row.className = 'target-result-row';
+    row.innerHTML = `
+      <span class="poschip ${p.pos}">${p.pos}</span>
+      <span class="tr-name">${p.name}</span>
+      <span class="tr-team">${p.team}</span>
+      <button class="add-btn">+ Add</button>
+    `;
+    row.querySelector('.add-btn').addEventListener('click', ()=>{
+      state.targets.push({team: p.team, name: p.name});
+      document.getElementById('targetSearch').value = '';
+      renderTargetSearchResults();
+      renderTargetListItems();
+      runChainEngine();
+    });
+    box.appendChild(row);
+  });
+}
+
+function renderTargetListItems(){
+  const wrap = document.getElementById('targetListItems');
+  if(state.targets.length === 0){
+    wrap.innerHTML = `<div class="sugg-loading" style="padding:14px;">Nothing targeted yet</div>`;
+    return;
+  }
+  wrap.innerHTML = '';
+  state.targets.forEach((t, idx)=>{
+    const p = findPlayer(t.team, t.name);
+    const chip = document.createElement('div');
+    chip.className = 'target-chip';
+    chip.innerHTML = `
+      <span class="poschip ${p.pos}">${p.pos}</span>
+      <span class="tc-name">${p.name}</span>
+      <span class="tc-team">${t.team}</span>
+      <button class="remove-btn">×</button>
+    `;
+    chip.querySelector('.remove-btn').addEventListener('click', ()=>{
+      state.targets.splice(idx, 1);
+      renderTargetListItems();
+      renderTargetSearchResults();
+      runChainEngine();
+    });
+    wrap.appendChild(chip);
+  });
+}
+
+// Generate combinations of `pool` (sizes 1..maxSize) ranked by how closely
+// their combined value matches `targetValue` — this is a value-matching
+// search, not a lineup-maximizing one, since the point is finding a fair
+// trade-back, not the giver's single best possible add.
+function combosByValueMatch(pool, targetValue, maxSize){
+  const capped = pool.length <= 12 ? pool : [...pool].sort((a,b)=>b.value-a.value).slice(0,12);
+  const combos = [];
+  function rec(start, combo){
+    if(combo.length > 0){
+      const sumVal = combo.reduce((s,p)=>s+p.value, 0);
+      const avgVal = (sumVal + targetValue)/2 || 1;
+      combos.push({bundle: combo.slice(), sumVal, swing: Math.abs(sumVal - targetValue)/avgVal});
+    }
+    if(combo.length === maxSize) return;
+    for(let i=start; i<capped.length; i++){
+      combo.push(capped[i]);
+      rec(i+1, combo);
+      combo.pop();
+    }
+  }
+  rec(0, []);
+  combos.sort((a,b) => a.swing - b.swing);
+  return combos;
+}
+
+// Evaluate "giverTeam gives up requiredPlayer, receiverTeam sends back a bundle
+// built from receiverGivePool" — searches for the closest-value combo first,
+// then checks whether it also clears a lineup-fairness bar for the giver.
+// Returns the best-matching combo that clears, or the closest-value attempt
+// tried (flagged not cleared) if nothing does.
+function evaluateLeg(giverRosterCurrent, requiredPlayer, receiverRosterCurrent, receiverGivePool, maxSize){
+  const baseGiver = optimalLineupValue(giverRosterCurrent);
+  const baseReceiver = optimalLineupValue(receiverRosterCurrent);
+  const combos = combosByValueMatch(receiverGivePool, requiredPlayer.value, maxSize);
+  if(combos.length === 0) return null;
+
+  let bestReach = null;
+  for(const c of combos.slice(0, 10)){
+    const newGiver = swapRoster(giverRosterCurrent, [requiredPlayer.name], c.bundle);
+    const newReceiver = swapRoster(receiverRosterCurrent, c.bundle.map(p=>p.name), [requiredPlayer]);
+    const impGiver = optimalLineupValue(newGiver) - baseGiver;
+    const impReceiver = optimalLineupValue(newReceiver) - baseReceiver;
+    const attempt = {bundle: c.bundle, impGiver, impReceiver, swing: c.swing, cleared: impGiver > -1 && c.swing < 0.55};
+    if(attempt.cleared) return attempt;
+    if(!bestReach || c.swing < bestReach.swing) bestReach = attempt;
+  }
+  return bestReach;
+}
+
+function findDirectAcquisition(targetPlayer, targetTeam){
+  const myBlockPlayers = LEAGUE[state.myTeam].filter(p => state.tradeBlock.includes(p.name));
+  if(myBlockPlayers.length === 0) return null;
+  const leg = evaluateLeg(LEAGUE[targetTeam], targetPlayer, LEAGUE[state.myTeam], myBlockPlayers, 4);
+  if(!leg) return null;
+  return {teamGiving: targetTeam, ...leg};
+}
+
+function findChainAcquisition(targetPlayer, targetTeam){
+  const myBlockPlayers = LEAGUE[state.myTeam].filter(p => state.tradeBlock.includes(p.name));
+  if(myBlockPlayers.length === 0) return null;
+
+  let bestChain = null, bestScore = -Infinity;
+  for(const B of TEAM_NAMES){
+    if(B === state.myTeam || B === targetTeam) continue;
+    const bPool = [...LEAGUE[B]].filter(p=>p.pos!=='K'&&p.pos!=='DEF').sort((x,y)=>y.value-x.value);
+    const protectB = new Set(bPool.slice(0,2).map(p=>p.name));
+    const bGivePool = tradeable(B).filter(p=>!protectB.has(p.name));
+
+    const leg1 = evaluateLeg(LEAGUE[targetTeam], targetPlayer, LEAGUE[B], bGivePool, 3);
+    if(!leg1 || !leg1.cleared) continue;
+
+    const bRosterAfterLeg1 = swapRoster(LEAGUE[B], leg1.bundle.map(p=>p.name), [targetPlayer]);
+    const leg2 = evaluateLeg(bRosterAfterLeg1, targetPlayer, LEAGUE[state.myTeam], myBlockPlayers, 4);
+    if(!leg2 || !leg2.cleared) continue;
+
+    const score = (leg1.impGiver + leg1.impReceiver + leg2.impReceiver) - (leg1.swing + leg2.swing) * 3;
+    if(score > bestScore){
+      bestScore = score;
+      bestChain = {teamB: B, leg1, leg2};
+    }
+  }
+  return bestChain;
+}
+
+function runChainEngine(){
+  const results = document.getElementById('magicResults');
+  if(!state.myTeam || state.targets.length === 0){
+    results.innerHTML = '';
+    return;
+  }
+  results.innerHTML = state.targets.map(()=>'').join(''); // clear
+  const cards = state.targets.map(t=>{
+    const p = findPlayer(t.team, t.name);
+    if(t.team === state.myTeam){
+      return {target: p, team: t.team, direct: null, chain: null, own: true};
+    }
+    const direct = findDirectAcquisition(p, t.team);
+    const chain = (!direct || !direct.cleared) ? findChainAcquisition(p, t.team) : null;
+    return {target: p, team: t.team, direct, chain};
+  });
+  renderMagicResults(cards);
+}
+
+function renderMagicResults(cards){
+  const wrap = document.getElementById('magicResults');
+  wrap.innerHTML = '';
+  cards.forEach((c, idx)=>{
+    const card = document.createElement('div');
+    card.className = 'mr-card';
+
+    let body = `
+      <div class="mr-head">
+        <span class="poschip ${c.target.pos}">${c.target.pos}</span>
+        <span class="mr-name">${c.target.name}</span>
+        <span class="mr-team">${c.team}</span>
+        <span class="mr-value">${fmt(c.target.value)}</span>
+      </div>
+    `;
+
+    if(c.own){
+      body += `<div class="mr-none">This player is already on your roster.</div>`;
+    } else if(c.direct && c.direct.cleared){
+      body += `
+        <div class="mr-path direct">
+          <div class="mr-path-label">Direct trade available</div>
+          <div class="mr-step-moves">
+            ${c.direct.bundle.map(p=>`<div class="sugg-move"><span class="poschip ${p.pos}">${p.pos}</span><span class="sugg-move-name">${p.name}</span><span class="sugg-move-route">${state.myTeam} <span class="arrow">→</span> ${c.team}</span></div>`).join('')}
+          </div>
+          <div class="mr-fair">${c.team} lineup impact ${c.direct.impGiver>=0?'+':''}${fmt(c.direct.impGiver)} · value balance ±${Math.round(c.direct.swing*100)}%</div>
+          <button class="mr-load-btn" data-idx="${idx}" data-kind="direct">Load into Trade Engine</button>
+        </div>
+      `;
+    } else if(c.chain){
+      body += `
+        <div class="mr-path chain">
+          <div class="mr-path-label">Chain path via ${c.chain.teamB}</div>
+          <div class="mr-step"><b>Step 1</b> — independent of you, but a fair deal for both sides: ${c.team} sends <b>${c.target.name}</b> to ${c.chain.teamB} for ${c.chain.leg1.bundle.map(p=>p.name).join(', ')}.
+            <div class="mr-fair">${c.team} lineup impact ${c.chain.leg1.impGiver>=0?'+':''}${fmt(c.chain.leg1.impGiver)} · ${c.chain.teamB} lineup impact ${c.chain.leg1.impReceiver>=0?'+':''}${fmt(c.chain.leg1.impReceiver)} · value balance ±${Math.round(c.chain.leg1.swing*100)}%</div>
+            <button class="mr-load-btn" data-idx="${idx}" data-kind="step1">Load Step 1</button>
+          </div>
+          <div class="mr-step"><b>Step 2</b> — once Step 1 has happened, you approach ${c.chain.teamB}: you send ${c.chain.leg2.bundle.map(p=>p.name).join(', ')} for <b>${c.target.name}</b>.
+            <div class="mr-fair">${c.chain.teamB} lineup impact ${c.chain.leg2.impGiver>=0?'+':''}${fmt(c.chain.leg2.impGiver)} · your lineup impact ${c.chain.leg2.impReceiver>=0?'+':''}${fmt(c.chain.leg2.impReceiver)} · value balance ±${Math.round(c.chain.leg2.swing*100)}%</div>
+          </div>
+        </div>
+      `;
+    } else if(c.direct){
+      // best-effort reach that never cleared the fairness bar
+      body += `
+        <div class="mr-path chain">
+          <div class="mr-path-label">Reach only</div>
+          <div class="mr-step">Best offer found (${c.direct.bundle.map(p=>p.name).join(', ')}) doesn't clear a fair value bar with ${c.team} — they'd likely want more from your block, or this player isn't realistically available for what you're offering.</div>
+        </div>
+      `;
+    } else {
+      body += `<div class="mr-none">No fair direct or chain path found with your current trade block. Try adding more pieces to your block.</div>`;
+    }
+
+    card.innerHTML = body;
+    wrap.appendChild(card);
+  });
+
+  wrap.querySelectorAll('.mr-load-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const idx = parseInt(btn.dataset.idx, 10);
+      const kind = btn.dataset.kind;
+      const c = cards[idx];
+      if(kind === 'direct'){
+        state.size = 2;
+        state.teams = [state.myTeam, c.team, TEAM_NAMES.find(t=>t!==state.myTeam && t!==c.team)];
+        state.moves = [
+          ...c.direct.bundle.map(p=>({player:p.name, from: state.myTeam, to: c.team})),
+          {player: c.target.name, from: c.team, to: state.myTeam}
+        ];
+      } else if(kind === 'step1'){
+        state.size = 2;
+        state.teams = [c.team, c.chain.teamB, TEAM_NAMES.find(t=>t!==c.team && t!==c.chain.teamB)];
+        state.moves = [
+          {player: c.target.name, from: c.team, to: c.chain.teamB},
+          ...c.chain.leg1.bundle.map(p=>({player:p.name, from: c.chain.teamB, to: c.team}))
+        ];
+      }
+      document.querySelectorAll('#sizeToggle button').forEach(b=>{
+        b.classList.toggle('active', parseInt(b.dataset.n,10) === state.size);
+      });
+      renderAll();
+      switchToTab('engine');
+      document.getElementById('board').scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+}
+
+renderMagicTab();
 
 </script>
 </body>
