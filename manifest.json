@@ -1,0 +1,17 @@
+{
+  "name": "LHS Trade Desk",
+  "short_name": "Trade Desk",
+  "description": "Position-adjusted trade analyzer for LHS Fantasy Football",
+  "start_url": "./LHS_Trade_Desk.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#021d4a",
+  "theme_color": "#021d4a",
+  "orientation": "any",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
