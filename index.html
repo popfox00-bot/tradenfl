@@ -27,6 +27,9 @@
     --bad:#d15c5c;
     --warn:#e8a33d;
     --radius:3px;
+    --navy:#101c30;
+    --navy-2:#152541;
+    --navy-line:#28405f;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -131,11 +134,22 @@
   }
   .team-col-head{
     padding:14px 16px 12px;
-    border-bottom:1px solid var(--line);
+    border-bottom:1px solid var(--navy-line);
     display:flex;justify-content:space-between;align-items:center;
+    background:var(--navy);
+    border-top-left-radius:var(--radius);border-top-right-radius:var(--radius);
+    cursor:pointer;
   }
   .team-col-head .tname{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;}
   .team-col-head .tcount{font-size:11.5px;color:var(--chalk-faint);}
+
+  .list-head{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:8px 14px 4px;
+    font-size:9.5px;text-transform:uppercase;letter-spacing:0.06em;
+    color:var(--chalk-faint);font-weight:600;
+  }
+  .list-head .lh-value{text-align:right;}
 
   .roster-scroll{
     max-height:340px;
@@ -213,8 +227,10 @@
   /* ---------- ledger ---------- */
   .ledger{
     padding:14px 16px 16px;
-    border-top:1px solid var(--line);
+    border-top:1px solid var(--navy-line);
     margin-top:auto;
+    background:var(--navy);
+    border-bottom-left-radius:var(--radius);border-bottom-right-radius:var(--radius);
   }
   .ledger-title{font-size:10.5px;text-transform:uppercase;letter-spacing:0.08em;color:var(--chalk-faint);margin-bottom:8px;font-weight:600;}
   .ledger-item{
@@ -805,10 +821,19 @@
             <label>Min. improvement</label>
             <select id="suggMinImprovement">
               <option value="0">Any</option>
+              <option value="0.5">0.5%+</option>
+              <option value="1">1%+</option>
+              <option value="1.5">1.5%+</option>
               <option value="2">2%+</option>
+              <option value="2.5">2.5%+</option>
+              <option value="3">3%+</option>
               <option value="4">4%+</option>
+              <option value="5">5%+</option>
               <option value="6">6%+</option>
+              <option value="8">8%+</option>
               <option value="10">10%+</option>
+              <option value="15">15%+</option>
+              <option value="20">20%+</option>
             </select>
           </div>
           <div class="field">
@@ -855,6 +880,7 @@
               <button class="mini-btn" id="clearAllBlock">Clear</button>
             </div>
           </div>
+          <div class="list-head"><span class="lh-label">Player</span><span class="lh-value">Trade value</span></div>
           <div class="roster-scroll" id="blockRosterList"></div>
         </div>
         <div class="magic-col">
@@ -910,6 +936,18 @@
           <label>Add to team</label>
           <select id="faTeamSelect">
             <option value="">Select a team…</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Show position</label>
+          <select id="faPosFilter">
+            <option value="ALL">Overall</option>
+            <option value="QB">QB</option>
+            <option value="RB">RB</option>
+            <option value="WR">WR</option>
+            <option value="TE">TE</option>
+            <option value="K">K</option>
+            <option value="DEF">DEF</option>
           </select>
         </div>
       </div>
@@ -1098,7 +1136,8 @@ const state = {
   rosterEditing: false,
   suggFilterTeam: 'ALL',
   suggMinImprovement: 0,
-  suggSortBy: 'impact'
+  suggSortBy: 'impact',
+  faPosFilter: 'ALL'
 };
 
 // ---------- helpers ----------
@@ -1225,6 +1264,14 @@ function setDestination(team, name, to){
 
 function renderBoard(){
   const board = document.getElementById('board');
+
+  // preserve each column's scroll position across re-renders — selecting a
+  // player or changing a destination shouldn't jump the list back to top
+  const scrollPositions = {};
+  board.querySelectorAll('.roster-scroll').forEach(el=>{
+    scrollPositions[el.dataset.team] = el.scrollTop;
+  });
+
   board.className = 'board cols-' + state.size;
   board.innerHTML = '';
 
@@ -1240,8 +1287,14 @@ function renderBoard(){
     head.innerHTML = `<span class="tname">${team}</span><span class="tcount">${sentCount}/${MAX_PER_TEAM} sending</span>`;
     col.appendChild(head);
 
+    const listHead = document.createElement('div');
+    listHead.className = 'list-head';
+    listHead.innerHTML = `<span class="lh-label">Player</span><span class="lh-value">Trade value</span>`;
+    col.appendChild(listHead);
+
     const scroll = document.createElement('div');
     scroll.className = 'roster-scroll';
+    scroll.dataset.team = team;
 
     const roster = [...playersOf(team)].sort((a,b)=>b.value-a.value);
     roster.forEach(p=>{
@@ -1310,6 +1363,13 @@ function renderBoard(){
     col.appendChild(ledger);
 
     board.appendChild(col);
+  });
+
+  // restore scroll positions now that the new column elements exist
+  board.querySelectorAll('.roster-scroll').forEach(el=>{
+    if(scrollPositions[el.dataset.team] !== undefined){
+      el.scrollTop = scrollPositions[el.dataset.team];
+    }
   });
 }
 
@@ -1449,7 +1509,7 @@ function generate1for1(){
         }
       }
       best.sort((x, y) => y.score - x.score);
-      out.push(...best.slice(0, 2));
+      out.push(...best.slice(0, 3));
     }
   }
   return out;
@@ -1495,7 +1555,7 @@ function generate2for1(){
         }
       }
       best.sort((x, y) => y.score - x.score);
-      out.push(...best.slice(0, 2));
+      out.push(...best.slice(0, 3));
     }
   }
   return out;
@@ -1583,7 +1643,7 @@ function generateBundleTrades(){
         });
       }
       best.sort((x,y)=>y.score-x.score);
-      out.push(...best.slice(0, 2));
+      out.push(...best.slice(0, 3));
     }
   }
   return out;
@@ -1662,7 +1722,7 @@ function generate3team(){
     if(seen.has(key)) continue;
     seen.add(key);
     out.push(s);
-    if(out.length >= 6) break;
+    if(out.length >= 10) break;
   }
   return out;
 }
@@ -1746,7 +1806,7 @@ function generate4team(){
     if(seen.has(key)) continue;
     seen.add(key);
     out.push(s);
-    if(out.length >= 6) break;
+    if(out.length >= 10) break;
   }
   return out;
 }
@@ -1769,18 +1829,18 @@ function buildSuggestions(){
   // multi-team capability shows up even when 2-team fits happen to score higher
   let added3 = 0;
   for(const s of threeTeam){
-    if(added3 >= 2) break;
+    if(added3 >= 3) break;
     if(add(s)) added3++;
   }
   let added4 = 0;
   for(const s of fourTeam){
-    if(added4 >= 2) break;
+    if(added4 >= 3) break;
     if(add(s)) added4++;
   }
 
   const combined = [...twoTeam, ...threeTeam, ...fourTeam].sort((a,b)=>b.score-a.score);
   for(const s of combined){
-    if(out.length >= 80) break; // keep a deep pool so filtering & variety have options
+    if(out.length >= 160) break; // keep a deep pool so filtering & variety have options
     add(s);
   }
 
@@ -1836,7 +1896,7 @@ function renderSuggestions(){
     deduped.sort((a,b) => b.score - a.score); // 'impact' default (cache is already this order, re-sort defensively)
   }
 
-  const shown = deduped.slice(0, 12);
+  const shown = deduped.slice(0, 20);
 
   if(shown.length === 0){
     list.innerHTML = `<div class="sugg-loading">No trades clear the current filters — try lowering the minimum improvement or widening the team filter.</div>`;
@@ -2064,6 +2124,7 @@ function renderTargetDropdown(){
 
 function renderBlockRoster(){
   const wrap = document.getElementById('blockRosterList');
+  const savedScroll = wrap.scrollTop;
   wrap.innerHTML = '';
   const roster = [...LEAGUE[state.myTeam]].sort((a,b)=>b.value-a.value);
   roster.forEach(p=>{
@@ -2088,6 +2149,7 @@ function renderBlockRoster(){
     });
     wrap.appendChild(row);
   });
+  wrap.scrollTop = savedScroll;
 }
 
 function renderTargetSearchResults(){
@@ -2567,6 +2629,7 @@ function renderRostersTab(){
     `;
   }
 
+  html += `<div class="list-head"><span class="lh-label">Player</span><span class="lh-value">Trade value</span></div>`;
   html += `<div class="roster-scroll" style="max-height:none;" id="rosterDetailList"></div>`;
   card.innerHTML = html;
 
@@ -2710,6 +2773,12 @@ function faSection(title, note, players){
       <div class="fa-section-note">${note}</div>
     </div>
   `;
+  if(players.length > 0){
+    const head = document.createElement('div');
+    head.className = 'list-head';
+    head.innerHTML = `<span class="lh-label">Player</span><span class="lh-value">Trade value</span>`;
+    sec.appendChild(head);
+  }
   const list = document.createElement('div');
   list.className = 'fa-list';
   if(players.length === 0){
@@ -2721,8 +2790,15 @@ function faSection(title, note, players){
   return sec;
 }
 
+const faPosFilterEl = document.getElementById('faPosFilter');
+faPosFilterEl.addEventListener('change', (e)=>{
+  state.faPosFilter = e.target.value;
+  renderFreeAgentsTab();
+});
+
 function renderFreeAgentsTab(){
   faTeamSelectEl.value = state.myTeam || '';
+  faPosFilterEl.value = state.faPosFilter || 'ALL';
 
   const wrap = document.getElementById('faContent');
   const q = document.getElementById('faSearch').value.trim().toLowerCase();
@@ -2737,18 +2813,21 @@ function renderFreeAgentsTab(){
     return;
   }
 
-  const topOverall = [...FREE_AGENTS].sort((a,b)=>b.value-a.value).slice(0, 12);
-  wrap.appendChild(faSection(
-    'Best available pickups',
-    'Top free agents league-wide by value, regardless of position — the ones worth a look no matter what your roster needs.',
-    topOverall
-  ));
+  const posFilter = state.faPosFilter || 'ALL';
 
-  ['QB','RB','WR','TE'].forEach(pos=>{
-    const top = FREE_AGENTS.filter(p=>p.pos===pos).sort((a,b)=>b.value-a.value).slice(0, 5);
-    if(top.length === 0) return;
-    wrap.appendChild(faSection(`${pos} depth`, positionScarcityNote(pos), top));
-  });
+  if(posFilter === 'ALL'){
+    const topOverall = [...FREE_AGENTS].sort((a,b)=>b.value-a.value).slice(0, 25);
+    wrap.appendChild(faSection(
+      'Best available pickups',
+      'Top free agents league-wide by value, regardless of position — the ones worth a look no matter what your roster needs. Switch "Show position" above to browse one position at a time instead.',
+      topOverall
+    ));
+    return;
+  }
+
+  const top = FREE_AGENTS.filter(p=>p.pos===posFilter).sort((a,b)=>b.value-a.value).slice(0, 25);
+  const note = positionScarcityNote(posFilter);
+  wrap.appendChild(faSection(`${posFilter} — best available`, note, top));
 }
 
 renderFreeAgentsTab();
