@@ -304,6 +304,73 @@
     border-radius:4px;cursor:pointer;
   }
   .reset-btn:hover{border-color:var(--bad); color:var(--bad);}
+
+  /* ---------- suggested trades ---------- */
+  .suggestions-panel{margin-bottom:48px;}
+  .suggestions-head{
+    display:flex;justify-content:space-between;align-items:flex-end;
+    margin-bottom:16px;flex-wrap:wrap;gap:8px;
+  }
+  .suggestions-head h3{
+    font-size:17px;font-weight:700;margin:0 0 4px;
+  }
+  .suggestions-sub{color:var(--chalk-faint);font-size:12.5px;max-width:620px;}
+
+  .suggestions-list{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+    gap:14px;
+  }
+  .sugg-loading{
+    grid-column:1/-1;
+    padding:30px;text-align:center;color:var(--chalk-faint);font-size:13px;
+    border:1px dashed var(--line);border-radius:var(--radius);
+  }
+  .sugg-card{
+    background:var(--turf-1);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:14px 16px 16px;
+    display:flex;flex-direction:column;
+  }
+  .sugg-card-head{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:10px;
+  }
+  .sugg-teams{
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13.5px;
+  }
+  .sugg-type-tag{
+    font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;
+    color:var(--amber);border:1px solid var(--amber-dim);
+    padding:2px 7px;border-radius:10px;flex:none;
+  }
+  .sugg-moves-list{
+    display:flex;flex-direction:column;gap:6px;
+    margin-bottom:12px;
+  }
+  .sugg-move{
+    display:flex;align-items:center;gap:8px;font-size:12.5px;
+  }
+  .sugg-move-name{flex:1;color:var(--chalk);}
+  .sugg-move-route{font-size:10.5px;color:var(--chalk-faint);white-space:nowrap;}
+  .sugg-move .arrow{color:var(--amber);}
+
+  .sugg-card-foot{
+    margin-top:auto;
+    padding-top:10px;border-top:1px solid var(--line);
+  }
+  .sugg-impact-line,.sugg-swing-line{
+    font-size:11.5px;color:var(--chalk-faint);margin-bottom:3px;
+  }
+  .sugg-impact-line .figure,.sugg-swing-line .figure{color:var(--chalk-dim);font-weight:600;}
+  .load-btn{
+    width:100%;margin-top:10px;
+    background:var(--amber);border:none;color:var(--turf-0);
+    font-family:'Archivo',sans-serif;font-weight:700;font-size:12.5px;
+    padding:9px;border-radius:4px;cursor:pointer;
+  }
+  .load-btn:hover{background:#f0b354;}
 </style>
 </head>
 <body>
@@ -338,6 +405,18 @@
   <div class="board" id="board"></div>
 
   <div class="verdict-panel" id="verdictPanel"></div>
+
+  <section class="suggestions-panel">
+    <div class="suggestions-head">
+      <div>
+        <h3>Suggested trades</h3>
+        <div class="suggestions-sub">League-wide scan · ranked by combined starting-lineup gain, filtered to trades within reasonable value balance</div>
+      </div>
+    </div>
+    <div class="suggestions-list" id="suggestionsList">
+      <div class="sugg-loading">Scanning the league for fits…</div>
+    </div>
+  </section>
 </main>
 
 <footer>
@@ -659,6 +738,280 @@ function renderAll(){
   renderVerdict();
 }
 
+// =====================================================================
+// SUGGESTED TRADES ENGINE
+// Scans the whole league for 2-team and 3-team trades that (a) improve
+// each side's optimal starting lineup and (b) keep raw asset value
+// reasonably balanced. Runs once, off the main paint, and caches results.
+// =====================================================================
+const MIN_TRADE_VALUE = 1.5; // ignore waiver-scrap players as trade pieces
+let suggestionCache = null;
+
+function tradeable(team){
+  return LEAGUE[team].filter(p => p.pos !== 'K' && p.pos !== 'DEF' && p.value >= MIN_TRADE_VALUE);
+}
+
+function swapRoster(roster, outNames, inPlayers){
+  const outSet = new Set(outNames);
+  return roster.filter(p => !outSet.has(p.name)).concat(inPlayers);
+}
+
+function generate1for1(){
+  const out = [];
+  for(let i=0;i<TEAM_NAMES.length;i++){
+    for(let j=i+1;j<TEAM_NAMES.length;j++){
+      const A = TEAM_NAMES[i], B = TEAM_NAMES[j];
+      const rosterA = LEAGUE[A], rosterB = LEAGUE[B];
+      const baseA = optimalLineupValue(rosterA), baseB = optimalLineupValue(rosterB);
+      const poolA = tradeable(A), poolB = tradeable(B);
+      let best = [];
+      for(const a of poolA){
+        for(const b of poolB){
+          const valueDiff = Math.abs(a.value - b.value);
+          const avgVal = (a.value + b.value) / 2 || 1;
+          const swing = valueDiff / avgVal;
+          if(swing > 0.55) continue;
+          const newA = swapRoster(rosterA, [a.name], [b]);
+          const newB = swapRoster(rosterB, [b.name], [a]);
+          const impA = optimalLineupValue(newA) - baseA;
+          const impB = optimalLineupValue(newB) - baseB;
+          if(impA <= 0.4 || impB <= 0.4) continue;
+          const score = impA + impB - swing * 4;
+          best.push({
+            type: '2team', teams: [A, B],
+            moves: [{player: a.name, from: A, to: B}, {player: b.name, from: B, to: A}],
+            impacts: {[A]: impA, [B]: impB}, swing, score
+          });
+        }
+      }
+      best.sort((x, y) => y.score - x.score);
+      out.push(...best.slice(0, 2));
+    }
+  }
+  return out;
+}
+
+function generate2for1(){
+  const out = [];
+  for(let i=0;i<TEAM_NAMES.length;i++){
+    for(let j=0;j<TEAM_NAMES.length;j++){
+      if(i === j) continue;
+      const A = TEAM_NAMES[i], B = TEAM_NAMES[j]; // A sends 2 -> B, B sends 1 -> A
+      const rosterA = LEAGUE[A], rosterB = LEAGUE[B];
+      const baseA = optimalLineupValue(rosterA), baseB = optimalLineupValue(rosterB);
+      const sortedA = tradeable(A).sort((x, y) => y.value - x.value);
+      const poolA = sortedA.slice(3, 9); // depth pieces, protect top-3 assets
+      const poolB = tradeable(B);
+      let best = [];
+      for(const b of poolB){
+        for(let x = 0; x < poolA.length; x++){
+          for(let y = x + 1; y < poolA.length; y++){
+            const a1 = poolA[x], a2 = poolA[y];
+            const bundleVal = a1.value + a2.value;
+            const valueDiff = Math.abs(bundleVal - b.value);
+            const avgVal = (bundleVal + b.value) / 2 || 1;
+            const swing = valueDiff / avgVal;
+            if(swing > 0.5) continue;
+            const newA = swapRoster(rosterA, [a1.name, a2.name], [b]);
+            const newB = swapRoster(rosterB, [b.name], [a1, a2]);
+            const impA = optimalLineupValue(newA) - baseA;
+            const impB = optimalLineupValue(newB) - baseB;
+            if(impA <= 0.4 || impB <= 0.4) continue;
+            const score = impA + impB - swing * 4;
+            best.push({
+              type: '2team', teams: [A, B],
+              moves: [
+                {player: a1.name, from: A, to: B},
+                {player: a2.name, from: A, to: B},
+                {player: b.name, from: B, to: A}
+              ],
+              impacts: {[A]: impA, [B]: impB}, swing, score
+            });
+          }
+        }
+      }
+      best.sort((x, y) => y.score - x.score);
+      out.push(...best.slice(0, 2));
+    }
+  }
+  return out;
+}
+
+function bestGift(fromTeam, toTeam){
+  const rosterTo = LEAGUE[toTeam];
+  const baseTo = optimalLineupValue(rosterTo);
+  let best = null, bestScore = -Infinity, bestGain = 0;
+  for(const p of tradeable(fromTeam)){
+    const gain = optimalLineupValue(rosterTo.concat([p])) - baseTo;
+    const score = gain - p.value * 0.04;
+    if(score > bestScore){ bestScore = score; best = p; bestGain = gain; }
+  }
+  return {player: best, score: bestScore, gain: bestGain};
+}
+
+function generate3team(){
+  const raw = [];
+  const teams = TEAM_NAMES;
+  for(let i=0;i<teams.length;i++){
+    for(let j=0;j<teams.length;j++){
+      if(j === i) continue;
+      for(let k=0;k<teams.length;k++){
+        if(k === i || k === j) continue;
+        const A = teams[i], B = teams[j], C = teams[k]; // cycle A->B->C->A
+        const g1 = bestGift(A, B), g2 = bestGift(B, C), g3 = bestGift(C, A);
+        if(!g1.player || !g2.player || !g3.player) continue;
+        const names = [g1.player.name, g2.player.name, g3.player.name];
+        if(new Set(names).size < 3) continue;
+
+        const rosterA = LEAGUE[A], rosterB = LEAGUE[B], rosterC = LEAGUE[C];
+        const baseA = optimalLineupValue(rosterA), baseB = optimalLineupValue(rosterB), baseC = optimalLineupValue(rosterC);
+        const newA = swapRoster(rosterA, [g1.player.name], [g3.player]);
+        const newB = swapRoster(rosterB, [g2.player.name], [g1.player]);
+        const newC = swapRoster(rosterC, [g3.player.name], [g2.player]);
+        const impA = optimalLineupValue(newA) - baseA;
+        const impB = optimalLineupValue(newB) - baseB;
+        const impC = optimalLineupValue(newC) - baseC;
+
+        const sentA = g1.player.value, recA = g3.player.value;
+        const sentB = g2.player.value, recB = g1.player.value;
+        const sentC = g3.player.value, recC = g2.player.value;
+        const avgVal = (sentA + sentB + sentC) / 3 || 1;
+        const maxSwing = Math.max(Math.abs(recA-sentA), Math.abs(recB-sentB), Math.abs(recC-sentC)) / avgVal;
+        if(maxSwing > 0.55) continue;
+
+        const beneficiaries = [impA, impB, impC].filter(v => v > 0.3).length;
+        if(beneficiaries < 2) continue;
+        if(Math.min(impA, impB, impC) < -3) continue; // no team should get meaningfully worse
+
+        const score = impA + impB + impC - maxSwing * 6;
+        raw.push({
+          type: '3team', teams: [A, B, C],
+          moves: [
+            {player: g1.player.name, from: A, to: B},
+            {player: g2.player.name, from: B, to: C},
+            {player: g3.player.name, from: C, to: A}
+          ],
+          impacts: {[A]: impA, [B]: impB, [C]: impC}, swing: maxSwing, score
+        });
+      }
+    }
+  }
+  raw.sort((a, b) => b.score - a.score);
+  const seen = new Set(), out = [];
+  for(const s of raw){
+    const key = [...s.teams].sort().join('|');
+    if(seen.has(key)) continue;
+    seen.add(key);
+    out.push(s);
+    if(out.length >= 6) break;
+  }
+  return out;
+}
+
+function buildSuggestions(){
+  const twoTeam = [...generate1for1(), ...generate2for1()].sort((a,b)=>b.score-a.score);
+  const threeTeam = generate3team(); // already sorted, deduped by team-set
+
+  const seenPairs = new Set(), out = [];
+  function add(s){
+    const key = s.type + ':' + [...s.teams].sort().join('|');
+    if(seenPairs.has(key)) return false;
+    seenPairs.add(key);
+    out.push(s);
+    return true;
+  }
+
+  // guarantee up to 2 of the best 3-team trades get a seat, so the tool's
+  // multi-team capability shows up even when 2-team fits happen to score higher
+  let added3 = 0;
+  for(const s of threeTeam){
+    if(added3 >= 2) break;
+    if(add(s)) added3++;
+  }
+
+  const combined = [...twoTeam, ...threeTeam].sort((a,b)=>b.score-a.score);
+  for(const s of combined){
+    if(out.length >= 8) break;
+    add(s);
+  }
+
+  out.sort((a,b)=>b.score-a.score);
+  return out;
+}
+
+function renderSuggestions(){
+  const list = document.getElementById('suggestionsList');
+  if(!suggestionCache){
+    list.innerHTML = `<div class="sugg-loading">Scanning the league for fits…</div>`;
+    setTimeout(()=>{
+      suggestionCache = buildSuggestions();
+      renderSuggestions();
+    }, 20);
+    return;
+  }
+
+  if(suggestionCache.length === 0){
+    list.innerHTML = `<div class="sugg-loading">No mutually beneficial trades found under current thresholds.</div>`;
+    return;
+  }
+
+  list.innerHTML = '';
+  suggestionCache.forEach((s, idx)=>{
+    const card = document.createElement('div');
+    card.className = 'sugg-card';
+
+    const teamsLabel = s.teams.join('  ⇄  ');
+
+    let movesHtml = '';
+    s.moves.forEach(m=>{
+      const pl = findPlayer(m.from, m.player);
+      movesHtml += `
+        <div class="sugg-move">
+          <span class="poschip ${pl.pos}">${pl.pos}</span>
+          <span class="sugg-move-name">${pl.name}</span>
+          <span class="sugg-move-route">${m.from} <span class="arrow">→</span> ${m.to}</span>
+        </div>`;
+    });
+
+    const impactStr = s.teams.map(t => `${t.length>14?t.slice(0,13)+'…':t} ${s.impacts[t]>=0?'+':''}${fmt(s.impacts[t])}`).join('  ·  ');
+    const swingPct = Math.round((s.swing||0)*100);
+
+    card.innerHTML = `
+      <div class="sugg-card-head">
+        <span class="sugg-teams">${teamsLabel}</span>
+        <span class="sugg-type-tag">${s.type==='3team'?'3-team':'2-team'}</span>
+      </div>
+      <div class="sugg-moves-list">${movesHtml}</div>
+      <div class="sugg-card-foot">
+        <div class="sugg-impact-line">Lineup impact: <span class="figure">${impactStr}</span></div>
+        <div class="sugg-swing-line">Value balance: <span class="figure">±${swingPct}%</span></div>
+        <button class="load-btn" data-idx="${idx}">Load into builder</button>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+
+  list.querySelectorAll('.load-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const s = suggestionCache[parseInt(btn.dataset.idx, 10)];
+      loadSuggestion(s);
+    });
+  });
+}
+
+function loadSuggestion(s){
+  state.size = s.teams.length;
+  document.querySelectorAll('#sizeToggle button').forEach(b=>{
+    b.classList.toggle('active', parseInt(b.dataset.n,10) === state.size);
+  });
+  state.teams = [...s.teams];
+  // pad if a 2-team suggestion is loaded while a 3rd slot existed before
+  while(state.teams.length < 3) state.teams.push(TEAM_NAMES.find(t => !state.teams.includes(t)));
+  state.moves = s.moves.map(m => ({player: m.player, from: m.from, to: m.to}));
+  renderAll();
+  document.getElementById('board').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
 // ---------- events ----------
 document.getElementById('sizeToggle').addEventListener('click', (e)=>{
   const btn = e.target.closest('button');
@@ -678,6 +1031,7 @@ document.getElementById('resetBtn').addEventListener('click', ()=>{
 });
 
 renderAll();
+renderSuggestions();
 
 </script>
 </body>
