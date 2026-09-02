@@ -2,7 +2,7 @@
   "name": "LHS Trade Desk",
   "short_name": "Trade Desk",
   "description": "Position-adjusted trade analyzer for LHS Fantasy Football",
-  "start_url": "./LHS_Trade_Desk.html",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#021d4a",
