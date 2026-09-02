@@ -13,13 +13,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --turf-0:#0c1410;
-    --turf-1:#121d17;
-    --turf-2:#1a2b20;
-    --line:#2a3d2e;
+    --turf-0:#060c18;
+    --turf-1:#101b30;
+    --turf-2:#1a2b4a;
+    --line:#2a3f66;
     --chalk:#eef3ea;
-    --chalk-dim:#a9b7ac;
-    --chalk-faint:#6d7d70;
+    --chalk-dim:#a9b3c4;
+    --chalk-faint:#6b7690;
     --amber:#e8a33d;
     --amber-dim:#8a672c;
     --pos-qb:#d8546f;
@@ -32,15 +32,15 @@
     --bad:#d15c5c;
     --warn:#e8a33d;
     --radius:3px;
-    --navy:#101c30;
-    --navy-2:#152541;
-    --navy-line:#28405f;
+    --navy:#021d4a;
+    --navy-2:#062865;
+    --navy-line:#1e3f78;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     background:
-      radial-gradient(ellipse 1200px 600px at 50% -10%, #1a2b1f 0%, transparent 60%),
+      radial-gradient(ellipse 1200px 600px at 50% -10%, #142c5c 0%, transparent 60%),
       var(--turf-0);
     color:var(--chalk);
     font-family:'Archivo',sans-serif;
@@ -632,6 +632,30 @@
   .pr-stat-val.good{color:var(--good);}
   .pr-stat-val.bad{color:var(--bad);}
 
+  .pr-chart-caption{
+    font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--chalk-faint);font-weight:600;
+    margin-bottom:12px;
+  }
+  .pr-bar-list{display:flex;flex-direction:column;gap:10px;}
+  .pr-bar-row{display:flex;align-items:center;gap:12px;}
+  .pr-bar-row.pr-rank-1 .pr-bar-team{color:var(--amber);}
+  .pr-bar-rank{
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:var(--amber);
+    width:22px;text-align:center;flex:none;
+  }
+  .pr-bar-team{
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;
+    width:126px;flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .pr-bar-track{
+    flex:1;height:22px;background:var(--turf-1);border:1px solid var(--line);border-radius:4px;overflow:hidden;
+  }
+  .pr-bar-fill{height:100%;border-radius:3px;}
+  .pr-bar-value{
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:var(--chalk);
+    width:42px;text-align:right;flex:none;
+  }
+
   /* =====================================================================
      MOBILE / RESPONSIVE
      ===================================================================== */
@@ -710,6 +734,11 @@
 
     .roster-detail-head{padding:11px 9px 9px;flex-wrap:wrap;gap:4px;}
     .roster-add-row{padding:9px 7px;}
+
+    .pr-bar-team{width:74px;font-size:12px;}
+    .pr-bar-rank{width:18px;font-size:13px;}
+    .pr-bar-value{width:36px;font-size:12px;}
+    .pr-bar-track{height:19px;}
 
     .fa-row{padding:10px;}
     .fa-row .fa-main{min-width:0;flex:1 1 100%;}
@@ -967,7 +996,7 @@
     <section class="power-panel">
       <div class="magic-intro">
         <h3>Power Rankings</h3>
-        <div class="suggestions-sub">Ranked 1–10 by optimal starting-lineup value — the same metric used everywhere else in this tool — recalculated live as rosters and trades change. Playoff odds and projected record come from a Monte Carlo simulation of a 13-game regular season using each team's overall strength; since this tool doesn't have your league's actual week-by-week schedule, the simulation randomizes matchups across thousands of trials and assumes a top-6 playoff format, common for 10-team leagues.</div>
+        <div class="suggestions-sub">Overall view: ranked 1–10 by optimal starting-lineup value, with playoff odds and projected record from a Monte Carlo simulation of a 13-game regular season (thousands of randomized trials, top-6 playoff format — this tool doesn't have your league's actual schedule, so treat it as a strength-based estimate, not a prediction). Switch to a position below and it becomes a straight strength chart — just each team's QB/RB/WR/TE corps ranked 1–10, no season simulation attached, since positional depth and playoff odds are different questions.</div>
       </div>
 
       <div class="field" style="margin-bottom:22px;">
@@ -2917,29 +2946,58 @@ document.getElementById('powerPosFilter').addEventListener('change', (e)=>{
 function renderPowerRankingsTab(){
   if(!powerRankingsCache) runPowerRankings();
   const filterPos = state.powerFilterPos || 'ALL';
-  const teams = [...powerRankingsCache.teams];
-  teams.sort((a,b) => (filterPos === 'ALL' ? b.overallScore - a.overallScore : b.posScores[filterPos] - a.posScores[filterPos]));
-
-  const scoreLabel = filterPos === 'ALL' ? 'Power score' : `${filterPos} corps`;
   const wrap = document.getElementById('powerRankingsList');
   wrap.innerHTML = '';
+
+  if(filterPos === 'ALL'){
+    const teams = [...powerRankingsCache.teams].sort((a,b)=>b.overallScore-a.overallScore);
+    teams.forEach((t, idx)=>{
+      const oddsClass = t.playoffOdds >= 50 ? 'good' : (t.playoffOdds < 20 ? 'bad' : '');
+      const losses = (powerRankingsCache.weeks - t.avgWins);
+      const row = document.createElement('div');
+      row.className = 'pr-row' + (idx === 0 ? ' pr-rank-1' : '');
+      row.innerHTML = `
+        <span class="pr-rank">${idx+1}</span>
+        <span class="pr-team">${t.team}</span>
+        <div class="pr-stats">
+          <div class="pr-stat"><span class="pr-stat-label">Power score</span><span class="pr-stat-val">${fmt(t.overallScore)}</span></div>
+          <div class="pr-stat"><span class="pr-stat-label">Playoff odds</span><span class="pr-stat-val ${oddsClass}">${t.playoffOdds.toFixed(0)}%</span></div>
+          <div class="pr-stat"><span class="pr-stat-label">Proj. record</span><span class="pr-stat-val">${t.avgWins.toFixed(1)}–${losses.toFixed(1)}</span></div>
+        </div>
+      `;
+      wrap.appendChild(row);
+    });
+    return;
+  }
+
+  // Position view: a pure strength chart, 1–10, ranked by that position's
+  // roster corps alone — deliberately no playoff odds/record here, since
+  // those are whole-team season outcomes, not a positional measurement.
+  const teams = [...powerRankingsCache.teams].sort((a,b)=>b.posScores[filterPos]-a.posScores[filterPos]);
+  const maxScore = Math.max(...teams.map(t=>t.posScores[filterPos]), 0.1);
+  const posColorVar = {QB:'--pos-qb', RB:'--pos-rb', WR:'--pos-wr', TE:'--pos-te'}[filterPos] || '--amber';
+
+  const caption = document.createElement('div');
+  caption.className = 'pr-chart-caption';
+  caption.textContent = `${filterPos} corps strength, ranked 1–10 across the league`;
+  wrap.appendChild(caption);
+
+  const chart = document.createElement('div');
+  chart.className = 'pr-bar-list';
   teams.forEach((t, idx)=>{
-    const scoreVal = filterPos === 'ALL' ? t.overallScore : t.posScores[filterPos];
-    const oddsClass = t.playoffOdds >= 50 ? 'good' : (t.playoffOdds < 20 ? 'bad' : '');
-    const losses = (powerRankingsCache.weeks - t.avgWins);
+    const score = t.posScores[filterPos];
+    const pct = Math.max(3, (score / maxScore) * 100);
     const row = document.createElement('div');
-    row.className = 'pr-row' + (idx === 0 ? ' pr-rank-1' : '');
+    row.className = 'pr-bar-row' + (idx === 0 ? ' pr-rank-1' : '');
     row.innerHTML = `
-      <span class="pr-rank">${idx+1}</span>
-      <span class="pr-team">${t.team}</span>
-      <div class="pr-stats">
-        <div class="pr-stat"><span class="pr-stat-label">${scoreLabel}</span><span class="pr-stat-val">${fmt(scoreVal)}</span></div>
-        <div class="pr-stat"><span class="pr-stat-label">Playoff odds</span><span class="pr-stat-val ${oddsClass}">${t.playoffOdds.toFixed(0)}%</span></div>
-        <div class="pr-stat"><span class="pr-stat-label">Proj. record</span><span class="pr-stat-val">${t.avgWins.toFixed(1)}–${losses.toFixed(1)}</span></div>
-      </div>
+      <span class="pr-bar-rank">${idx+1}</span>
+      <span class="pr-bar-team">${t.team}</span>
+      <div class="pr-bar-track"><div class="pr-bar-fill" style="width:${pct}%; background:var(${posColorVar});"></div></div>
+      <span class="pr-bar-value">${fmt(score)}</span>
     `;
-    wrap.appendChild(row);
+    chart.appendChild(row);
   });
+  wrap.appendChild(chart);
 }
 
 renderPowerRankingsTab();
