@@ -114,6 +114,10 @@
   }
   .board.cols-2{grid-template-columns:1fr 1fr;}
   .board.cols-3{grid-template-columns:1fr 1fr 1fr;}
+  .board.cols-4{grid-template-columns:1fr 1fr 1fr 1fr;}
+  @media (max-width:1100px){
+    .board.cols-4{grid-template-columns:1fr 1fr;}
+  }
   @media (max-width:880px){
     .board.cols-2,.board.cols-3{grid-template-columns:1fr;}
   }
@@ -255,6 +259,8 @@
   }
   .impact-grid.cols-2{grid-template-columns:1fr 1fr;}
   .impact-grid.cols-3{grid-template-columns:1fr 1fr 1fr;}
+  .impact-grid.cols-4{grid-template-columns:1fr 1fr 1fr 1fr;}
+  @media (max-width:1100px){.impact-grid.cols-4{grid-template-columns:1fr 1fr;}}
   @media (max-width:880px){.impact-grid.cols-2,.impact-grid.cols-3{grid-template-columns:1fr;}}
 
   .impact-card{
@@ -304,6 +310,60 @@
     border-radius:4px;cursor:pointer;
   }
   .reset-btn:hover{border-color:var(--bad); color:var(--bad);}
+
+  .complete-btn{
+    background:var(--good);
+    border:1px solid var(--good);
+    color:#0c1410;
+    padding:9px 16px;
+    font-family:'Archivo',sans-serif;font-size:13px;font-weight:700;
+    border-radius:4px;cursor:pointer;
+  }
+  .complete-btn:hover{background:#5fc47f;}
+  .complete-btn:disabled{
+    background:transparent;border-color:var(--line);color:var(--chalk-faint);
+    cursor:not-allowed;
+  }
+
+  .toast{
+    position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);
+    background:var(--turf-2);border:1px solid var(--good);color:var(--chalk);
+    padding:12px 20px;border-radius:6px;font-size:13.5px;
+    opacity:0;pointer-events:none;
+    transition:opacity 0.25s ease, transform 0.25s ease;
+    z-index:50;
+    max-width:90vw;
+    box-shadow:0 8px 24px rgba(0,0,0,0.4);
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  .sugg-controls{display:flex;gap:14px;flex-wrap:wrap;}
+
+  /* ---------- rosters tab ---------- */
+  .roster-detail-card{
+    background:var(--turf-1);border:1px solid var(--line);border-radius:var(--radius);
+    margin-top:20px; padding:6px 8px;
+  }
+  .roster-detail-head{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:12px 10px 10px;
+    border-bottom:1px solid var(--line);
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;
+  }
+  .roster-add-row{
+    padding:10px 8px;border-bottom:1px solid var(--line);
+  }
+  .roster-add-row input{
+    width:100%;background:var(--turf-0);border:1px solid var(--line);color:var(--chalk);
+    padding:8px 10px;font-family:'Archivo',sans-serif;font-size:13px;border-radius:4px;
+    margin-bottom:6px;
+  }
+  .roster-add-results{max-height:180px;overflow-y:auto;}
+  .roster-remove-btn{
+    background:transparent;border:1px solid var(--line);color:var(--chalk-faint);
+    font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;cursor:pointer;flex:none;
+  }
+  .roster-remove-btn:hover{border-color:var(--bad);color:var(--bad);}
 
   /* ---------- suggested trades ---------- */
   .suggestions-panel{margin-bottom:48px;}
@@ -377,7 +437,11 @@
     display:flex;gap:4px;
     border-bottom:1px solid var(--line);
     margin-bottom:26px;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
   }
+  .tabbar::-webkit-scrollbar{display:none;}
   .tab-btn{
     background:transparent;border:none;
     color:var(--chalk-faint);
@@ -386,6 +450,8 @@
     cursor:pointer;
     border-bottom:2px solid transparent;
     margin-bottom:-1px;
+    flex:none;
+    white-space:nowrap;
   }
   .tab-btn:hover{color:var(--chalk-dim);}
   .tab-btn.active{color:var(--chalk);border-bottom-color:var(--amber);}
@@ -497,8 +563,161 @@
     padding:6px 12px;border-radius:4px;cursor:pointer;
   }
   .mr-load-btn:hover{background:rgba(232,163,61,0.12);}
+
+  /* ---------- free agents tab ---------- */
+  .fa-section{margin-bottom:34px;}
+  .fa-section-head{margin-bottom:14px;}
+  .fa-section-head h4{
+    font-family:'Space Grotesk',sans-serif;font-size:15.5px;font-weight:700;margin:0 0 4px;
+  }
+  .fa-section-note{color:var(--chalk-faint);font-size:12.5px;max-width:760px;}
+  .fa-list{display:flex;flex-direction:column;gap:8px;}
+  .fa-row{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    background:var(--turf-1);border:1px solid var(--line);border-radius:3px;
+    padding:10px 12px;
+  }
+  .fa-row .fa-main{display:flex;align-items:center;gap:9px;min-width:210px;}
+  .fa-row .fa-name{font-weight:600;font-size:13.5px;}
+  .fa-row .fa-meta{color:var(--chalk-faint);font-size:11px;white-space:nowrap;}
+  .fa-row .fa-val{font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--amber);font-size:13px;width:38px;text-align:right;flex:none;}
+  .fa-row .fa-note{flex:1 1 260px;color:var(--chalk-dim);font-size:12px;min-width:180px;}
+  .fa-row .add-btn{flex:none;}
+  .fa-search-wrap{margin-bottom:20px;}
+  .fa-search-wrap input{
+    width:100%;max-width:420px;
+    background:var(--turf-0);border:1px solid var(--line);color:var(--chalk);
+    padding:9px 11px;font-family:'Archivo',sans-serif;font-size:13px;border-radius:4px;
+  }
+  .fa-team-picker{display:flex;align-items:center;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
+  .fa-team-picker .field{margin-bottom:0;}
+
+  /* =====================================================================
+     MOBILE / RESPONSIVE
+     ===================================================================== */
+
+  /* tablets / narrow desktop */
+  @media (max-width:900px){
+    header{padding:20px 16px 16px;}
+    main{padding:20px 16px 0;}
+    header h1{font-size:19px;}
+    .league-tag{display:none;}
+  }
+
+  /* phones (portrait-first; also covers most landscape phone widths) */
+  @media (max-width:700px){
+    header{padding:16px 14px 14px; gap:6px;}
+    .brand{gap:10px;}
+    .brand .mark{width:30px;height:30px;font-size:13px;}
+    header h1{font-size:17px;}
+    header .sub{font-size:11.5px;}
+    main{padding:16px 14px 0;}
+
+    .tabbar{
+      margin-bottom:18px;
+      flex-wrap:wrap;
+      overflow-x:visible;
+      row-gap:2px;
+    }
+    .tab-btn{font-size:13.5px;padding:9px 2px;margin-right:16px;}
+
+    .setup{gap:14px;margin-bottom:20px;padding-bottom:18px;}
+    .field label{font-size:10px;margin-bottom:5px;}
+    .toggle-group button{padding:9px 12px;font-size:12.5px;}
+    select{min-width:0;width:100%;font-size:13px;padding:10px 11px;}
+    #teamSelectors{width:100%;}
+    #teamSelectors > div{width:100%;}
+    #teamSelectors select{width:100%;}
+    .setup .field[style*="margin-left:auto"]{margin-left:0;width:100%;}
+    .reset-btn,.complete-btn{flex:1;padding:11px 10px;font-size:12.5px;}
+
+    .board{gap:12px;margin-bottom:22px;}
+    .team-col-head{padding:12px 13px 10px;}
+    .team-col-head .tname{font-size:14.5px;}
+    .player-row{padding:10px 8px;gap:8px;flex-wrap:wrap;}
+    .player-name{font-size:13.5px;min-width:0;}
+    .player-meta{
+      flex-basis:100%;
+      order:5;
+      padding-left:39px;
+      font-size:10px;
+      margin-top:-2px;
+    }
+    .player-val{font-size:12.5px;}
+    .ledger{padding:12px 13px 14px;}
+    .ledger-item{font-size:12px;}
+
+    .verdict-panel{padding:16px 14px;}
+    .verdict-badge{font-size:13.5px;padding:7px 13px;}
+    .verdict-sub{font-size:12px;}
+    .impact-card{padding:13px;}
+    .impact-card h4{font-size:13.5px;}
+    .impact-row{font-size:12px;}
+
+    .suggestions-head{gap:14px;}
+    .sugg-controls{gap:10px;width:100%;}
+    .sugg-controls .field{flex:1;min-width:120px;}
+    .suggestions-list{grid-template-columns:1fr;gap:12px;}
+    .sugg-card{padding:13px 14px 15px;}
+
+    .magic-intro .suggestions-sub{font-size:12.5px;}
+    .magic-col{padding:13px;}
+    .magic-col-head{flex-wrap:wrap;gap:8px;}
+    .target-result-row{flex-wrap:wrap;}
+
+    .mr-card{padding:13px 14px;}
+    .mr-name{font-size:14px;}
+
+    .roster-detail-head{padding:11px 9px 9px;flex-wrap:wrap;gap:4px;}
+    .roster-add-row{padding:9px 7px;}
+
+    .fa-row{padding:10px;}
+    .fa-row .fa-main{min-width:0;flex:1 1 100%;}
+    .fa-row .fa-note{flex-basis:100%;}
+    .fa-team-picker{flex-direction:column;align-items:stretch;}
+
+    .toast{bottom:16px;font-size:12.5px;padding:10px 16px;max-width:calc(100vw - 32px);}
+
+    footer{padding:0 14px 32px;font-size:11px;}
+  }
+
+  /* small phones */
+  @media (max-width:420px){
+    header h1{font-size:16px;}
+    .toggle-group{width:100%;}
+    .toggle-group button{flex:1;padding:9px 6px;}
+    .poschip{width:26px;font-size:9px;}
+    .player-name{font-size:13px;}
+    .fa-row .fa-val{width:32px;}
+  }
+
+  /* short-height landscape phones — vertical space is the scarce resource,
+     so compress paddings and scroll-area heights rather than font sizes */
+  @media (max-height:480px) and (orientation:landscape){
+    header{padding:10px 16px 8px;}
+    header .sub{display:none;}
+    main{padding:12px 16px 0;}
+    .tabbar{margin-bottom:14px;}
+    .tab-btn{padding:8px 2px;}
+    .setup{margin-bottom:14px;padding-bottom:12px;gap:10px;}
+    .board{margin-bottom:16px;}
+    .roster-scroll{max-height:200px;}
+    .magic-col .roster-scroll{max-height:220px;}
+    .target-search-results{max-height:120px;}
+    .verdict-panel{margin-bottom:20px;}
+    .suggestions-panel,.magic-panel,.rosters-panel{margin-bottom:20px;}
+  }
+
+  /* landscape phones have width to spare even when short on height — use it
+     for side-by-side columns instead of stacking, to cut down on scrolling */
+  @media (max-height:480px) and (orientation:landscape) and (min-width:600px){
+    .board.cols-2,.board.cols-3,.board.cols-4{grid-template-columns:1fr 1fr;}
+    .impact-grid.cols-2,.impact-grid.cols-3,.impact-grid.cols-4{grid-template-columns:1fr 1fr;}
+    .magic-grid{grid-template-columns:1fr 1fr;}
+  }
 </style>
 </head>
+
 <body>
 
 <header>
@@ -517,6 +736,8 @@
     <button class="tab-btn active" data-tab="engine">Trade Engine</button>
     <button class="tab-btn" data-tab="suggested">Suggested Trades</button>
     <button class="tab-btn" data-tab="magic">Trade Magic</button>
+    <button class="tab-btn" data-tab="rosters">Rosters</button>
+    <button class="tab-btn" data-tab="freeagents">Free Agents</button>
   </div>
 
   <div class="tab-panel active" id="tab-engine">
@@ -526,12 +747,13 @@
         <div class="toggle-group" id="sizeToggle">
           <button data-n="2" class="active">2-Team</button>
           <button data-n="3">3-Team</button>
+          <button data-n="4">4-Team</button>
         </div>
       </div>
       <div class="field" id="teamSelectors"></div>
-      <div class="field" style="margin-left:auto;">
-        <label>&nbsp;</label>
+      <div class="field" style="margin-left:auto; display:flex; flex-direction:row; gap:8px; align-items:flex-end;">
         <button class="reset-btn" id="resetBtn">Clear trade</button>
+        <button class="complete-btn" id="completeTradeBtn" disabled>Complete Trade</button>
       </div>
     </div>
 
@@ -545,13 +767,33 @@
       <div class="suggestions-head">
         <div>
           <h3>Suggested trades</h3>
-          <div class="suggestions-sub">League-wide scan · ranked by combined starting-lineup gain, filtered to trades within reasonable value balance</div>
+          <div class="suggestions-sub">League-wide scan across 2, 3, and 4-team routes · ranked by combined starting-lineup gain, filtered to trades within reasonable value balance. Values include a modest early-season schedule adjustment — see note below.</div>
         </div>
-        <div class="field">
-          <label>Filter by team</label>
-          <select id="suggFilter">
-            <option value="ALL">All teams</option>
-          </select>
+        <div class="sugg-controls">
+          <div class="field">
+            <label>Filter by team</label>
+            <select id="suggFilter">
+              <option value="ALL">All teams</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Min. improvement</label>
+            <select id="suggMinImprovement">
+              <option value="0">Any</option>
+              <option value="2">2%+</option>
+              <option value="4">4%+</option>
+              <option value="6">6%+</option>
+              <option value="10">10%+</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Sort by</label>
+            <select id="suggSortBy">
+              <option value="impact">Best impact</option>
+              <option value="balance">Most balanced value</option>
+              <option value="fewest">Fewest players moved</option>
+            </select>
+          </div>
         </div>
       </div>
       <div class="suggestions-list" id="suggestionsList">
@@ -608,20 +850,192 @@
       <div class="magic-results" id="magicResults"></div>
     </section>
   </div>
+
+  <div class="tab-panel" id="tab-rosters">
+    <section class="rosters-panel">
+      <div class="magic-intro">
+        <h3>Rosters</h3>
+        <div class="suggestions-sub">View any team's current roster. Edit mode lets you drop a player to free agency or pick one up from the pool of players not currently rostered on any of the 10 teams — useful for keeping this tool in sync with real waiver moves.</div>
+      </div>
+
+      <div class="magic-setup" style="justify-content:space-between; align-items:flex-end; display:flex; flex-wrap:wrap; gap:16px;">
+        <div class="field">
+          <label>Team</label>
+          <select id="rosterTeamSelect"></select>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="mini-btn" id="rosterEditToggle">Edit roster</button>
+          <button class="reset-btn" id="resetRostersBtn">Reset all rosters to draft day</button>
+        </div>
+      </div>
+
+      <div class="roster-detail-card" id="rosterDetailCard"></div>
+    </section>
+  </div>
+
+  <div class="tab-panel" id="tab-freeagents">
+    <section class="fa-panel">
+      <div class="magic-intro">
+        <h3>Free Agents</h3>
+        <div class="suggestions-sub">Every player from the full draft pool who isn't currently on any of the 10 rosters, ranked by the same position-adjusted value used everywhere else in this tool. Pick a team below to add directly from here.</div>
+      </div>
+
+      <div class="fa-team-picker">
+        <div class="field">
+          <label>Add to team</label>
+          <select id="faTeamSelect">
+            <option value="">Select a team…</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="fa-search-wrap">
+        <input type="text" id="faSearch" placeholder="Search all free agents…" autocomplete="off">
+      </div>
+
+      <div id="faContent"></div>
+    </section>
+  </div>
 </main>
 
+
+<div id="toast" class="toast"></div>
+
 <footer>
-  Value is driven primarily by each player's overall consensus rank (FantasyPros ECR), converted through a decay curve so being a WR7 overall means meaningfully more than being an RB7 overall by rank alone — a modest position-scarcity multiplier (RB and TE run slightly hotter, since they're scarcer at the replacement level) and a starter-tier premium then nudge value up for players who'd actually crack a typical 10-team starting lineup, and down for pure bench depth, since bench production doesn't score points. Starting-lineup impact assumes a 1 QB · 2 RB · 2 WR · 1 TE · 1 FLEX · 1 K · 1 DEF lineup and compares each team's best possible starters before and after the deal. Chain paths are two independent, sequential trades — the first happens on its own merits between two other teams, the second is your follow-up once they've actually made it — not a single combined transaction.
+  Value is driven primarily by each player's overall consensus rank (FantasyPros ECR), converted through a decay curve so being a WR7 overall means meaningfully more than being an RB7 overall by rank alone — a modest position-scarcity multiplier (RB and TE run slightly hotter, since they're scarcer at the replacement level) and a starter-tier premium then nudge value up for players who'd actually crack a typical 10-team starting lineup, and down for pure bench depth, since bench production doesn't score points. A small early-season schedule adjustment (±5%, skill positions only) is also folded in for teams with a clearly favorable or unfavorable Weeks 1–4 slate per current research — the idea being a hot, easy-schedule start is a sell-high window, not a reason to overhaul a valuation. Starting-lineup impact assumes a 1 QB · 2 RB · 2 WR · 1 TE · 1 FLEX · 1 K · 1 DEF lineup and compares each team's best possible starters before and after the deal. Chain paths are sequential, independent trades — the first happens on its own merits between two other teams, the next is your follow-up once it's actually happened — not a single combined transaction. Roster edits and completed trades are saved in this browser only (via local storage) — they won't sync across devices, and clearing your browser data will reset them.
 </footer>
 
-<script id="league-data" type="application/json">
-{"kalenvenn":[{"name":"Ja'Marr Chase","pos":"WR","posRank":1,"ovrRank":1,"value":50.5},{"name":"Jaxon Smith-Njigba","pos":"WR","posRank":3,"ovrRank":5,"value":45.7},{"name":"Colston Loveland","pos":"TE","posRank":3,"ovrRank":35,"value":22.7},{"name":"Travis Etienne Jr.","pos":"RB","posRank":17,"ovrRank":45,"value":18.8},{"name":"Jalen Hurts","pos":"QB","posRank":6,"ovrRank":57,"value":10.6},{"name":"David Montgomery","pos":"RB","posRank":21,"ovrRank":60,"value":12.9},{"name":"Michael Wilson","pos":"WR","posRank":39,"ovrRank":86,"value":5.2},{"name":"Josh Downs","pos":"WR","posRank":40,"ovrRank":88,"value":5.0},{"name":"Jaxson Dart","pos":"QB","posRank":12,"ovrRank":93,"value":3.7},{"name":"Rachaad White","pos":"RB","posRank":37,"ovrRank":111,"value":3.1},{"name":"Isaiah Likely","pos":"TE","posRank":13,"ovrRank":119,"value":2.4},{"name":"Kyle Monangai","pos":"RB","posRank":41,"ovrRank":121,"value":2.4},{"name":"Tyrone Tracy Jr.","pos":"RB","posRank":54,"ovrRank":161,"value":0.7},{"name":"Pittsburgh Steelers","pos":"DEF","posRank":6,"ovrRank":180,"value":0.1},{"name":"Will Reichard","pos":"K","posRank":16,"ovrRank":270,"value":0.0}],"rileyleonard99":[{"name":"Nico Collins","pos":"WR","posRank":9,"ovrRank":14,"value":36.5},{"name":"Tee Higgins","pos":"WR","posRank":20,"ovrRank":36,"value":21.0},{"name":"Derrick Henry","pos":"RB","posRank":12,"ovrRank":38,"value":22.4},{"name":"Breece Hall","pos":"RB","posRank":13,"ovrRank":39,"value":21.9},{"name":"Javonte Williams","pos":"RB","posRank":16,"ovrRank":43,"value":19.8},{"name":"Luther Burden III","pos":"WR","posRank":22,"ovrRank":46,"value":16.4},{"name":"Terry McLaurin","pos":"WR","posRank":23,"ovrRank":47,"value":16.0},{"name":"Davante Adams","pos":"WR","posRank":24,"ovrRank":48,"value":15.6},{"name":"Bhayshul Tuten","pos":"RB","posRank":23,"ovrRank":64,"value":11.7},{"name":"TreVeyon Henderson","pos":"RB","posRank":25,"ovrRank":68,"value":10.6},{"name":"Harold Fannin Jr.","pos":"TE","posRank":5,"ovrRank":73,"value":8.8},{"name":"Dak Prescott","pos":"QB","posRank":10,"ovrRank":75,"value":6.7},{"name":"Tucker Kraft","pos":"TE","posRank":7,"ovrRank":77,"value":7.9},{"name":"Seattle Seahawks","pos":"DEF","posRank":4,"ovrRank":167,"value":0.1},{"name":"Cameron Dicker","pos":"K","posRank":3,"ovrRank":190,"value":0.1}],"dekssss":[{"name":"Justin Jefferson","pos":"WR","posRank":6,"ovrRank":8,"value":42.4},{"name":"James Cook III","pos":"RB","posRank":5,"ovrRank":13,"value":41.9},{"name":"Chris Olave","pos":"WR","posRank":10,"ovrRank":16,"value":34.7},{"name":"D'Andre Swift","pos":"RB","posRank":18,"ovrRank":50,"value":16.6},{"name":"Jameson Williams","pos":"WR","posRank":26,"ovrRank":51,"value":14.5},{"name":"Cam Skattebo","pos":"RB","posRank":20,"ovrRank":56,"value":14.3},{"name":"Caleb Williams","pos":"QB","posRank":7,"ovrRank":63,"value":9.1},{"name":"Jadarian Price","pos":"RB","posRank":24,"ovrRank":66,"value":11.1},{"name":"Kyle Pitts Sr.","pos":"TE","posRank":6,"ovrRank":76,"value":8.1},{"name":"DK Metcalf","pos":"WR","posRank":34,"ovrRank":78,"value":6.4},{"name":"Michael Pittman Jr.","pos":"WR","posRank":36,"ovrRank":80,"value":6.1},{"name":"Wan'Dale Robinson","pos":"WR","posRank":37,"ovrRank":81,"value":5.9},{"name":"Alec Pierce","pos":"WR","posRank":43,"ovrRank":98,"value":3.9},{"name":"Brandon Aubrey","pos":"K","posRank":1,"ovrRank":182,"value":0.1},{"name":"Baltimore Ravens","pos":"DEF","posRank":11,"ovrRank":193,"value":0.0}],"JFoxMan":[{"name":"CeeDee Lamb","pos":"WR","posRank":5,"ovrRank":7,"value":43.4},{"name":"Drake London","pos":"WR","posRank":7,"ovrRank":11,"value":39.3},{"name":"DeVonta Smith","pos":"WR","posRank":12,"ovrRank":21,"value":30.6},{"name":"Kenneth Walker III","pos":"RB","posRank":9,"ovrRank":24,"value":31.8},{"name":"Josh Allen","pos":"QB","posRank":1,"ovrRank":26,"value":23.0},{"name":"Travis Kelce","pos":"TE","posRank":9,"ovrRank":94,"value":5.2},{"name":"Patrick Mahomes II","pos":"QB","posRank":14,"ovrRank":102,"value":3.0},{"name":"Dalton Kincaid","pos":"TE","posRank":11,"ovrRank":110,"value":3.5},{"name":"Jordan Mason","pos":"RB","posRank":39,"ovrRank":115,"value":2.8},{"name":"De'Zhaun Stribling","pos":"WR","posRank":52,"ovrRank":127,"value":1.4},{"name":"Romeo Doubs","pos":"WR","posRank":53,"ovrRank":128,"value":1.4},{"name":"Deebo Samuel Sr.","pos":"WR","posRank":56,"ovrRank":138,"value":1.1},{"name":"Alvin Kamara","pos":"RB","posRank":52,"ovrRank":157,"value":0.7},{"name":"Los Angeles Chargers","pos":"DEF","posRank":10,"ovrRank":192,"value":0.1},{"name":"Jason Myers","pos":"K","posRank":5,"ovrRank":197,"value":0.0}],"willig19":[{"name":"George Pickens","pos":"WR","posRank":11,"ovrRank":18,"value":33.0},{"name":"De'Von Achane","pos":"RB","posRank":7,"ovrRank":19,"value":36.0},{"name":"Omarion Hampton","pos":"RB","posRank":10,"ovrRank":25,"value":31.0},{"name":"Jaylen Waddle","pos":"WR","posRank":18,"ovrRank":33,"value":22.7},{"name":"Drake Maye","pos":"QB","posRank":3,"ovrRank":37,"value":17.4},{"name":"Tyler Warren","pos":"TE","posRank":4,"ovrRank":52,"value":14.8},{"name":"Bucky Irving","pos":"RB","posRank":19,"ovrRank":54,"value":15.0},{"name":"Rome Odunze","pos":"WR","posRank":28,"ovrRank":58,"value":12.1},{"name":"Parker Washington","pos":"WR","posRank":30,"ovrRank":62,"value":11.0},{"name":"Brian Thomas Jr.","pos":"WR","posRank":35,"ovrRank":79,"value":6.2},{"name":"Chuba Hubbard","pos":"RB","posRank":33,"ovrRank":99,"value":4.2},{"name":"MarShawn Lloyd","pos":"RB","posRank":34,"ovrRank":100,"value":4.1},{"name":"Houston Texans","pos":"DEF","posRank":1,"ovrRank":154,"value":0.1},{"name":"Denver Broncos","pos":"DEF","posRank":2,"ovrRank":162,"value":0.1},{"name":"Ka'imi Fairbairn","pos":"K","posRank":2,"ovrRank":188,"value":0.1}],"stenedaddy":[{"name":"Amon-Ra St. Brown","pos":"WR","posRank":4,"ovrRank":6,"value":44.5},{"name":"Chase Brown","pos":"RB","posRank":6,"ovrRank":15,"value":39.8},{"name":"Garrett Wilson","pos":"WR","posRank":16,"ovrRank":30,"value":24.4},{"name":"Ladd McConkey","pos":"WR","posRank":17,"ovrRank":32,"value":23.3},{"name":"Jeremiyah Love","pos":"RB","posRank":14,"ovrRank":41,"value":20.8},{"name":"DJ Moore","pos":"WR","posRank":25,"ovrRank":49,"value":15.2},{"name":"Jayden Daniels","pos":"QB","posRank":5,"ovrRank":53,"value":11.7},{"name":"RJ Harvey","pos":"RB","posRank":31,"ovrRank":90,"value":5.3},{"name":"Bo Nix","pos":"QB","posRank":13,"ovrRank":95,"value":3.6},{"name":"Kenny Gainwell","pos":"RB","posRank":32,"ovrRank":96,"value":4.6},{"name":"George Kittle","pos":"TE","posRank":10,"ovrRank":97,"value":4.8},{"name":"J.K. Dobbins","pos":"RB","posRank":35,"ovrRank":101,"value":4.0},{"name":"Jordan Addison","pos":"WR","posRank":47,"ovrRank":108,"value":3.0},{"name":"Chris Rodriguez Jr.","pos":"RB","posRank":45,"ovrRank":139,"value":1.6},{"name":"Philadelphia Eagles","pos":"DEF","posRank":5,"ovrRank":173,"value":0.1}],"calebmatteson":[{"name":"Jonathan Taylor","pos":"RB","posRank":4,"ovrRank":10,"value":45.1},{"name":"Brock Bowers","pos":"TE","posRank":2,"ovrRank":20,"value":33.0},{"name":"Saquon Barkley","pos":"RB","posRank":8,"ovrRank":22,"value":33.4},{"name":"Ashton Jeanty","pos":"RB","posRank":11,"ovrRank":28,"value":28.8},{"name":"Tetairoa McMillan","pos":"WR","posRank":19,"ovrRank":34,"value":22.1},{"name":"Mike Evans","pos":"WR","posRank":29,"ovrRank":59,"value":11.8},{"name":"Justin Herbert","pos":"QB","posRank":8,"ovrRank":69,"value":7.8},{"name":"Jonathon Brooks","pos":"RB","posRank":30,"ovrRank":87,"value":6.6},{"name":"Matthew Stafford","pos":"QB","posRank":16,"ovrRank":105,"value":2.8},{"name":"Jakobi Meyers","pos":"WR","posRank":45,"ovrRank":106,"value":3.2},{"name":"Blake Corum","pos":"RB","posRank":36,"ovrRank":109,"value":3.3},{"name":"Jacory Croskey-Merritt","pos":"RB","posRank":38,"ovrRank":114,"value":2.9},{"name":"Jake Ferguson","pos":"TE","posRank":12,"ovrRank":117,"value":2.9},{"name":"Jacksonville Jaguars","pos":"DEF","posRank":9,"ovrRank":187,"value":0.1},{"name":"Evan McPherson","pos":"K","posRank":10,"ovrRank":217,"value":0.0}],"squilliamfanc":[{"name":"Jahmyr Gibbs","pos":"RB","posRank":1,"ovrRank":2,"value":55.1},{"name":"Malik Nabers","pos":"WR","posRank":13,"ovrRank":23,"value":29.1},{"name":"Rashee Rice","pos":"WR","posRank":14,"ovrRank":27,"value":26.3},{"name":"Lamar Jackson","pos":"QB","posRank":2,"ovrRank":31,"value":20.3},{"name":"Joe Burrow","pos":"QB","posRank":4,"ovrRank":44,"value":14.6},{"name":"Christian Watson","pos":"WR","posRank":27,"ovrRank":55,"value":13.1},{"name":"Carnell Tate","pos":"WR","posRank":31,"ovrRank":65,"value":8.9},{"name":"Tony Pollard","pos":"RB","posRank":28,"ovrRank":82,"value":7.5},{"name":"Sam LaPorta","pos":"TE","posRank":8,"ovrRank":83,"value":6.8},{"name":"Courtland Sutton","pos":"WR","posRank":38,"ovrRank":84,"value":5.5},{"name":"Rico Dowdle","pos":"RB","posRank":29,"ovrRank":85,"value":6.9},{"name":"Makai Lemon","pos":"WR","posRank":46,"ovrRank":107,"value":3.1},{"name":"Zach Charbonnet","pos":"RB","posRank":51,"ovrRank":149,"value":0.9},{"name":"Los Angeles Rams","pos":"DEF","posRank":3,"ovrRank":165,"value":0.1},{"name":"Cam Little","pos":"K","posRank":4,"ovrRank":196,"value":0.0}],"ZachMaddux":[{"name":"Puka Nacua","pos":"WR","posRank":2,"ovrRank":3,"value":48.0},{"name":"Trey McBride","pos":"TE","posRank":1,"ovrRank":17,"value":35.5},{"name":"Zay Flowers","pos":"WR","posRank":15,"ovrRank":29,"value":25.1},{"name":"Emeka Egbuka","pos":"WR","posRank":21,"ovrRank":40,"value":19.0},{"name":"Kyren Williams","pos":"RB","posRank":15,"ovrRank":42,"value":20.3},{"name":"Quinshon Judkins","pos":"RB","posRank":22,"ovrRank":61,"value":12.6},{"name":"Marvin Harrison Jr.","pos":"WR","posRank":32,"ovrRank":67,"value":8.4},{"name":"Rhamondre Stevenson","pos":"RB","posRank":26,"ovrRank":70,"value":10.1},{"name":"Jaylen Warren","pos":"RB","posRank":27,"ovrRank":72,"value":9.6},{"name":"Trevor Lawrence","pos":"QB","posRank":9,"ovrRank":74,"value":6.9},{"name":"Quentin Johnston","pos":"WR","posRank":41,"ovrRank":89,"value":4.9},{"name":"KC Concepcion","pos":"WR","posRank":48,"ovrRank":112,"value":2.7},{"name":"Josh Jacobs","pos":"RB","posRank":48,"ovrRank":145,"value":1.3},{"name":"New England Patriots","pos":"DEF","posRank":8,"ovrRank":184,"value":0.1},{"name":"Jake Bates","pos":"K","posRank":8,"ovrRank":212,"value":0.0}],"cottonjahr":[{"name":"Bijan Robinson","pos":"RB","posRank":2,"ovrRank":4,"value":52.4},{"name":"Christian McCaffrey","pos":"RB","posRank":3,"ovrRank":9,"value":46.3},{"name":"A.J. Brown","pos":"WR","posRank":8,"ovrRank":12,"value":38.3},{"name":"Chris Godwin Jr.","pos":"WR","posRank":33,"ovrRank":71,"value":7.6},{"name":"Brock Purdy","pos":"QB","posRank":11,"ovrRank":91,"value":3.9},{"name":"Stefon Diggs","pos":"WR","posRank":42,"ovrRank":92,"value":4.5},{"name":"Jayden Reed","pos":"WR","posRank":44,"ovrRank":103,"value":3.4},{"name":"Aaron Jones Sr.","pos":"RB","posRank":40,"ovrRank":116,"value":2.8},{"name":"Dallas Goedert","pos":"TE","posRank":14,"ovrRank":122,"value":2.2},{"name":"Jalen Coker","pos":"WR","posRank":50,"ovrRank":124,"value":1.5},{"name":"Matthew Golden","pos":"WR","posRank":51,"ovrRank":125,"value":1.5},{"name":"Xavier Worthy","pos":"WR","posRank":54,"ovrRank":131,"value":1.3},{"name":"Mark Andrews","pos":"TE","posRank":16,"ovrRank":132,"value":1.7},{"name":"Minnesota Vikings","pos":"DEF","posRank":7,"ovrRank":181,"value":0.1},{"name":"Harrison Mevis","pos":"K","posRank":11,"ovrRank":220,"value":0.0}]}
+<script id="all-players-data" type="application/json">
+{"Ja'Marr Chase":{"name":"Ja'Marr Chase","pos":"WR","posRank":1,"ovrRank":1,"team":"CIN","value":50.5,"earlyBoost":1.0},"Jahmyr Gibbs":{"name":"Jahmyr Gibbs","pos":"RB","posRank":1,"ovrRank":2,"team":"DET","value":57.9,"earlyBoost":1.05},"Puka Nacua":{"name":"Puka Nacua","pos":"WR","posRank":2,"ovrRank":3,"team":"LAR","value":48.0,"earlyBoost":1.0},"Bijan Robinson":{"name":"Bijan Robinson","pos":"RB","posRank":2,"ovrRank":4,"team":"ATL","value":52.4,"earlyBoost":1.0},"Jaxon Smith-Njigba":{"name":"Jaxon Smith-Njigba","pos":"WR","posRank":3,"ovrRank":5,"team":"SEA","value":45.7,"earlyBoost":1.0},"Amon-Ra St. Brown":{"name":"Amon-Ra St. Brown","pos":"WR","posRank":4,"ovrRank":6,"team":"DET","value":46.8,"earlyBoost":1.05},"CeeDee Lamb":{"name":"CeeDee Lamb","pos":"WR","posRank":5,"ovrRank":7,"team":"DAL","value":43.4,"earlyBoost":1.0},"Justin Jefferson":{"name":"Justin Jefferson","pos":"WR","posRank":6,"ovrRank":8,"team":"MIN","value":44.5,"earlyBoost":1.05},"Christian McCaffrey":{"name":"Christian McCaffrey","pos":"RB","posRank":3,"ovrRank":9,"team":"SF","value":46.3,"earlyBoost":1.0},"Jonathan Taylor":{"name":"Jonathan Taylor","pos":"RB","posRank":4,"ovrRank":10,"team":"IND","value":45.1,"earlyBoost":1.0},"Drake London":{"name":"Drake London","pos":"WR","posRank":7,"ovrRank":11,"team":"ATL","value":39.3,"earlyBoost":1.0},"A.J. Brown":{"name":"A.J. Brown","pos":"WR","posRank":8,"ovrRank":12,"team":"NE","value":38.3,"earlyBoost":1.0},"James Cook III":{"name":"James Cook III","pos":"RB","posRank":5,"ovrRank":13,"team":"BUF","value":40.2,"earlyBoost":0.96},"Nico Collins":{"name":"Nico Collins","pos":"WR","posRank":9,"ovrRank":14,"team":"HOU","value":38.3,"earlyBoost":1.05},"Chase Brown":{"name":"Chase Brown","pos":"RB","posRank":6,"ovrRank":15,"team":"CIN","value":39.8,"earlyBoost":1.0},"Chris Olave":{"name":"Chris Olave","pos":"WR","posRank":10,"ovrRank":16,"team":"NO","value":34.7,"earlyBoost":1.0},"Trey McBride":{"name":"Trey McBride","pos":"TE","posRank":1,"ovrRank":17,"team":"ARI","value":35.5,"earlyBoost":1.0},"George Pickens":{"name":"George Pickens","pos":"WR","posRank":11,"ovrRank":18,"team":"DAL","value":33.0,"earlyBoost":1.0},"De'Von Achane":{"name":"De'Von Achane","pos":"RB","posRank":7,"ovrRank":19,"team":"MIA","value":36.0,"earlyBoost":1.0},"Brock Bowers":{"name":"Brock Bowers","pos":"TE","posRank":2,"ovrRank":20,"team":"LV","value":33.0,"earlyBoost":1.0},"DeVonta Smith":{"name":"DeVonta Smith","pos":"WR","posRank":12,"ovrRank":21,"team":"PHI","value":32.1,"earlyBoost":1.05},"Saquon Barkley":{"name":"Saquon Barkley","pos":"RB","posRank":8,"ovrRank":22,"team":"PHI","value":35.1,"earlyBoost":1.05},"Malik Nabers":{"name":"Malik Nabers","pos":"WR","posRank":13,"ovrRank":23,"team":"NYG","value":30.6,"earlyBoost":1.05},"Kenneth Walker III":{"name":"Kenneth Walker III","pos":"RB","posRank":9,"ovrRank":24,"team":"KC","value":31.8,"earlyBoost":1.0},"Omarion Hampton":{"name":"Omarion Hampton","pos":"RB","posRank":10,"ovrRank":25,"team":"LAC","value":32.6,"earlyBoost":1.05},"Josh Allen":{"name":"Josh Allen","pos":"QB","posRank":1,"ovrRank":26,"team":"BUF","value":22.0,"earlyBoost":0.96},"Rashee Rice":{"name":"Rashee Rice","pos":"WR","posRank":14,"ovrRank":27,"team":"KC","value":26.3,"earlyBoost":1.0},"Ashton Jeanty":{"name":"Ashton Jeanty","pos":"RB","posRank":11,"ovrRank":28,"team":"LV","value":28.8,"earlyBoost":1.0},"Zay Flowers":{"name":"Zay Flowers","pos":"WR","posRank":15,"ovrRank":29,"team":"BAL","value":26.3,"earlyBoost":1.05},"Garrett Wilson":{"name":"Garrett Wilson","pos":"WR","posRank":16,"ovrRank":30,"team":"NYJ","value":25.7,"earlyBoost":1.05},"Lamar Jackson":{"name":"Lamar Jackson","pos":"QB","posRank":2,"ovrRank":31,"team":"BAL","value":21.3,"earlyBoost":1.05},"Ladd McConkey":{"name":"Ladd McConkey","pos":"WR","posRank":17,"ovrRank":32,"team":"LAC","value":24.4,"earlyBoost":1.05},"Jaylen Waddle":{"name":"Jaylen Waddle","pos":"WR","posRank":18,"ovrRank":33,"team":"DEN","value":22.7,"earlyBoost":1.0},"Tetairoa McMillan":{"name":"Tetairoa McMillan","pos":"WR","posRank":19,"ovrRank":34,"team":"CAR","value":21.2,"earlyBoost":0.96},"Colston Loveland":{"name":"Colston Loveland","pos":"TE","posRank":3,"ovrRank":35,"team":"CHI","value":21.7,"earlyBoost":0.96},"Tee Higgins":{"name":"Tee Higgins","pos":"WR","posRank":20,"ovrRank":36,"team":"CIN","value":21.0,"earlyBoost":1.0},"Drake Maye":{"name":"Drake Maye","pos":"QB","posRank":3,"ovrRank":37,"team":"NE","value":17.4,"earlyBoost":1.0},"Derrick Henry":{"name":"Derrick Henry","pos":"RB","posRank":12,"ovrRank":38,"team":"BAL","value":23.5,"earlyBoost":1.05},"Breece Hall":{"name":"Breece Hall","pos":"RB","posRank":13,"ovrRank":39,"team":"NYJ","value":23.0,"earlyBoost":1.05},"Emeka Egbuka":{"name":"Emeka Egbuka","pos":"WR","posRank":21,"ovrRank":40,"team":"TB","value":19.0,"earlyBoost":1.0},"Jeremiyah Love":{"name":"Jeremiyah Love","pos":"RB","posRank":14,"ovrRank":41,"team":"ARI","value":20.8,"earlyBoost":1.0},"Kyren Williams":{"name":"Kyren Williams","pos":"RB","posRank":15,"ovrRank":42,"team":"LAR","value":20.3,"earlyBoost":1.0},"Javonte Williams":{"name":"Javonte Williams","pos":"RB","posRank":16,"ovrRank":43,"team":"DAL","value":19.8,"earlyBoost":1.0},"Joe Burrow":{"name":"Joe Burrow","pos":"QB","posRank":4,"ovrRank":44,"team":"CIN","value":14.6,"earlyBoost":1.0},"Travis Etienne Jr.":{"name":"Travis Etienne Jr.","pos":"RB","posRank":17,"ovrRank":45,"team":"NO","value":18.8,"earlyBoost":1.0},"Luther Burden III":{"name":"Luther Burden III","pos":"WR","posRank":22,"ovrRank":46,"team":"CHI","value":15.7,"earlyBoost":0.96},"Terry McLaurin":{"name":"Terry McLaurin","pos":"WR","posRank":23,"ovrRank":47,"team":"WAS","value":16.0,"earlyBoost":1.0},"Davante Adams":{"name":"Davante Adams","pos":"WR","posRank":24,"ovrRank":48,"team":"LAR","value":15.6,"earlyBoost":1.0},"DJ Moore":{"name":"DJ Moore","pos":"WR","posRank":25,"ovrRank":49,"team":"BUF","value":14.6,"earlyBoost":0.96},"D'Andre Swift":{"name":"D'Andre Swift","pos":"RB","posRank":18,"ovrRank":50,"team":"CHI","value":15.9,"earlyBoost":0.96},"Jameson Williams":{"name":"Jameson Williams","pos":"WR","posRank":26,"ovrRank":51,"team":"DET","value":15.2,"earlyBoost":1.05},"Tyler Warren":{"name":"Tyler Warren","pos":"TE","posRank":4,"ovrRank":52,"team":"IND","value":14.8,"earlyBoost":1.0},"Jayden Daniels":{"name":"Jayden Daniels","pos":"QB","posRank":5,"ovrRank":53,"team":"WAS","value":11.7,"earlyBoost":1.0},"Bucky Irving":{"name":"Bucky Irving","pos":"RB","posRank":19,"ovrRank":54,"team":"TB","value":15.0,"earlyBoost":1.0},"Christian Watson":{"name":"Christian Watson","pos":"WR","posRank":27,"ovrRank":55,"team":"GB","value":13.7,"earlyBoost":1.05},"Cam Skattebo":{"name":"Cam Skattebo","pos":"RB","posRank":20,"ovrRank":56,"team":"NYG","value":15.0,"earlyBoost":1.05},"Jalen Hurts":{"name":"Jalen Hurts","pos":"QB","posRank":6,"ovrRank":57,"team":"PHI","value":11.1,"earlyBoost":1.05},"Rome Odunze":{"name":"Rome Odunze","pos":"WR","posRank":28,"ovrRank":58,"team":"CHI","value":11.7,"earlyBoost":0.96},"Mike Evans":{"name":"Mike Evans","pos":"WR","posRank":29,"ovrRank":59,"team":"SF","value":11.8,"earlyBoost":1.0},"David Montgomery":{"name":"David Montgomery","pos":"RB","posRank":21,"ovrRank":60,"team":"HOU","value":13.6,"earlyBoost":1.05},"Quinshon Judkins":{"name":"Quinshon Judkins","pos":"RB","posRank":22,"ovrRank":61,"team":"CLE","value":13.2,"earlyBoost":1.05},"Parker Washington":{"name":"Parker Washington","pos":"WR","posRank":30,"ovrRank":62,"team":"JAC","value":11.0,"earlyBoost":1.0},"Caleb Williams":{"name":"Caleb Williams","pos":"QB","posRank":7,"ovrRank":63,"team":"CHI","value":8.7,"earlyBoost":0.96},"Bhayshul Tuten":{"name":"Bhayshul Tuten","pos":"RB","posRank":23,"ovrRank":64,"team":"JAC","value":11.7,"earlyBoost":1.0},"Carnell Tate":{"name":"Carnell Tate","pos":"WR","posRank":31,"ovrRank":65,"team":"TEN","value":9.3,"earlyBoost":1.05},"Jadarian Price":{"name":"Jadarian Price","pos":"RB","posRank":24,"ovrRank":66,"team":"SEA","value":11.1,"earlyBoost":1.0},"Marvin Harrison Jr.":{"name":"Marvin Harrison Jr.","pos":"WR","posRank":32,"ovrRank":67,"team":"ARI","value":8.4,"earlyBoost":1.0},"TreVeyon Henderson":{"name":"TreVeyon Henderson","pos":"RB","posRank":25,"ovrRank":68,"team":"NE","value":10.6,"earlyBoost":1.0},"Justin Herbert":{"name":"Justin Herbert","pos":"QB","posRank":8,"ovrRank":69,"team":"LAC","value":8.2,"earlyBoost":1.05},"Rhamondre Stevenson":{"name":"Rhamondre Stevenson","pos":"RB","posRank":26,"ovrRank":70,"team":"NE","value":10.1,"earlyBoost":1.0},"Chris Godwin Jr.":{"name":"Chris Godwin Jr.","pos":"WR","posRank":33,"ovrRank":71,"team":"TB","value":7.6,"earlyBoost":1.0},"Jaylen Warren":{"name":"Jaylen Warren","pos":"RB","posRank":27,"ovrRank":72,"team":"PIT","value":9.6,"earlyBoost":1.0},"Harold Fannin Jr.":{"name":"Harold Fannin Jr.","pos":"TE","posRank":5,"ovrRank":73,"team":"CLE","value":9.2,"earlyBoost":1.05},"Trevor Lawrence":{"name":"Trevor Lawrence","pos":"QB","posRank":9,"ovrRank":74,"team":"JAC","value":6.9,"earlyBoost":1.0},"Dak Prescott":{"name":"Dak Prescott","pos":"QB","posRank":10,"ovrRank":75,"team":"DAL","value":6.7,"earlyBoost":1.0},"Kyle Pitts Sr.":{"name":"Kyle Pitts Sr.","pos":"TE","posRank":6,"ovrRank":76,"team":"ATL","value":8.1,"earlyBoost":1.0},"Tucker Kraft":{"name":"Tucker Kraft","pos":"TE","posRank":7,"ovrRank":77,"team":"GB","value":8.3,"earlyBoost":1.05},"DK Metcalf":{"name":"DK Metcalf","pos":"WR","posRank":34,"ovrRank":78,"team":"PIT","value":6.4,"earlyBoost":1.0},"Brian Thomas Jr.":{"name":"Brian Thomas Jr.","pos":"WR","posRank":35,"ovrRank":79,"team":"JAC","value":6.2,"earlyBoost":1.0},"Michael Pittman Jr.":{"name":"Michael Pittman Jr.","pos":"WR","posRank":36,"ovrRank":80,"team":"PIT","value":6.1,"earlyBoost":1.0},"Wan'Dale Robinson":{"name":"Wan'Dale Robinson","pos":"WR","posRank":37,"ovrRank":81,"team":"TEN","value":6.2,"earlyBoost":1.05},"Tony Pollard":{"name":"Tony Pollard","pos":"RB","posRank":28,"ovrRank":82,"team":"TEN","value":7.8,"earlyBoost":1.05},"Sam LaPorta":{"name":"Sam LaPorta","pos":"TE","posRank":8,"ovrRank":83,"team":"DET","value":7.2,"earlyBoost":1.05},"Courtland Sutton":{"name":"Courtland Sutton","pos":"WR","posRank":38,"ovrRank":84,"team":"DEN","value":5.5,"earlyBoost":1.0},"Rico Dowdle":{"name":"Rico Dowdle","pos":"RB","posRank":29,"ovrRank":85,"team":"PIT","value":6.9,"earlyBoost":1.0},"Michael Wilson":{"name":"Michael Wilson","pos":"WR","posRank":39,"ovrRank":86,"team":"ARI","value":5.2,"earlyBoost":1.0},"Jonathon Brooks":{"name":"Jonathon Brooks","pos":"RB","posRank":30,"ovrRank":87,"team":"CAR","value":6.3,"earlyBoost":0.96},"Josh Downs":{"name":"Josh Downs","pos":"WR","posRank":40,"ovrRank":88,"team":"IND","value":5.0,"earlyBoost":1.0},"Quentin Johnston":{"name":"Quentin Johnston","pos":"WR","posRank":41,"ovrRank":89,"team":"LAC","value":5.1,"earlyBoost":1.05},"RJ Harvey":{"name":"RJ Harvey","pos":"RB","posRank":31,"ovrRank":90,"team":"DEN","value":5.3,"earlyBoost":1.0},"Brock Purdy":{"name":"Brock Purdy","pos":"QB","posRank":11,"ovrRank":91,"team":"SF","value":3.9,"earlyBoost":1.0},"Stefon Diggs":{"name":"Stefon Diggs","pos":"WR","posRank":42,"ovrRank":92,"team":"WAS","value":4.5,"earlyBoost":1.0},"Jaxson Dart":{"name":"Jaxson Dart","pos":"QB","posRank":12,"ovrRank":93,"team":"NYG","value":3.9,"earlyBoost":1.05},"Travis Kelce":{"name":"Travis Kelce","pos":"TE","posRank":9,"ovrRank":94,"team":"KC","value":5.2,"earlyBoost":1.0},"Bo Nix":{"name":"Bo Nix","pos":"QB","posRank":13,"ovrRank":95,"team":"DEN","value":3.6,"earlyBoost":1.0},"Kenny Gainwell":{"name":"Kenny Gainwell","pos":"RB","posRank":32,"ovrRank":96,"team":"TB","value":4.6,"earlyBoost":1.0},"George Kittle":{"name":"George Kittle","pos":"TE","posRank":10,"ovrRank":97,"team":"SF","value":4.8,"earlyBoost":1.0},"Alec Pierce":{"name":"Alec Pierce","pos":"WR","posRank":43,"ovrRank":98,"team":"IND","value":3.9,"earlyBoost":1.0},"Chuba Hubbard":{"name":"Chuba Hubbard","pos":"RB","posRank":33,"ovrRank":99,"team":"CAR","value":4.1,"earlyBoost":0.96},"MarShawn Lloyd":{"name":"MarShawn Lloyd","pos":"RB","posRank":34,"ovrRank":100,"team":"GB","value":4.3,"earlyBoost":1.05},"J.K. Dobbins":{"name":"J.K. Dobbins","pos":"RB","posRank":35,"ovrRank":101,"team":"DEN","value":4.0,"earlyBoost":1.0},"Patrick Mahomes II":{"name":"Patrick Mahomes II","pos":"QB","posRank":14,"ovrRank":102,"team":"KC","value":3.0,"earlyBoost":1.0},"Jayden Reed":{"name":"Jayden Reed","pos":"WR","posRank":44,"ovrRank":103,"team":"GB","value":3.6,"earlyBoost":1.05},"Jared Goff":{"name":"Jared Goff","pos":"QB","posRank":15,"ovrRank":104,"team":"DET","value":3.0,"earlyBoost":1.05},"Matthew Stafford":{"name":"Matthew Stafford","pos":"QB","posRank":16,"ovrRank":105,"team":"LAR","value":2.8,"earlyBoost":1.0},"Jakobi Meyers":{"name":"Jakobi Meyers","pos":"WR","posRank":45,"ovrRank":106,"team":"JAC","value":3.2,"earlyBoost":1.0},"Makai Lemon":{"name":"Makai Lemon","pos":"WR","posRank":46,"ovrRank":107,"team":"PHI","value":3.3,"earlyBoost":1.05},"Jordan Addison":{"name":"Jordan Addison","pos":"WR","posRank":47,"ovrRank":108,"team":"MIN","value":3.2,"earlyBoost":1.05},"Blake Corum":{"name":"Blake Corum","pos":"RB","posRank":36,"ovrRank":109,"team":"LAR","value":3.3,"earlyBoost":1.0},"Dalton Kincaid":{"name":"Dalton Kincaid","pos":"TE","posRank":11,"ovrRank":110,"team":"BUF","value":3.3,"earlyBoost":0.96},"Rachaad White":{"name":"Rachaad White","pos":"RB","posRank":37,"ovrRank":111,"team":"WAS","value":3.1,"earlyBoost":1.0},"KC Concepcion":{"name":"KC Concepcion","pos":"WR","posRank":48,"ovrRank":112,"team":"CLE","value":2.9,"earlyBoost":1.05},"Kyler Murray":{"name":"Kyler Murray","pos":"QB","posRank":17,"ovrRank":113,"team":"MIN","value":1.8,"earlyBoost":1.05},"Jacory Croskey-Merritt":{"name":"Jacory Croskey-Merritt","pos":"RB","posRank":38,"ovrRank":114,"team":"WAS","value":2.9,"earlyBoost":1.0},"Jordan Mason":{"name":"Jordan Mason","pos":"RB","posRank":39,"ovrRank":115,"team":"MIN","value":3.0,"earlyBoost":1.05},"Aaron Jones Sr.":{"name":"Aaron Jones Sr.","pos":"RB","posRank":40,"ovrRank":116,"team":"MIN","value":2.9,"earlyBoost":1.05},"Jake Ferguson":{"name":"Jake Ferguson","pos":"TE","posRank":12,"ovrRank":117,"team":"DAL","value":2.9,"earlyBoost":1.0},"Jordan Love":{"name":"Jordan Love","pos":"QB","posRank":18,"ovrRank":118,"team":"GB","value":1.6,"earlyBoost":1.05},"Isaiah Likely":{"name":"Isaiah Likely","pos":"TE","posRank":13,"ovrRank":119,"team":"NYG","value":2.5,"earlyBoost":1.05},"Baker Mayfield":{"name":"Baker Mayfield","pos":"QB","posRank":19,"ovrRank":120,"team":"TB","value":1.4,"earlyBoost":1.0},"Kyle Monangai":{"name":"Kyle Monangai","pos":"RB","posRank":41,"ovrRank":121,"team":"CHI","value":2.3,"earlyBoost":0.96},"Dallas Goedert":{"name":"Dallas Goedert","pos":"TE","posRank":14,"ovrRank":122,"team":"PHI","value":2.3,"earlyBoost":1.05},"Khalil Shakir":{"name":"Khalil Shakir","pos":"WR","posRank":49,"ovrRank":123,"team":"BUF","value":1.5,"earlyBoost":0.96},"Jalen Coker":{"name":"Jalen Coker","pos":"WR","posRank":50,"ovrRank":124,"team":"CAR","value":1.5,"earlyBoost":0.96},"Matthew Golden":{"name":"Matthew Golden","pos":"WR","posRank":51,"ovrRank":125,"team":"GB","value":1.6,"earlyBoost":1.05},"Tyler Shough":{"name":"Tyler Shough","pos":"QB","posRank":20,"ovrRank":126,"team":"NO","value":1.2,"earlyBoost":1.0},"De'Zhaun Stribling":{"name":"De'Zhaun Stribling","pos":"WR","posRank":52,"ovrRank":127,"team":"SF","value":1.4,"earlyBoost":1.0},"Romeo Doubs":{"name":"Romeo Doubs","pos":"WR","posRank":53,"ovrRank":128,"team":"NE","value":1.4,"earlyBoost":1.0},"Malik Willis":{"name":"Malik Willis","pos":"QB","posRank":21,"ovrRank":129,"team":"MIA","value":1.1,"earlyBoost":1.0},"Juwan Johnson":{"name":"Juwan Johnson","pos":"TE","posRank":15,"ovrRank":130,"team":"NO","value":1.8,"earlyBoost":1.0},"Xavier Worthy":{"name":"Xavier Worthy","pos":"WR","posRank":54,"ovrRank":131,"team":"KC","value":1.3,"earlyBoost":1.0},"Mark Andrews":{"name":"Mark Andrews","pos":"TE","posRank":16,"ovrRank":132,"team":"BAL","value":1.8,"earlyBoost":1.05},"Woody Marks":{"name":"Woody Marks","pos":"RB","posRank":42,"ovrRank":133,"team":"HOU","value":1.9,"earlyBoost":1.05},"Jordyn Tyson":{"name":"Jordyn Tyson","pos":"WR","posRank":55,"ovrRank":134,"team":"NO","value":1.2,"earlyBoost":1.0},"Tyler Allgeier":{"name":"Tyler Allgeier","pos":"RB","posRank":43,"ovrRank":135,"team":"ARI","value":1.7,"earlyBoost":1.0},"Sam Darnold":{"name":"Sam Darnold","pos":"QB","posRank":22,"ovrRank":136,"team":"SEA","value":1.0,"earlyBoost":1.0},"Tyjae Spears":{"name":"Tyjae Spears","pos":"RB","posRank":44,"ovrRank":137,"team":"TEN","value":1.7,"earlyBoost":1.05},"Deebo Samuel Sr.":{"name":"Deebo Samuel Sr.","pos":"WR","posRank":56,"ovrRank":138,"team":"SF","value":1.1,"earlyBoost":1.0},"Chris Rodriguez Jr.":{"name":"Chris Rodriguez Jr.","pos":"RB","posRank":45,"ovrRank":139,"team":"JAC","value":1.6,"earlyBoost":1.0},"C.J. Stroud":{"name":"C.J. Stroud","pos":"QB","posRank":23,"ovrRank":140,"team":"HOU","value":0.9,"earlyBoost":1.05},"Rashid Shaheed":{"name":"Rashid Shaheed","pos":"WR","posRank":57,"ovrRank":141,"team":"SEA","value":1.0,"earlyBoost":1.0},"Daniel Jones":{"name":"Daniel Jones","pos":"QB","posRank":24,"ovrRank":142,"team":"IND","value":0.8,"earlyBoost":1.0},"Dylan Sampson":{"name":"Dylan Sampson","pos":"RB","posRank":46,"ovrRank":143,"team":"CLE","value":1.5,"earlyBoost":1.05},"Jonah Coleman":{"name":"Jonah Coleman","pos":"RB","posRank":47,"ovrRank":144,"team":"DEN","value":1.4,"earlyBoost":1.0},"Josh Jacobs":{"name":"Josh Jacobs","pos":"RB","posRank":48,"ovrRank":145,"team":"GB","value":1.4,"earlyBoost":1.05},"Keaton Mitchell":{"name":"Keaton Mitchell","pos":"RB","posRank":49,"ovrRank":146,"team":"LAC","value":1.0,"earlyBoost":1.05},"Denzel Boston":{"name":"Denzel Boston","pos":"WR","posRank":58,"ovrRank":147,"team":"CLE","value":0.9,"earlyBoost":1.05},"Mike Washington Jr.":{"name":"Mike Washington Jr.","pos":"RB","posRank":50,"ovrRank":148,"team":"LV","value":0.9,"earlyBoost":1.0},"Zach Charbonnet":{"name":"Zach Charbonnet","pos":"RB","posRank":51,"ovrRank":149,"team":"SEA","value":0.9,"earlyBoost":1.0},"Cam Ward":{"name":"Cam Ward","pos":"QB","posRank":25,"ovrRank":150,"team":"TEN","value":0.7,"earlyBoost":1.05},"Chig Okonkwo":{"name":"Chig Okonkwo","pos":"TE","posRank":17,"ovrRank":151,"team":"WAS","value":1.1,"earlyBoost":1.0},"Brenton Strange":{"name":"Brenton Strange","pos":"TE","posRank":18,"ovrRank":152,"team":"JAC","value":1.1,"earlyBoost":1.0},"Dalton Schultz":{"name":"Dalton Schultz","pos":"TE","posRank":19,"ovrRank":153,"team":"HOU","value":1.1,"earlyBoost":1.05},"Houston Texans":{"name":"Houston Texans","pos":"DEF","posRank":1,"ovrRank":154,"team":"HOU","value":0.1,"earlyBoost":1.0},"Tre Tucker":{"name":"Tre Tucker","pos":"WR","posRank":59,"ovrRank":155,"team":"LV","value":0.7,"earlyBoost":1.0},"Hunter Henry":{"name":"Hunter Henry","pos":"TE","posRank":20,"ovrRank":156,"team":"NE","value":0.7,"earlyBoost":1.0},"Alvin Kamara":{"name":"Alvin Kamara","pos":"RB","posRank":52,"ovrRank":157,"team":"NO","value":0.7,"earlyBoost":1.0},"Bryce Young":{"name":"Bryce Young","pos":"QB","posRank":26,"ovrRank":158,"team":"CAR","value":0.5,"earlyBoost":0.96},"Adonai Mitchell":{"name":"Adonai Mitchell","pos":"WR","posRank":60,"ovrRank":159,"team":"NYJ","value":0.7,"earlyBoost":1.05},"Tank Bigsby":{"name":"Tank Bigsby","pos":"RB","posRank":53,"ovrRank":160,"team":"PHI","value":0.7,"earlyBoost":1.05},"Tyrone Tracy Jr.":{"name":"Tyrone Tracy Jr.","pos":"RB","posRank":54,"ovrRank":161,"team":"NYG","value":0.7,"earlyBoost":1.05},"Denver Broncos":{"name":"Denver Broncos","pos":"DEF","posRank":2,"ovrRank":162,"team":"DEN","value":0.1,"earlyBoost":1.0},"Jerry Jeudy":{"name":"Jerry Jeudy","pos":"WR","posRank":61,"ovrRank":163,"team":"CLE","value":0.6,"earlyBoost":1.05},"Kayshon Boutte":{"name":"Kayshon Boutte","pos":"WR","posRank":62,"ovrRank":164,"team":"HOU","value":0.6,"earlyBoost":1.05},"Los Angeles Rams":{"name":"Los Angeles Rams","pos":"DEF","posRank":3,"ovrRank":165,"team":"LAR","value":0.1,"earlyBoost":1.0},"Braelon Allen":{"name":"Braelon Allen","pos":"RB","posRank":55,"ovrRank":166,"team":"NYJ","value":0.6,"earlyBoost":1.05},"Seattle Seahawks":{"name":"Seattle Seahawks","pos":"DEF","posRank":4,"ovrRank":167,"team":"SEA","value":0.1,"earlyBoost":1.0},"Jalen McMillan":{"name":"Jalen McMillan","pos":"WR","posRank":63,"ovrRank":168,"team":"TB","value":0.5,"earlyBoost":1.0},"Brian Robinson Jr.":{"name":"Brian Robinson Jr.","pos":"RB","posRank":56,"ovrRank":169,"team":"ATL","value":0.6,"earlyBoost":1.0},"Isiah Pacheco":{"name":"Isiah Pacheco","pos":"RB","posRank":57,"ovrRank":170,"team":"DET","value":0.6,"earlyBoost":1.05},"Omar Cooper Jr.":{"name":"Omar Cooper Jr.","pos":"WR","posRank":64,"ovrRank":171,"team":"NYJ","value":0.5,"earlyBoost":1.05},"Tre' Harris":{"name":"Tre' Harris","pos":"WR","posRank":65,"ovrRank":172,"team":"LAC","value":0.5,"earlyBoost":1.05},"Philadelphia Eagles":{"name":"Philadelphia Eagles","pos":"DEF","posRank":5,"ovrRank":173,"team":"PHI","value":0.1,"earlyBoost":1.0},"Emmett Johnson":{"name":"Emmett Johnson","pos":"RB","posRank":58,"ovrRank":174,"team":"KC","value":0.5,"earlyBoost":1.0},"Jauan Jennings":{"name":"Jauan Jennings","pos":"WR","posRank":66,"ovrRank":175,"team":"MIN","value":0.4,"earlyBoost":1.05},"Dontayvion Wicks":{"name":"Dontayvion Wicks","pos":"WR","posRank":67,"ovrRank":176,"team":"PHI","value":0.4,"earlyBoost":1.05},"Pat Bryant":{"name":"Pat Bryant","pos":"WR","posRank":68,"ovrRank":177,"team":"DEN","value":0.4,"earlyBoost":1.0},"Ryan Flournoy":{"name":"Ryan Flournoy","pos":"WR","posRank":69,"ovrRank":178,"team":"DAL","value":0.4,"earlyBoost":1.0},"T.J. Hockenson":{"name":"T.J. Hockenson","pos":"TE","posRank":21,"ovrRank":179,"team":"MIN","value":0.4,"earlyBoost":1.05},"Pittsburgh Steelers":{"name":"Pittsburgh Steelers","pos":"DEF","posRank":6,"ovrRank":180,"team":"PIT","value":0.1,"earlyBoost":1.0},"Minnesota Vikings":{"name":"Minnesota Vikings","pos":"DEF","posRank":7,"ovrRank":181,"team":"MIN","value":0.1,"earlyBoost":1.0},"Brandon Aubrey":{"name":"Brandon Aubrey","pos":"K","posRank":1,"ovrRank":182,"team":"DAL","value":0.1,"earlyBoost":1.0},"Malik Washington":{"name":"Malik Washington","pos":"WR","posRank":70,"ovrRank":183,"team":"MIA","value":0.3,"earlyBoost":1.0},"New England Patriots":{"name":"New England Patriots","pos":"DEF","posRank":8,"ovrRank":184,"team":"NE","value":0.1,"earlyBoost":1.0},"Ray Davis":{"name":"Ray Davis","pos":"RB","posRank":59,"ovrRank":185,"team":"BUF","value":0.4,"earlyBoost":0.96},"Jacoby Brissett":{"name":"Jacoby Brissett","pos":"QB","posRank":27,"ovrRank":186,"team":"ARI","value":0.3,"earlyBoost":1.0},"Jacksonville Jaguars":{"name":"Jacksonville Jaguars","pos":"DEF","posRank":9,"ovrRank":187,"team":"JAC","value":0.1,"earlyBoost":1.0},"Ka'imi Fairbairn":{"name":"Ka'imi Fairbairn","pos":"K","posRank":2,"ovrRank":188,"team":"HOU","value":0.1,"earlyBoost":1.0},"Jalen Nailor":{"name":"Jalen Nailor","pos":"WR","posRank":71,"ovrRank":189,"team":"LV","value":0.3,"earlyBoost":1.0},"Cameron Dicker":{"name":"Cameron Dicker","pos":"K","posRank":3,"ovrRank":190,"team":"LAC","value":0.1,"earlyBoost":1.0},"Keenan Allen":{"name":"Keenan Allen","pos":"WR","posRank":72,"ovrRank":191,"team":"IND","value":0.3,"earlyBoost":1.0},"Los Angeles Chargers":{"name":"Los Angeles Chargers","pos":"DEF","posRank":10,"ovrRank":192,"team":"LAC","value":0.1,"earlyBoost":1.0},"Baltimore Ravens":{"name":"Baltimore Ravens","pos":"DEF","posRank":11,"ovrRank":193,"team":"BAL","value":0.0,"earlyBoost":1.0},"Travis Hunter":{"name":"Travis Hunter","pos":"WR","posRank":73,"ovrRank":194,"team":"JAC","value":0.3,"earlyBoost":1.0},"Kimani Vidal":{"name":"Kimani Vidal","pos":"RB","posRank":60,"ovrRank":195,"team":"LAC","value":0.3,"earlyBoost":1.05},"Cam Little":{"name":"Cam Little","pos":"K","posRank":4,"ovrRank":196,"team":"JAC","value":0.0,"earlyBoost":1.0},"Jason Myers":{"name":"Jason Myers","pos":"K","posRank":5,"ovrRank":197,"team":"SEA","value":0.0,"earlyBoost":1.0},"Terrance Ferguson":{"name":"Terrance Ferguson","pos":"TE","posRank":22,"ovrRank":198,"team":"LAR","value":0.3,"earlyBoost":1.0},"Jaylin Noel":{"name":"Jaylin Noel","pos":"WR","posRank":74,"ovrRank":199,"team":"HOU","value":0.2,"earlyBoost":1.05},"AJ Barner":{"name":"AJ Barner","pos":"TE","posRank":23,"ovrRank":200,"team":"SEA","value":0.2,"earlyBoost":1.0},"Calvin Ridley":{"name":"Calvin Ridley","pos":"WR","posRank":75,"ovrRank":201,"team":"TEN","value":0.2,"earlyBoost":1.05},"Aaron Rodgers":{"name":"Aaron Rodgers","pos":"QB","posRank":28,"ovrRank":202,"team":"PIT","value":0.2,"earlyBoost":1.0},"Eddy Pineiro":{"name":"Eddy Pineiro","pos":"K","posRank":6,"ovrRank":203,"team":"SF","value":0.0,"earlyBoost":1.0},"Green Bay Packers":{"name":"Green Bay Packers","pos":"DEF","posRank":12,"ovrRank":204,"team":"GB","value":0.0,"earlyBoost":1.0},"Kansas City Chiefs":{"name":"Kansas City Chiefs","pos":"DEF","posRank":13,"ovrRank":205,"team":"KC","value":0.0,"earlyBoost":1.0},"Sean Tucker":{"name":"Sean Tucker","pos":"RB","posRank":61,"ovrRank":206,"team":"TB","value":0.2,"earlyBoost":1.0},"Oronde Gadsden II":{"name":"Oronde Gadsden II","pos":"TE","posRank":24,"ovrRank":207,"team":"LAC","value":0.2,"earlyBoost":1.05},"Tyler Loop":{"name":"Tyler Loop","pos":"K","posRank":7,"ovrRank":208,"team":"BAL","value":0.0,"earlyBoost":1.0},"Nicholas Singleton":{"name":"Nicholas Singleton","pos":"RB","posRank":62,"ovrRank":209,"team":"TEN","value":0.2,"earlyBoost":1.05},"Gunnar Helm":{"name":"Gunnar Helm","pos":"TE","posRank":25,"ovrRank":210,"team":"TEN","value":0.2,"earlyBoost":1.05},"Kenyon Sadiq":{"name":"Kenyon Sadiq","pos":"TE","posRank":26,"ovrRank":211,"team":"NYJ","value":0.2,"earlyBoost":1.05},"Jake Bates":{"name":"Jake Bates","pos":"K","posRank":8,"ovrRank":212,"team":"DET","value":0.0,"earlyBoost":1.0},"Ja'Kobi Lane":{"name":"Ja'Kobi Lane","pos":"WR","posRank":76,"ovrRank":213,"team":"BAL","value":0.2,"earlyBoost":1.05},"Cairo Santos":{"name":"Cairo Santos","pos":"K","posRank":9,"ovrRank":214,"team":"CHI","value":0.0,"earlyBoost":1.0},"Geno Smith":{"name":"Geno Smith","pos":"QB","posRank":29,"ovrRank":215,"team":"NYJ","value":0.1,"earlyBoost":1.05},"James Conner":{"name":"James Conner","pos":"RB","posRank":63,"ovrRank":216,"team":"ARI","value":0.2,"earlyBoost":1.0},"Evan McPherson":{"name":"Evan McPherson","pos":"K","posRank":10,"ovrRank":217,"team":"CIN","value":0.0,"earlyBoost":1.0},"Rashod Bateman":{"name":"Rashod Bateman","pos":"WR","posRank":77,"ovrRank":218,"team":"BAL","value":0.2,"earlyBoost":1.05},"Detroit Lions":{"name":"Detroit Lions","pos":"DEF","posRank":14,"ovrRank":219,"team":"DET","value":0.0,"earlyBoost":1.0},"Harrison Mevis":{"name":"Harrison Mevis","pos":"K","posRank":11,"ovrRank":220,"team":"LAR","value":0.0,"earlyBoost":1.0},"Isaac TeSlaa":{"name":"Isaac TeSlaa","pos":"WR","posRank":78,"ovrRank":221,"team":"DET","value":0.1,"earlyBoost":1.05},"Cooper Kupp":{"name":"Cooper Kupp","pos":"WR","posRank":79,"ovrRank":222,"team":"SEA","value":0.1,"earlyBoost":1.0},"Troy Franklin":{"name":"Troy Franklin","pos":"WR","posRank":80,"ovrRank":223,"team":"DEN","value":0.1,"earlyBoost":1.0},"Darnell Mooney":{"name":"Darnell Mooney","pos":"WR","posRank":81,"ovrRank":224,"team":"NYG","value":0.1,"earlyBoost":1.05},"Chase McLaughlin":{"name":"Chase McLaughlin","pos":"K","posRank":12,"ovrRank":225,"team":"TB","value":0.0,"earlyBoost":1.0},"Tank Dell":{"name":"Tank Dell","pos":"WR","posRank":82,"ovrRank":226,"team":"HOU","value":0.1,"earlyBoost":1.05},"Kaelon Black":{"name":"Kaelon Black","pos":"RB","posRank":64,"ovrRank":227,"team":"SF","value":0.1,"earlyBoost":1.0},"Pat Freiermuth":{"name":"Pat Freiermuth","pos":"TE","posRank":27,"ovrRank":228,"team":"PIT","value":0.1,"earlyBoost":1.0},"Andy Borregales":{"name":"Andy Borregales","pos":"K","posRank":13,"ovrRank":229,"team":"NE","value":0.0,"earlyBoost":1.0},"Zachariah Branch":{"name":"Zachariah Branch","pos":"WR","posRank":83,"ovrRank":230,"team":"ATL","value":0.1,"earlyBoost":1.0},"Buffalo Bills":{"name":"Buffalo Bills","pos":"DEF","posRank":15,"ovrRank":231,"team":"BUF","value":0.0,"earlyBoost":1.0},"Malachi Fields":{"name":"Malachi Fields","pos":"WR","posRank":84,"ovrRank":232,"team":"NYG","value":0.1,"earlyBoost":1.05},"Chris Bell":{"name":"Chris Bell","pos":"WR","posRank":85,"ovrRank":233,"team":"MIA","value":0.1,"earlyBoost":1.0},"Kaytron Allen":{"name":"Kaytron Allen","pos":"RB","posRank":65,"ovrRank":234,"team":"WAS","value":0.1,"earlyBoost":1.0},"Cade Otton":{"name":"Cade Otton","pos":"TE","posRank":28,"ovrRank":235,"team":"TB","value":0.1,"earlyBoost":1.0},"Germie Bernard":{"name":"Germie Bernard","pos":"WR","posRank":86,"ovrRank":236,"team":"PIT","value":0.1,"earlyBoost":1.0},"Caleb Douglas":{"name":"Caleb Douglas","pos":"WR","posRank":87,"ovrRank":237,"team":"MIA","value":0.1,"earlyBoost":1.0},"Cleveland Browns":{"name":"Cleveland Browns","pos":"DEF","posRank":16,"ovrRank":238,"team":"CLE","value":0.0,"earlyBoost":1.0},"Antonio Williams":{"name":"Antonio Williams","pos":"WR","posRank":88,"ovrRank":239,"team":"WAS","value":0.1,"earlyBoost":1.0},"Emanuel Wilson":{"name":"Emanuel Wilson","pos":"RB","posRank":66,"ovrRank":240,"team":"SEA","value":0.1,"earlyBoost":1.0},"Jaylen Wright":{"name":"Jaylen Wright","pos":"RB","posRank":67,"ovrRank":241,"team":"MIA","value":0.1,"earlyBoost":1.0},"Justice Hill":{"name":"Justice Hill","pos":"RB","posRank":68,"ovrRank":242,"team":"BAL","value":0.1,"earlyBoost":1.05},"Greg Dulcich":{"name":"Greg Dulcich","pos":"TE","posRank":29,"ovrRank":243,"team":"MIA","value":0.1,"earlyBoost":1.0},"George Holani":{"name":"George Holani","pos":"RB","posRank":69,"ovrRank":244,"team":"SEA","value":0.1,"earlyBoost":1.0},"Najee Harris":{"name":"Najee Harris","pos":"RB","posRank":70,"ovrRank":245,"team":"NYG","value":0.1,"earlyBoost":1.05},"Harrison Butker":{"name":"Harrison Butker","pos":"K","posRank":14,"ovrRank":246,"team":"KC","value":0.0,"earlyBoost":1.0},"Ted Hurst III":{"name":"Ted Hurst III","pos":"WR","posRank":89,"ovrRank":247,"team":"TB","value":0.1,"earlyBoost":1.0},"Jack Bech":{"name":"Jack Bech","pos":"WR","posRank":90,"ovrRank":248,"team":"LV","value":0.1,"earlyBoost":1.0},"Malik Davis":{"name":"Malik Davis","pos":"RB","posRank":71,"ovrRank":249,"team":"DAL","value":0.1,"earlyBoost":1.0},"Evan Engram":{"name":"Evan Engram","pos":"TE","posRank":30,"ovrRank":250,"team":"DEN","value":0.1,"earlyBoost":1.0},"David Njoku":{"name":"David Njoku","pos":"TE","posRank":31,"ovrRank":251,"team":"LAC","value":0.1,"earlyBoost":1.05},"Chris Boswell":{"name":"Chris Boswell","pos":"K","posRank":15,"ovrRank":252,"team":"PIT","value":0.0,"earlyBoost":1.0},"Keon Coleman":{"name":"Keon Coleman","pos":"WR","posRank":91,"ovrRank":253,"team":"BUF","value":0.1,"earlyBoost":0.96},"Devaughn Vele":{"name":"Devaughn Vele","pos":"WR","posRank":92,"ovrRank":254,"team":"NO","value":0.1,"earlyBoost":1.0},"Fernando Mendoza":{"name":"Fernando Mendoza","pos":"QB","posRank":30,"ovrRank":255,"team":"LV","value":0.0,"earlyBoost":1.0},"Chris Brooks":{"name":"Chris Brooks","pos":"RB","posRank":72,"ovrRank":256,"team":"GB","value":0.1,"earlyBoost":1.05},"Chimere Dike":{"name":"Chimere Dike","pos":"WR","posRank":93,"ovrRank":257,"team":"TEN","value":0.1,"earlyBoost":1.05},"Elic Ayomanor":{"name":"Elic Ayomanor","pos":"WR","posRank":94,"ovrRank":258,"team":"TEN","value":0.1,"earlyBoost":1.05},"Isaiah Davis":{"name":"Isaiah Davis","pos":"RB","posRank":73,"ovrRank":259,"team":"NYJ","value":0.1,"earlyBoost":1.05},"Cyrus Allen":{"name":"Cyrus Allen","pos":"WR","posRank":95,"ovrRank":260,"team":"KC","value":0.1,"earlyBoost":1.0},"Demond Claiborne":{"name":"Demond Claiborne","pos":"RB","posRank":74,"ovrRank":261,"team":"MIN","value":0.1,"earlyBoost":1.05},"LeQuint Allen Jr.":{"name":"LeQuint Allen Jr.","pos":"RB","posRank":75,"ovrRank":262,"team":"JAC","value":0.1,"earlyBoost":1.0},"Kaleb Johnson":{"name":"Kaleb Johnson","pos":"RB","posRank":76,"ovrRank":263,"team":"GB","value":0.1,"earlyBoost":1.05},"Ollie Gordon II":{"name":"Ollie Gordon II","pos":"RB","posRank":77,"ovrRank":264,"team":"MIA","value":0.1,"earlyBoost":1.0},"Samaje Perine":{"name":"Samaje Perine","pos":"RB","posRank":78,"ovrRank":265,"team":"CIN","value":0.1,"earlyBoost":1.0},"Colby Parkinson":{"name":"Colby Parkinson","pos":"TE","posRank":32,"ovrRank":266,"team":"LAR","value":0.0,"earlyBoost":1.0},"Ty Johnson":{"name":"Ty Johnson","pos":"RB","posRank":79,"ovrRank":267,"team":"BUF","value":0.0,"earlyBoost":0.96},"Jordan James":{"name":"Jordan James","pos":"RB","posRank":80,"ovrRank":268,"team":"SF","value":0.0,"earlyBoost":1.0},"Tyquan Thornton":{"name":"Tyquan Thornton","pos":"WR","posRank":96,"ovrRank":269,"team":"KC","value":0.0,"earlyBoost":1.0},"Will Reichard":{"name":"Will Reichard","pos":"K","posRank":16,"ovrRank":270,"team":"MIN","value":0.0,"earlyBoost":1.0},"Wil Lutz":{"name":"Wil Lutz","pos":"K","posRank":17,"ovrRank":271,"team":"DEN","value":0.0,"earlyBoost":1.0},"Tory Horton":{"name":"Tory Horton","pos":"WR","posRank":97,"ovrRank":272,"team":"SEA","value":0.0,"earlyBoost":1.0},"Tua Tagovailoa":{"name":"Tua Tagovailoa","pos":"QB","posRank":31,"ovrRank":273,"team":"ATL","value":0.0,"earlyBoost":1.0},"Mason Taylor":{"name":"Mason Taylor","pos":"TE","posRank":33,"ovrRank":274,"team":"NYJ","value":0.0,"earlyBoost":1.05},"Elijah Sarratt":{"name":"Elijah Sarratt","pos":"WR","posRank":98,"ovrRank":275,"team":"BAL","value":0.0,"earlyBoost":1.05},"Darius Slayton":{"name":"Darius Slayton","pos":"WR","posRank":99,"ovrRank":276,"team":"NYG","value":0.0,"earlyBoost":1.05},"Xavier Legette":{"name":"Xavier Legette","pos":"WR","posRank":100,"ovrRank":277,"team":"CAR","value":0.0,"earlyBoost":0.96},"Christian Kirk":{"name":"Christian Kirk","pos":"WR","posRank":101,"ovrRank":278,"team":"SF","value":0.0,"earlyBoost":1.0},"Seth McGowan":{"name":"Seth McGowan","pos":"RB","posRank":81,"ovrRank":279,"team":"IND","value":0.0,"earlyBoost":1.0},"Michael Penix Jr.":{"name":"Michael Penix Jr.","pos":"QB","posRank":32,"ovrRank":280,"team":"ATL","value":0.0,"earlyBoost":1.0},"Kirk Cousins":{"name":"Kirk Cousins","pos":"QB","posRank":33,"ovrRank":281,"team":"LV","value":0.0,"earlyBoost":1.0},"Kendre Miller":{"name":"Kendre Miller","pos":"RB","posRank":82,"ovrRank":282,"team":"NO","value":0.0,"earlyBoost":1.0},"Marvin Mims Jr.":{"name":"Marvin Mims Jr.","pos":"WR","posRank":102,"ovrRank":283,"team":"DEN","value":0.0,"earlyBoost":1.0},"Theo Johnson":{"name":"Theo Johnson","pos":"TE","posRank":34,"ovrRank":284,"team":"NYG","value":0.0,"earlyBoost":1.05},"Atlanta Falcons":{"name":"Atlanta Falcons","pos":"DEF","posRank":17,"ovrRank":285,"team":"ATL","value":0.0,"earlyBoost":1.0},"Deshaun Watson":{"name":"Deshaun Watson","pos":"QB","posRank":34,"ovrRank":286,"team":"CLE","value":0.0,"earlyBoost":1.05},"DJ Giddens":{"name":"DJ Giddens","pos":"RB","posRank":83,"ovrRank":287,"team":"IND","value":0.0,"earlyBoost":1.0},"San Francisco 49ers":{"name":"San Francisco 49ers","pos":"DEF","posRank":18,"ovrRank":288,"team":"SF","value":0.0,"earlyBoost":1.0},"Jaydon Blue":{"name":"Jaydon Blue","pos":"RB","posRank":84,"ovrRank":289,"team":"PHI","value":0.0,"earlyBoost":1.05},"Eli Stowers":{"name":"Eli Stowers","pos":"TE","posRank":35,"ovrRank":290,"team":"PHI","value":0.0,"earlyBoost":1.05},"Kyle Williams":{"name":"Kyle Williams","pos":"WR","posRank":103,"ovrRank":291,"team":"NE","value":0.0,"earlyBoost":1.0},"Devin Neal":{"name":"Devin Neal","pos":"RB","posRank":85,"ovrRank":292,"team":"NO","value":0.0,"earlyBoost":1.0},"Shedeur Sanders":{"name":"Shedeur Sanders","pos":"QB","posRank":35,"ovrRank":293,"team":"CLE","value":0.0,"earlyBoost":1.05},"Brashard Smith":{"name":"Brashard Smith","pos":"RB","posRank":86,"ovrRank":294,"team":"KC","value":0.0,"earlyBoost":1.0},"Adam Randall":{"name":"Adam Randall","pos":"RB","posRank":87,"ovrRank":295,"team":"BAL","value":0.0,"earlyBoost":1.05},"New Orleans Saints":{"name":"New Orleans Saints","pos":"DEF","posRank":19,"ovrRank":296,"team":"NO","value":0.0,"earlyBoost":1.0},"Mack Hollins":{"name":"Mack Hollins","pos":"WR","posRank":104,"ovrRank":297,"team":"NE","value":0.0,"earlyBoost":1.0},"Hollywood Brown":{"name":"Hollywood Brown","pos":"WR","posRank":105,"ovrRank":298,"team":"PHI","value":0.0,"earlyBoost":1.05},"Devin Singletary":{"name":"Devin Singletary","pos":"RB","posRank":88,"ovrRank":299,"team":"NYG","value":0.0,"earlyBoost":1.05},"Mike Gesicki":{"name":"Mike Gesicki","pos":"TE","posRank":36,"ovrRank":300,"team":"CIN","value":0.0,"earlyBoost":1.0},"Emari Demercado":{"name":"Emari Demercado","pos":"RB","posRank":89,"ovrRank":301,"team":"DAL","value":0.0,"earlyBoost":1.0},"Skyler Bell":{"name":"Skyler Bell","pos":"WR","posRank":106,"ovrRank":302,"team":"BUF","value":0.0,"earlyBoost":0.96},"Isaiah Bond":{"name":"Isaiah Bond","pos":"WR","posRank":107,"ovrRank":303,"team":"CLE","value":0.0,"earlyBoost":1.05},"Brandon Aiyuk":{"name":"Brandon Aiyuk","pos":"WR","posRank":108,"ovrRank":304,"team":"SF","value":0.0,"earlyBoost":1.0},"Indianapolis Colts":{"name":"Indianapolis Colts","pos":"DEF","posRank":20,"ovrRank":305,"team":"IND","value":0.0,"earlyBoost":1.0},"Jake Tonges":{"name":"Jake Tonges","pos":"TE","posRank":37,"ovrRank":306,"team":"SF","value":0.0,"earlyBoost":1.0},"Trevor Etienne":{"name":"Trevor Etienne","pos":"RB","posRank":90,"ovrRank":307,"team":"CAR","value":0.0,"earlyBoost":0.96},"Trey Benson":{"name":"Trey Benson","pos":"RB","posRank":91,"ovrRank":308,"team":"ARI","value":0.0,"earlyBoost":1.0},"Chicago Bears":{"name":"Chicago Bears","pos":"DEF","posRank":21,"ovrRank":309,"team":"CHI","value":0.0,"earlyBoost":1.0},"Darren Waller":{"name":"Darren Waller","pos":"TE","posRank":38,"ovrRank":310,"team":"CAR","value":0.0,"earlyBoost":0.96},"Andrei Iosivas":{"name":"Andrei Iosivas","pos":"WR","posRank":109,"ovrRank":311,"team":"CIN","value":0.0,"earlyBoost":1.0},"Jerome Ford":{"name":"Jerome Ford","pos":"RB","posRank":92,"ovrRank":312,"team":"WAS","value":0.0,"earlyBoost":1.0},"DeMario Douglas":{"name":"DeMario Douglas","pos":"WR","posRank":110,"ovrRank":313,"team":"NE","value":0.0,"earlyBoost":1.0},"Isaac Guerendo":{"name":"Isaac Guerendo","pos":"RB","posRank":93,"ovrRank":314,"team":"SF","value":0.0,"earlyBoost":1.0},"Audric Estime":{"name":"Audric Estime","pos":"RB","posRank":94,"ovrRank":315,"team":"NO","value":0.0,"earlyBoost":1.0},"Darnell Washington":{"name":"Darnell Washington","pos":"TE","posRank":39,"ovrRank":316,"team":"PIT","value":0.0,"earlyBoost":1.0},"Tyreek Hill":{"name":"Tyreek Hill","pos":"WR","posRank":111,"ovrRank":317,"team":"FA","value":0.0,"earlyBoost":1.0},"Jaleel McLaughlin":{"name":"Jaleel McLaughlin","pos":"RB","posRank":95,"ovrRank":318,"team":"CLE","value":0.0,"earlyBoost":1.05},"Michael Mayer":{"name":"Michael Mayer","pos":"TE","posRank":40,"ovrRank":319,"team":"LV","value":0.0,"earlyBoost":1.0},"Jahan Dotson":{"name":"Jahan Dotson","pos":"WR","posRank":112,"ovrRank":320,"team":"ATL","value":0.0,"earlyBoost":1.0},"Charlie Smyth":{"name":"Charlie Smyth","pos":"K","posRank":18,"ovrRank":321,"team":"FA","value":0.0,"earlyBoost":1.0},"Tahj Brooks":{"name":"Tahj Brooks","pos":"RB","posRank":96,"ovrRank":322,"team":"CIN","value":0.0,"earlyBoost":1.0},"Oscar Delp":{"name":"Oscar Delp","pos":"TE","posRank":41,"ovrRank":323,"team":"NO","value":0.0,"earlyBoost":1.0},"Jarquez Hunter":{"name":"Jarquez Hunter","pos":"RB","posRank":97,"ovrRank":324,"team":"FA","value":0.0,"earlyBoost":1.0},"Will Shipley":{"name":"Will Shipley","pos":"RB","posRank":98,"ovrRank":325,"team":"PHI","value":0.0,"earlyBoost":1.05},"Charlie Kolar":{"name":"Charlie Kolar","pos":"TE","posRank":42,"ovrRank":326,"team":"LAC","value":0.0,"earlyBoost":1.05},"Xavier Hutchinson":{"name":"Xavier Hutchinson","pos":"WR","posRank":113,"ovrRank":327,"team":"HOU","value":0.0,"earlyBoost":1.05},"Bryce Lance":{"name":"Bryce Lance","pos":"WR","posRank":114,"ovrRank":328,"team":"NO","value":0.0,"earlyBoost":1.0},"Jalen Tolbert":{"name":"Jalen Tolbert","pos":"WR","posRank":115,"ovrRank":329,"team":"MIA","value":0.0,"earlyBoost":1.0},"Elijah Arroyo":{"name":"Elijah Arroyo","pos":"TE","posRank":43,"ovrRank":330,"team":"SEA","value":0.0,"earlyBoost":1.0},"Carson Beck":{"name":"Carson Beck","pos":"QB","posRank":36,"ovrRank":331,"team":"ARI","value":0.0,"earlyBoost":1.0},"Dallas Cowboys":{"name":"Dallas Cowboys","pos":"DEF","posRank":22,"ovrRank":332,"team":"DAL","value":0.0,"earlyBoost":1.0},"Cole Kmet":{"name":"Cole Kmet","pos":"TE","posRank":44,"ovrRank":333,"team":"CHI","value":0.0,"earlyBoost":0.96},"Kareem Hunt":{"name":"Kareem Hunt","pos":"RB","posRank":99,"ovrRank":334,"team":"FA","value":0.0,"earlyBoost":1.0},"Eli Raridon":{"name":"Eli Raridon","pos":"TE","posRank":45,"ovrRank":335,"team":"NE","value":0.0,"earlyBoost":1.0},"Konata Mumpfield":{"name":"Konata Mumpfield","pos":"WR","posRank":116,"ovrRank":336,"team":"LAR","value":0.0,"earlyBoost":1.0},"Jalen Royals":{"name":"Jalen Royals","pos":"WR","posRank":117,"ovrRank":337,"team":"KC","value":0.0,"earlyBoost":1.0},"Dawson Knox":{"name":"Dawson Knox","pos":"TE","posRank":46,"ovrRank":338,"team":"BUF","value":0.0,"earlyBoost":0.96},"Tez Johnson":{"name":"Tez Johnson","pos":"WR","posRank":118,"ovrRank":339,"team":"TB","value":0.0,"earlyBoost":1.0},"Tyler Higbee":{"name":"Tyler Higbee","pos":"TE","posRank":47,"ovrRank":340,"team":"LAR","value":0.0,"earlyBoost":1.0},"J.J. McCarthy":{"name":"J.J. McCarthy","pos":"QB","posRank":37,"ovrRank":341,"team":"MIN","value":0.0,"earlyBoost":1.05},"Max Klare":{"name":"Max Klare","pos":"TE","posRank":48,"ovrRank":342,"team":"LAR","value":0.0,"earlyBoost":1.0},"Erick All Jr.":{"name":"Erick All Jr.","pos":"TE","posRank":49,"ovrRank":343,"team":"CIN","value":0.0,"earlyBoost":1.0},"Joe Mixon":{"name":"Joe Mixon","pos":"RB","posRank":100,"ovrRank":344,"team":"FA","value":0.0,"earlyBoost":1.0},"Olamide Zaccheaus":{"name":"Olamide Zaccheaus","pos":"WR","posRank":119,"ovrRank":345,"team":"ATL","value":0.0,"earlyBoost":1.0},"Kendrick Bourne":{"name":"Kendrick Bourne","pos":"WR","posRank":120,"ovrRank":346,"team":"ARI","value":0.0,"earlyBoost":1.0},"Luke McCaffrey":{"name":"Luke McCaffrey","pos":"WR","posRank":121,"ovrRank":347,"team":"WAS","value":0.0,"earlyBoost":1.0},"Brenen Thompson":{"name":"Brenen Thompson","pos":"WR","posRank":122,"ovrRank":348,"team":"LAC","value":0.0,"earlyBoost":1.05},"Bam Knight":{"name":"Bam Knight","pos":"RB","posRank":101,"ovrRank":349,"team":"ARI","value":0.0,"earlyBoost":1.0},"Chris Brazzell II":{"name":"Chris Brazzell II","pos":"WR","posRank":123,"ovrRank":350,"team":"CAR","value":0.0,"earlyBoost":0.96},"Cedric Tillman":{"name":"Cedric Tillman","pos":"WR","posRank":124,"ovrRank":351,"team":"NO","value":0.0,"earlyBoost":1.0},"Noah Gray":{"name":"Noah Gray","pos":"TE","posRank":50,"ovrRank":352,"team":"KC","value":0.0,"earlyBoost":1.0},"Treylon Burks":{"name":"Treylon Burks","pos":"WR","posRank":125,"ovrRank":353,"team":"WAS","value":0.0,"earlyBoost":1.0},"Joshua Palmer":{"name":"Joshua Palmer","pos":"WR","posRank":126,"ovrRank":354,"team":"BUF","value":0.0,"earlyBoost":0.96},"Mac Jones":{"name":"Mac Jones","pos":"QB","posRank":38,"ovrRank":355,"team":"SF","value":0.0,"earlyBoost":1.0},"Ja'Tavion Sanders":{"name":"Ja'Tavion Sanders","pos":"TE","posRank":51,"ovrRank":356,"team":"CAR","value":0.0,"earlyBoost":0.96},"New York Giants":{"name":"New York Giants","pos":"DEF","posRank":23,"ovrRank":357,"team":"NYG","value":0.0,"earlyBoost":1.0},"Tyler Bass":{"name":"Tyler Bass","pos":"K","posRank":19,"ovrRank":358,"team":"BUF","value":0.0,"earlyBoost":1.0},"Jake Elliott":{"name":"Jake Elliott","pos":"K","posRank":20,"ovrRank":359,"team":"PHI","value":0.0,"earlyBoost":1.0},"Carolina Panthers":{"name":"Carolina Panthers","pos":"DEF","posRank":24,"ovrRank":360,"team":"CAR","value":0.0,"earlyBoost":1.0},"Malik Benson":{"name":"Malik Benson","pos":"WR","posRank":127,"ovrRank":361,"team":"LV","value":0.0,"earlyBoost":1.0},"Roman Wilson":{"name":"Roman Wilson","pos":"WR","posRank":128,"ovrRank":362,"team":"PIT","value":0.0,"earlyBoost":1.0},"Ty Simpson":{"name":"Ty Simpson","pos":"QB","posRank":39,"ovrRank":363,"team":"LAR","value":0.0,"earlyBoost":1.0},"Eli Heidenreich":{"name":"Eli Heidenreich","pos":"RB","posRank":102,"ovrRank":364,"team":"PIT","value":0.0,"earlyBoost":1.0},"Justin Fields":{"name":"Justin Fields","pos":"QB","posRank":40,"ovrRank":365,"team":"KC","value":0.0,"earlyBoost":1.0},"Kalif Raymond":{"name":"Kalif Raymond","pos":"WR","posRank":129,"ovrRank":366,"team":"CHI","value":0.0,"earlyBoost":0.96},"Zavion Thomas":{"name":"Zavion Thomas","pos":"WR","posRank":130,"ovrRank":367,"team":"CHI","value":0.0,"earlyBoost":0.96},"Trey Smack":{"name":"Trey Smack","pos":"K","posRank":21,"ovrRank":368,"team":"GB","value":0.0,"earlyBoost":1.0},"Kevin Coleman Jr.":{"name":"Kevin Coleman Jr.","pos":"WR","posRank":131,"ovrRank":369,"team":"MIA","value":0.0,"earlyBoost":1.0},"Michael Carter":{"name":"Michael Carter","pos":"RB","posRank":103,"ovrRank":370,"team":"TEN","value":0.0,"earlyBoost":1.05},"Savion Williams":{"name":"Savion Williams","pos":"WR","posRank":132,"ovrRank":371,"team":"GB","value":0.0,"earlyBoost":1.05},"Justin Joly":{"name":"Justin Joly","pos":"TE","posRank":52,"ovrRank":372,"team":"FA","value":0.0,"earlyBoost":1.0},"Anthony Richardson Sr.":{"name":"Anthony Richardson Sr.","pos":"QB","posRank":41,"ovrRank":373,"team":"IND","value":0.0,"earlyBoost":1.0},"Tampa Bay Buccaneers":{"name":"Tampa Bay Buccaneers","pos":"DEF","posRank":25,"ovrRank":374,"team":"TB","value":0.0,"earlyBoost":1.0},"J'Mari Taylor":{"name":"J'Mari Taylor","pos":"RB","posRank":104,"ovrRank":375,"team":"JAC","value":0.0,"earlyBoost":1.0},"Dont'e Thornton Jr.":{"name":"Dont'e Thornton Jr.","pos":"WR","posRank":133,"ovrRank":376,"team":"LV","value":0.0,"earlyBoost":1.0},"Roschon Johnson":{"name":"Roschon Johnson","pos":"RB","posRank":105,"ovrRank":377,"team":"CHI","value":0.0,"earlyBoost":0.96},"Colbie Young":{"name":"Colbie Young","pos":"WR","posRank":134,"ovrRank":378,"team":"CIN","value":0.0,"earlyBoost":1.0},"Noah Fant":{"name":"Noah Fant","pos":"TE","posRank":53,"ovrRank":379,"team":"NO","value":0.0,"earlyBoost":1.0},"KaVontae Turpin":{"name":"KaVontae Turpin","pos":"WR","posRank":135,"ovrRank":380,"team":"DAL","value":0.0,"earlyBoost":1.0},"John Metchie III":{"name":"John Metchie III","pos":"WR","posRank":136,"ovrRank":381,"team":"CAR","value":0.0,"earlyBoost":0.96},"Jameis Winston":{"name":"Jameis Winston","pos":"QB","posRank":42,"ovrRank":382,"team":"NYG","value":0.0,"earlyBoost":1.05},"Raheim Sanders":{"name":"Raheim Sanders","pos":"RB","posRank":106,"ovrRank":383,"team":"CLE","value":0.0,"earlyBoost":1.05},"Demarcus Robinson":{"name":"Demarcus Robinson","pos":"WR","posRank":137,"ovrRank":384,"team":"SF","value":0.0,"earlyBoost":1.0},"Tennessee Titans":{"name":"Tennessee Titans","pos":"DEF","posRank":26,"ovrRank":385,"team":"TEN","value":0.0,"earlyBoost":1.0},"Zane Gonzalez":{"name":"Zane Gonzalez","pos":"K","posRank":22,"ovrRank":386,"team":"FA","value":0.0,"earlyBoost":1.0},"Jaylin Lane":{"name":"Jaylin Lane","pos":"WR","posRank":138,"ovrRank":387,"team":"WAS","value":0.0,"earlyBoost":1.0},"Cincinnati Bengals":{"name":"Cincinnati Bengals","pos":"DEF","posRank":27,"ovrRank":388,"team":"CIN","value":0.0,"earlyBoost":1.0},"Joe Flacco":{"name":"Joe Flacco","pos":"QB","posRank":43,"ovrRank":389,"team":"CIN","value":0.0,"earlyBoost":1.0},"Daniel Carlson":{"name":"Daniel Carlson","pos":"K","posRank":23,"ovrRank":390,"team":"NO","value":0.0,"earlyBoost":1.0},"Tommy Tremble":{"name":"Tommy Tremble","pos":"TE","posRank":54,"ovrRank":391,"team":"CAR","value":0.0,"earlyBoost":0.96},"Odell Beckham Jr.":{"name":"Odell Beckham Jr.","pos":"WR","posRank":139,"ovrRank":392,"team":"NYG","value":0.0,"earlyBoost":1.05},"Tutu Atwell":{"name":"Tutu Atwell","pos":"WR","posRank":140,"ovrRank":393,"team":"LAR","value":0.0,"earlyBoost":1.0},"CJ Daniels":{"name":"CJ Daniels","pos":"WR","posRank":141,"ovrRank":394,"team":"LAR","value":0.0,"earlyBoost":1.0},"Kyle Juszczyk":{"name":"Kyle Juszczyk","pos":"RB","posRank":107,"ovrRank":395,"team":"SF","value":0.0,"earlyBoost":1.0},"Jawhar Jordan":{"name":"Jawhar Jordan","pos":"RB","posRank":108,"ovrRank":396,"team":"HOU","value":0.0,"earlyBoost":1.05},"Rasheen Ali":{"name":"Rasheen Ali","pos":"RB","posRank":109,"ovrRank":397,"team":"BAL","value":0.0,"earlyBoost":1.05},"Spencer Shrader":{"name":"Spencer Shrader","pos":"K","posRank":24,"ovrRank":398,"team":"IND","value":0.0,"earlyBoost":1.0},"Marcus Mariota":{"name":"Marcus Mariota","pos":"QB","posRank":44,"ovrRank":399,"team":"WAS","value":0.0,"earlyBoost":1.0},"Barion Brown":{"name":"Barion Brown","pos":"WR","posRank":142,"ovrRank":400,"team":"NO","value":0.0,"earlyBoost":1.0},"Blake Grupe":{"name":"Blake Grupe","pos":"K","posRank":25,"ovrRank":401,"team":"NYJ","value":0.0,"earlyBoost":1.0},"Luke Musgrave":{"name":"Luke Musgrave","pos":"TE","posRank":55,"ovrRank":402,"team":"GB","value":0.0,"earlyBoost":1.05},"Sione Vaki":{"name":"Sione Vaki","pos":"RB","posRank":110,"ovrRank":403,"team":"DET","value":0.0,"earlyBoost":1.05},"Ashton Dulin":{"name":"Ashton Dulin","pos":"WR","posRank":143,"ovrRank":404,"team":"IND","value":0.0,"earlyBoost":1.0},"Nick Folk":{"name":"Nick Folk","pos":"K","posRank":26,"ovrRank":405,"team":"ATL","value":0.0,"earlyBoost":1.0},"Ben Sinnott":{"name":"Ben Sinnott","pos":"TE","posRank":56,"ovrRank":406,"team":"WAS","value":0.0,"earlyBoost":1.0},"Cade Klubnik":{"name":"Cade Klubnik","pos":"QB","posRank":45,"ovrRank":407,"team":"NYJ","value":0.0,"earlyBoost":1.05},"Jacob Saylors":{"name":"Jacob Saylors","pos":"RB","posRank":111,"ovrRank":408,"team":"DET","value":0.0,"earlyBoost":1.05},"Devontez Walker":{"name":"Devontez Walker","pos":"WR","posRank":144,"ovrRank":409,"team":"BAL","value":0.0,"earlyBoost":1.05},"Daniel Bellinger":{"name":"Daniel Bellinger","pos":"TE","posRank":57,"ovrRank":410,"team":"TEN","value":0.0,"earlyBoost":1.05},"Washington Commanders":{"name":"Washington Commanders","pos":"DEF","posRank":28,"ovrRank":411,"team":"WAS","value":0.0,"earlyBoost":1.0},"Nick Westbrook-Ikhine":{"name":"Nick Westbrook-Ikhine","pos":"WR","posRank":145,"ovrRank":412,"team":"FA","value":0.0,"earlyBoost":1.0},"Elijah Higgins":{"name":"Elijah Higgins","pos":"TE","posRank":58,"ovrRank":413,"team":"ARI","value":0.0,"earlyBoost":1.0},"Jordan Whittington":{"name":"Jordan Whittington","pos":"WR","posRank":146,"ovrRank":414,"team":"LAR","value":0.0,"earlyBoost":1.0},"Mitchell Evans":{"name":"Mitchell Evans","pos":"TE","posRank":59,"ovrRank":415,"team":"CAR","value":0.0,"earlyBoost":0.96},"Chad Ryland":{"name":"Chad Ryland","pos":"K","posRank":27,"ovrRank":416,"team":"ARI","value":0.0,"earlyBoost":1.0},"Joey Slye":{"name":"Joey Slye","pos":"K","posRank":28,"ovrRank":417,"team":"TEN","value":0.0,"earlyBoost":1.0},"Austin Ekeler":{"name":"Austin Ekeler","pos":"RB","posRank":112,"ovrRank":418,"team":"FA","value":0.0,"earlyBoost":1.0},"Ryan Fitzgerald":{"name":"Ryan Fitzgerald","pos":"K","posRank":29,"ovrRank":419,"team":"CAR","value":0.0,"earlyBoost":1.0},"Austin Hooper":{"name":"Austin Hooper","pos":"TE","posRank":60,"ovrRank":420,"team":"ATL","value":0.0,"earlyBoost":1.0},"Las Vegas Raiders":{"name":"Las Vegas Raiders","pos":"DEF","posRank":29,"ovrRank":421,"team":"LV","value":0.0,"earlyBoost":1.0},"Brandon McManus":{"name":"Brandon McManus","pos":"K","posRank":30,"ovrRank":422,"team":"FA","value":0.0,"earlyBoost":1.0},"Isaiah Williams":{"name":"Isaiah Williams","pos":"WR","posRank":159,"ovrRank":466,"team":"FA","value":0.0,"earlyBoost":1.0},"Jam Miller":{"name":"Jam Miller","pos":"RB","posRank":113,"ovrRank":424,"team":"FA","value":0.0,"earlyBoost":1.0},"Ben Sauls":{"name":"Ben Sauls","pos":"K","posRank":31,"ovrRank":425,"team":"FA","value":0.0,"earlyBoost":1.0},"John Bates":{"name":"John Bates","pos":"TE","posRank":61,"ovrRank":426,"team":"WAS","value":0.0,"earlyBoost":1.0},"Khalil Herbert":{"name":"Khalil Herbert","pos":"RB","posRank":114,"ovrRank":427,"team":"FA","value":0.0,"earlyBoost":1.0},"Phil Mafah":{"name":"Phil Mafah","pos":"RB","posRank":115,"ovrRank":428,"team":"FA","value":0.0,"earlyBoost":1.0},"Tai Felton":{"name":"Tai Felton","pos":"WR","posRank":148,"ovrRank":429,"team":"MIN","value":0.0,"earlyBoost":1.05},"Joe Milton III":{"name":"Joe Milton III","pos":"QB","posRank":46,"ovrRank":430,"team":"FA","value":0.0,"earlyBoost":1.0},"Terrell Jennings":{"name":"Terrell Jennings","pos":"RB","posRank":116,"ovrRank":431,"team":"FA","value":0.0,"earlyBoost":1.0},"Jonnu Smith":{"name":"Jonnu Smith","pos":"TE","posRank":62,"ovrRank":432,"team":"GB","value":0.0,"earlyBoost":1.05},"Miami Dolphins":{"name":"Miami Dolphins","pos":"DEF","posRank":30,"ovrRank":433,"team":"MIA","value":0.0,"earlyBoost":1.0},"Dylan Laube":{"name":"Dylan Laube","pos":"RB","posRank":117,"ovrRank":434,"team":"LV","value":0.0,"earlyBoost":1.0},"Tyler Goodson":{"name":"Tyler Goodson","pos":"RB","posRank":118,"ovrRank":435,"team":"ATL","value":0.0,"earlyBoost":1.0},"Dameon Pierce":{"name":"Dameon Pierce","pos":"RB","posRank":119,"ovrRank":436,"team":"PHI","value":0.0,"earlyBoost":1.05},"Hunter Luepke":{"name":"Hunter Luepke","pos":"RB","posRank":120,"ovrRank":437,"team":"DAL","value":0.0,"earlyBoost":1.0},"Dyami Brown":{"name":"Dyami Brown","pos":"WR","posRank":149,"ovrRank":438,"team":"WAS","value":0.0,"earlyBoost":1.0},"Dohnte Meyers":{"name":"Dohnte Meyers","pos":"WR","posRank":150,"ovrRank":439,"team":"CIN","value":0.0,"earlyBoost":1.0},"New York Jets":{"name":"New York Jets","pos":"DEF","posRank":31,"ovrRank":440,"team":"NYJ","value":0.0,"earlyBoost":1.0},"Greg Dortch":{"name":"Greg Dortch","pos":"WR","posRank":151,"ovrRank":441,"team":"BUF","value":0.0,"earlyBoost":0.96},"Jeremy McNichols":{"name":"Jeremy McNichols","pos":"RB","posRank":121,"ovrRank":442,"team":"WAS","value":0.0,"earlyBoost":1.0},"Marlin Klein":{"name":"Marlin Klein","pos":"TE","posRank":63,"ovrRank":443,"team":"HOU","value":0.0,"earlyBoost":1.05},"Marquez Valdes-Scantling":{"name":"Marquez Valdes-Scantling","pos":"WR","posRank":152,"ovrRank":444,"team":"FA","value":0.0,"earlyBoost":1.0},"Deion Burks":{"name":"Deion Burks","pos":"WR","posRank":153,"ovrRank":445,"team":"IND","value":0.0,"earlyBoost":1.0},"Damien Martinez":{"name":"Damien Martinez","pos":"RB","posRank":122,"ovrRank":446,"team":"FA","value":0.0,"earlyBoost":1.0},"Drew Stevens":{"name":"Drew Stevens","pos":"K","posRank":32,"ovrRank":447,"team":"WAS","value":0.0,"earlyBoost":1.0},"Matt Hibner":{"name":"Matt Hibner","pos":"TE","posRank":64,"ovrRank":448,"team":"BAL","value":0.0,"earlyBoost":1.05},"Corey Kiner":{"name":"Corey Kiner","pos":"RB","posRank":123,"ovrRank":449,"team":"NE","value":0.0,"earlyBoost":1.0},"Jahdae Walker":{"name":"Jahdae Walker","pos":"WR","posRank":154,"ovrRank":450,"team":"CHI","value":0.0,"earlyBoost":0.96},"Ronnie Rivers":{"name":"Ronnie Rivers","pos":"RB","posRank":124,"ovrRank":451,"team":"LAR","value":0.0,"earlyBoost":1.0},"Tommy Myers":{"name":"Tommy Myers","pos":"TE","posRank":65,"ovrRank":452,"team":"FA","value":0.0,"earlyBoost":1.0},"Zavier Scott":{"name":"Zavier Scott","pos":"RB","posRank":125,"ovrRank":453,"team":"CHI","value":0.0,"earlyBoost":0.96},"Elijah Moore":{"name":"Elijah Moore","pos":"WR","posRank":155,"ovrRank":454,"team":"PHI","value":0.0,"earlyBoost":1.05},"Jackson Hawes":{"name":"Jackson Hawes","pos":"TE","posRank":66,"ovrRank":455,"team":"BUF","value":0.0,"earlyBoost":0.96},"Jordan Watkins":{"name":"Jordan Watkins","pos":"WR","posRank":156,"ovrRank":456,"team":"SF","value":0.0,"earlyBoost":1.0},"Zach Ertz":{"name":"Zach Ertz","pos":"TE","posRank":67,"ovrRank":457,"team":"FA","value":0.0,"earlyBoost":1.0},"Arizona Cardinals":{"name":"Arizona Cardinals","pos":"DEF","posRank":32,"ovrRank":458,"team":"ARI","value":0.0,"earlyBoost":1.0},"Xavier Restrepo":{"name":"Xavier Restrepo","pos":"WR","posRank":157,"ovrRank":459,"team":"FA","value":0.0,"earlyBoost":1.0},"Antonio Gibson":{"name":"Antonio Gibson","pos":"RB","posRank":126,"ovrRank":460,"team":"FA","value":0.0,"earlyBoost":1.0},"Adam Trautman":{"name":"Adam Trautman","pos":"TE","posRank":68,"ovrRank":461,"team":"DEN","value":0.0,"earlyBoost":1.0},"Gardner Minshew II":{"name":"Gardner Minshew II","pos":"QB","posRank":47,"ovrRank":462,"team":"ARI","value":0.0,"earlyBoost":1.0},"Ameer Abdullah":{"name":"Ameer Abdullah","pos":"RB","posRank":127,"ovrRank":463,"team":"JAC","value":0.0,"earlyBoost":1.0},"Dominic Zvada":{"name":"Dominic Zvada","pos":"K","posRank":33,"ovrRank":464,"team":"NYG","value":0.0,"earlyBoost":1.0},"Theo Wease Jr.":{"name":"Theo Wease Jr.","pos":"WR","posRank":158,"ovrRank":465,"team":"FA","value":0.0,"earlyBoost":1.0},"Tanner Koziol":{"name":"Tanner Koziol","pos":"TE","posRank":69,"ovrRank":467,"team":"JAC","value":0.0,"earlyBoost":1.0},"Quinn Ewers":{"name":"Quinn Ewers","pos":"QB","posRank":48,"ovrRank":468,"team":"JAC","value":0.0,"earlyBoost":1.0},"Jacob Cowing":{"name":"Jacob Cowing","pos":"WR","posRank":160,"ovrRank":469,"team":"SF","value":0.0,"earlyBoost":1.0},"Brandin Cooks":{"name":"Brandin Cooks","pos":"WR","posRank":161,"ovrRank":470,"team":"FA","value":0.0,"earlyBoost":1.0},"Riley Leonard":{"name":"Riley Leonard","pos":"QB","posRank":49,"ovrRank":471,"team":"IND","value":0.0,"earlyBoost":1.0},"Josh Williams":{"name":"Josh Williams","pos":"RB","posRank":128,"ovrRank":472,"team":"TB","value":0.0,"earlyBoost":1.0},"Jalen Reagor":{"name":"Jalen Reagor","pos":"WR","posRank":162,"ovrRank":473,"team":"FA","value":0.0,"earlyBoost":1.0},"Reggie Gilliam":{"name":"Reggie Gilliam","pos":"RB","posRank":129,"ovrRank":474,"team":"NE","value":0.0,"earlyBoost":1.0},"Sam Roush":{"name":"Sam Roush","pos":"TE","posRank":70,"ovrRank":475,"team":"CHI","value":0.0,"earlyBoost":0.96},"Chris Blair":{"name":"Chris Blair","pos":"WR","posRank":163,"ovrRank":476,"team":"ATL","value":0.0,"earlyBoost":1.0},"Josh Cameron":{"name":"Josh Cameron","pos":"WR","posRank":164,"ovrRank":477,"team":"JAC","value":0.0,"earlyBoost":1.0},"Tyler Lockett":{"name":"Tyler Lockett","pos":"WR","posRank":165,"ovrRank":478,"team":"LV","value":0.0,"earlyBoost":1.0},"Reggie Virgil":{"name":"Reggie Virgil","pos":"WR","posRank":166,"ovrRank":479,"team":"ARI","value":0.0,"earlyBoost":1.0},"Michael Woods II":{"name":"Michael Woods II","pos":"WR","posRank":167,"ovrRank":480,"team":"DEN","value":0.0,"earlyBoost":1.0},"AJ Dillon":{"name":"AJ Dillon","pos":"RB","posRank":130,"ovrRank":481,"team":"CAR","value":0.0,"earlyBoost":0.96},"Taylen Green":{"name":"Taylen Green","pos":"QB","posRank":50,"ovrRank":482,"team":"CLE","value":0.0,"earlyBoost":1.05},"Luke Schoonmaker":{"name":"Luke Schoonmaker","pos":"TE","posRank":71,"ovrRank":483,"team":"DAL","value":0.0,"earlyBoost":1.0},"Jason Sanders":{"name":"Jason Sanders","pos":"K","posRank":34,"ovrRank":484,"team":"FA","value":0.0,"earlyBoost":1.0},"Tyrod Taylor":{"name":"Tyrod Taylor","pos":"QB","posRank":51,"ovrRank":485,"team":"GB","value":0.0,"earlyBoost":1.05},"Patrick Ricard":{"name":"Patrick Ricard","pos":"RB","posRank":131,"ovrRank":486,"team":"NYG","value":0.0,"earlyBoost":1.05},"Tyler Badie":{"name":"Tyler Badie","pos":"RB","posRank":132,"ovrRank":487,"team":"DEN","value":0.0,"earlyBoost":1.0},"Josh Oliver":{"name":"Josh Oliver","pos":"TE","posRank":72,"ovrRank":488,"team":"MIN","value":0.0,"earlyBoost":1.05},"Julius Chestnut":{"name":"Julius Chestnut","pos":"RB","posRank":133,"ovrRank":489,"team":"TEN","value":0.0,"earlyBoost":1.05},"Jaydn Ott":{"name":"Jaydn Ott","pos":"RB","posRank":134,"ovrRank":490,"team":"KC","value":0.0,"earlyBoost":1.0},"Kalel Mullings":{"name":"Kalel Mullings","pos":"RB","posRank":135,"ovrRank":491,"team":"TEN","value":0.0,"earlyBoost":1.05},"Miles Sanders":{"name":"Miles Sanders","pos":"RB","posRank":136,"ovrRank":492,"team":"FA","value":0.0,"earlyBoost":1.0},"Tim Patrick":{"name":"Tim Patrick","pos":"WR","posRank":168,"ovrRank":493,"team":"NYJ","value":0.0,"earlyBoost":1.05},"Tyson Bagent":{"name":"Tyson Bagent","pos":"QB","posRank":52,"ovrRank":494,"team":"CHI","value":0.0,"earlyBoost":0.96},"Will Kacmarek":{"name":"Will Kacmarek","pos":"TE","posRank":73,"ovrRank":495,"team":"MIA","value":0.0,"earlyBoost":1.0},"DeAndre Hopkins":{"name":"DeAndre Hopkins","pos":"WR","posRank":169,"ovrRank":496,"team":"BAL","value":0.0,"earlyBoost":1.05},"Jabari Small":{"name":"Jabari Small","pos":"RB","posRank":137,"ovrRank":497,"team":"DET","value":0.0,"earlyBoost":1.05},"Cade Stover":{"name":"Cade Stover","pos":"TE","posRank":74,"ovrRank":498,"team":"HOU","value":0.0,"earlyBoost":1.05},"Trey Lance":{"name":"Trey Lance","pos":"QB","posRank":53,"ovrRank":499,"team":"LAC","value":0.0,"earlyBoost":1.05},"Nate Boerkircher":{"name":"Nate Boerkircher","pos":"TE","posRank":75,"ovrRank":500,"team":"JAC","value":0.0,"earlyBoost":1.0},"Jimmy Horn Jr.":{"name":"Jimmy Horn Jr.","pos":"WR","posRank":170,"ovrRank":501,"team":"CAR","value":0.0,"earlyBoost":0.96},"Kene Nwangwu":{"name":"Kene Nwangwu","pos":"RB","posRank":138,"ovrRank":502,"team":"NYJ","value":0.0,"earlyBoost":1.05},"Tyler Conklin":{"name":"Tyler Conklin","pos":"TE","posRank":76,"ovrRank":503,"team":"DET","value":0.0,"earlyBoost":1.05},"Tanner Hudson":{"name":"Tanner Hudson","pos":"TE","posRank":77,"ovrRank":504,"team":"CIN","value":0.0,"earlyBoost":1.0},"Michael Trigg":{"name":"Michael Trigg","pos":"TE","posRank":78,"ovrRank":505,"team":"DAL","value":0.0,"earlyBoost":1.0}}
+</script>
+
+<script id="initial-rosters-data" type="application/json">
+{"kalenvenn":["Jalen Hurts","Travis Etienne Jr.","David Montgomery","Ja'Marr Chase","Jaxon Smith-Njigba","Colston Loveland","Michael Wilson","Kyle Monangai","Will Reichard","Pittsburgh Steelers","Jaxson Dart","Josh Downs","Isaiah Likely","Rachaad White","Tyrone Tracy Jr."],"rileyleonard99":["Dak Prescott","Derrick Henry","Javonte Williams","Nico Collins","Tee Higgins","Harold Fannin Jr.","Breece Hall","Terry McLaurin","Cameron Dicker","Seattle Seahawks","Davante Adams","TreVeyon Henderson","Luther Burden III","Bhayshul Tuten","Tucker Kraft"],"dekssss":["Caleb Williams","James Cook III","Cam Skattebo","Justin Jefferson","DK Metcalf","Kyle Pitts Sr.","Chris Olave","D'Andre Swift","Brandon Aubrey","Baltimore Ravens","Jadarian Price","Jameson Williams","Alec Pierce","Michael Pittman Jr.","Wan'Dale Robinson"],"JFoxMan":["Josh Allen","Kenneth Walker III","Alvin Kamara","Drake London","CeeDee Lamb","Travis Kelce","DeVonta Smith","Dalton Kincaid","Jason Myers","Los Angeles Chargers","Jordan Mason","De'Zhaun Stribling","Patrick Mahomes II","Deebo Samuel Sr.","Romeo Doubs"],"willig19":["Drake Maye","De'Von Achane","Omarion Hampton","George Pickens","Jaylen Waddle","Tyler Warren","Bucky Irving","Rome Odunze","Ka'imi Fairbairn","Houston Texans","Parker Washington","Brian Thomas Jr.","Chuba Hubbard","MarShawn Lloyd","Denver Broncos"],"stenedaddy":["Jayden Daniels","Jeremiyah Love","Chase Brown","Amon-Ra St. Brown","Ladd McConkey","George Kittle","Garrett Wilson","DJ Moore","Philadelphia Eagles","J.K. Dobbins","RJ Harvey","Bo Nix","Jordan Addison","Kenny Gainwell","Chris Rodriguez Jr."],"calebmatteson":["Justin Herbert","Saquon Barkley","Jonathan Taylor","Tetairoa McMillan","Mike Evans","Brock Bowers","Ashton Jeanty","Blake Corum","Evan McPherson","Jacksonville Jaguars","Jonathon Brooks","Jacory Croskey-Merritt","Jake Ferguson","Matthew Stafford","Jakobi Meyers"],"squilliamfanc":["Lamar Jackson","Jahmyr Gibbs","Zach Charbonnet","Rashee Rice","Malik Nabers","Sam LaPorta","Carnell Tate","Christian Watson","Cam Little","Los Angeles Rams","Joe Burrow","Makai Lemon","Courtland Sutton","Tony Pollard","Rico Dowdle"],"ZachMaddux":["Trevor Lawrence","Josh Jacobs","Kyren Williams","Puka Nacua","Zay Flowers","Trey McBride","Emeka Egbuka","Quinshon Judkins","Jake Bates","New England Patriots","Rhamondre Stevenson","Jaylen Warren","Marvin Harrison Jr.","KC Concepcion","Quentin Johnston"],"cottonjahr":["Brock Purdy","Bijan Robinson","Christian McCaffrey","A.J. Brown","Stefon Diggs","Mark Andrews","Chris Godwin Jr.","Jayden Reed","Harrison Mevis","Minnesota Vikings","Matthew Golden","Aaron Jones Sr.","Xavier Worthy","Jalen Coker","Dallas Goedert"]}
 </script>
 
 <script>
-const LEAGUE = JSON.parse(document.getElementById('league-data').textContent);
-const TEAM_NAMES = Object.keys(LEAGUE);
+const ALL_PLAYERS = JSON.parse(document.getElementById('all-players-data').textContent); // name -> {name,pos,posRank,ovrRank,team,value,earlyBoost}
+const INITIAL_ROSTERS = JSON.parse(document.getElementById('initial-rosters-data').textContent); // team -> [names]
+const TEAM_NAMES = Object.keys(INITIAL_ROSTERS);
 const MAX_PER_TEAM = 6;
+const STORAGE_KEY = 'lhsTradeDeskRosters_v1';
+
+let LEAGUE = {};        // team -> mutable array of player objects (live roster state)
+let FREE_AGENTS = [];   // players not currently on any of the 10 rosters
+let storageAvailable = true;
+
+function clonePlayer(name){
+  const p = ALL_PLAYERS[name];
+  return p ? {...p} : null;
+}
+
+function buildFromRosterMap(rosterMap){
+  const league = {};
+  const used = new Set();
+  for(const team of TEAM_NAMES){
+    league[team] = (rosterMap[team] || []).map(clonePlayer).filter(Boolean);
+    league[team].forEach(p => used.add(p.name));
+  }
+  const freeAgents = Object.keys(ALL_PLAYERS).filter(n => !used.has(n)).map(clonePlayer);
+  return {league, freeAgents};
+}
+
+function loadRosterState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const saved = JSON.parse(raw);
+      if(saved && saved.rosters){
+        const built = buildFromRosterMap(saved.rosters);
+        LEAGUE = built.league;
+        FREE_AGENTS = built.freeAgents;
+        return true; // loaded a saved/edited state
+      }
+    }
+  } catch(e){ storageAvailable = false; }
+  const built = buildFromRosterMap(INITIAL_ROSTERS);
+  LEAGUE = built.league;
+  FREE_AGENTS = built.freeAgents;
+  return false;
+}
+
+function persistRosterState(){
+  try{
+    const rosterMap = {};
+    for(const team of TEAM_NAMES) rosterMap[team] = LEAGUE[team].map(p=>p.name);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({rosters: rosterMap, savedAt: new Date().toISOString()}));
+  } catch(e){ storageAvailable = false; }
+}
+
+const wasRestored = loadRosterState();
+
+// ---------- roster mutation ----------
+function removePlayerFromTeam(team, name){
+  const idx = LEAGUE[team].findIndex(p=>p.name===name);
+  if(idx === -1) return null;
+  const [p] = LEAGUE[team].splice(idx, 1);
+  FREE_AGENTS.push(p);
+  return p;
+}
+function addFreeAgentToTeam(team, name){
+  const idx = FREE_AGENTS.findIndex(p=>p.name===name);
+  if(idx === -1) return null;
+  const [p] = FREE_AGENTS.splice(idx, 1);
+  LEAGUE[team].push(p);
+  return p;
+}
+function movePlayerBetweenTeams(fromTeam, toTeam, name){
+  const idx = LEAGUE[fromTeam].findIndex(p=>p.name===name);
+  if(idx === -1) return false;
+  const [p] = LEAGUE[fromTeam].splice(idx, 1);
+  LEAGUE[toTeam].push(p);
+  return true;
+}
+
+// Drop any pending trade-engine moves that reference a player who no longer
+// sits on the roster the move claims they're coming from (can happen if a
+// roster was edited or another trade completed out from under a draft).
+function sanitizeMoves(){
+  state.moves = state.moves.filter(m => LEAGUE[m.from] && LEAGUE[m.from].some(p=>p.name===m.player));
+}
+
+// Keep Trade Magic's block/target selections valid after any roster change.
+function resyncMagicState(){
+  if(state.myTeam && LEAGUE[state.myTeam]){
+    const mine = new Set(LEAGUE[state.myTeam].map(p=>p.name));
+    state.tradeBlock = state.tradeBlock.filter(n=>mine.has(n));
+  }
+  state.targets = state.targets.map(t=>{
+    if(LEAGUE[t.team] && LEAGUE[t.team].some(p=>p.name===t.name)) return t;
+    for(const team of TEAM_NAMES){
+      if(LEAGUE[team].some(p=>p.name===t.name)) return {team, name: t.name};
+    }
+    return null; // now a free agent (or otherwise gone) — drop from targets
+  }).filter(Boolean);
+}
+
+function showToast(msg){
+  const el = document.getElementById('toast');
+  if(!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=> el.classList.remove('show'), 2800);
+}
+
+// Call after ANY roster mutation (Rosters tab edit or a completed trade) to
+// keep every tab's view of the league consistent and persist it.
+function afterRosterChange(){
+  persistRosterState();
+  suggestionCache = null;
+  sanitizeMoves();
+  resyncMagicState();
+  renderAll();
+  renderRostersTab();
+  if(document.getElementById('tab-suggested').classList.contains('active')) renderSuggestions();
+  if(document.getElementById('tab-magic').classList.contains('active')) renderMagicTab();
+  if(document.getElementById('tab-freeagents').classList.contains('active')) renderFreeAgentsTab();
+}
 
 const state = {
   size: 2,
@@ -630,7 +1044,12 @@ const state = {
   moves: [],
   myTeam: '',
   tradeBlock: [],   // player names on my roster I'd move
-  targets: []       // [{team, name}]
+  targets: [],      // [{team, name}]
+  rosterTeam: TEAM_NAMES[0],
+  rosterEditing: false,
+  suggFilterTeam: 'ALL',
+  suggMinImprovement: 0,
+  suggSortBy: 'impact'
 };
 
 // ---------- helpers ----------
@@ -792,7 +1211,7 @@ function renderBoard(){
       row.addEventListener('click', ()=>{ if(!disabled) toggleSelect(team, p.name); });
       scroll.appendChild(row);
 
-      if(selected && state.size===3){
+      if(selected && state.size>=3){
         const destRow = document.createElement('div');
         destRow.className = 'dest-row';
         const otherTeams = activeTeams.filter(t=>t!==team);
@@ -926,9 +1345,12 @@ function renderVerdict(){
 }
 
 function renderAll(){
+  sanitizeMoves();
   renderTeamSelectors();
   renderBoard();
   renderVerdict();
+  const completeBtn = document.getElementById('completeTradeBtn');
+  if(completeBtn) completeBtn.disabled = state.moves.length === 0;
 }
 
 // =====================================================================
@@ -1121,8 +1543,15 @@ function generateBundleTrades(){
 function bestGift(fromTeam, toTeam){
   const rosterTo = LEAGUE[toTeam];
   const baseTo = optimalLineupValue(rosterTo);
+  // protect the giver's top-2 assets by default — a "gift" in a cycle trade
+  // should come from depth, not force away a team's best player just
+  // because it happens to fit the receiver well
+  const sortedFrom = [...LEAGUE[fromTeam]].sort((a,b)=>b.value-a.value);
+  const protectedNames = new Set(sortedFrom.length > 2 ? sortedFrom.slice(0,2).map(p=>p.name) : []);
+  const pool = tradeable(fromTeam).filter(p=>!protectedNames.has(p.name));
+
   let best = null, bestScore = -Infinity, bestGain = 0;
-  for(const p of tradeable(fromTeam)){
+  for(const p of pool){
     const gain = optimalLineupValue(rosterTo.concat([p])) - baseTo;
     const score = gain - p.value * 0.04;
     if(score > bestScore){ bestScore = score; best = p; bestGain = gain; }
@@ -1189,9 +1618,94 @@ function generate3team(){
   return out;
 }
 
+function generate4team(){
+  // Precompute best single-player gift for every ordered pair once (cheap),
+  // then only search 4-cycles among each team's most promising few outgoing
+  // edges — full brute force over all ordered 4-tuples is combinatorially
+  // wasteful for what it buys.
+  const giftMatrix = {};
+  for(const A of TEAM_NAMES){
+    giftMatrix[A] = {};
+    for(const B of TEAM_NAMES){
+      if(A === B) continue;
+      giftMatrix[A][B] = bestGift(A, B);
+    }
+  }
+  function topTargets(from, exclude){
+    return Object.entries(giftMatrix[from])
+      .filter(([team,g]) => !exclude.has(team) && g.player)
+      .sort((x,y) => y[1].score - x[1].score)
+      .slice(0, 4)
+      .map(([team]) => team);
+  }
+
+  const raw = [];
+  for(const A of TEAM_NAMES){
+    for(const B of topTargets(A, new Set([A]))){
+      for(const C of topTargets(B, new Set([A, B]))){
+        for(const D of topTargets(C, new Set([A, B, C]))){
+          const g1 = giftMatrix[A][B], g2 = giftMatrix[B][C], g3 = giftMatrix[C][D], g4 = giftMatrix[D][A];
+          if(!g4 || !g4.player) continue;
+          const names = [g1.player.name, g2.player.name, g3.player.name, g4.player.name];
+          if(new Set(names).size < 4) continue;
+
+          const rosterA = LEAGUE[A], rosterB = LEAGUE[B], rosterC = LEAGUE[C], rosterD = LEAGUE[D];
+          const baseA = optimalLineupValue(rosterA), baseB = optimalLineupValue(rosterB),
+                baseC = optimalLineupValue(rosterC), baseD = optimalLineupValue(rosterD);
+          const newA = swapRoster(rosterA, [g1.player.name], [g4.player]);
+          const newB = swapRoster(rosterB, [g2.player.name], [g1.player]);
+          const newC = swapRoster(rosterC, [g3.player.name], [g2.player]);
+          const newD = swapRoster(rosterD, [g4.player.name], [g3.player]);
+          const impA = optimalLineupValue(newA) - baseA;
+          const impB = optimalLineupValue(newB) - baseB;
+          const impC = optimalLineupValue(newC) - baseC;
+          const impD = optimalLineupValue(newD) - baseD;
+
+          const sentA = g1.player.value, recA = g4.player.value;
+          const sentB = g2.player.value, recB = g1.player.value;
+          const sentC = g3.player.value, recC = g2.player.value;
+          const sentD = g4.player.value, recD = g3.player.value;
+          const avgVal = (sentA+sentB+sentC+sentD)/4 || 1;
+          const maxSwing = Math.max(
+            Math.abs(recA-sentA), Math.abs(recB-sentB), Math.abs(recC-sentC), Math.abs(recD-sentD)
+          ) / avgVal;
+          if(maxSwing > 0.5) continue;
+
+          const beneficiaries = [impA, impB, impC, impD].filter(v => v > 0.3).length;
+          if(beneficiaries < 3) continue;
+          if(Math.min(impA, impB, impC, impD) < -5) continue;
+
+          const score = impA + impB + impC + impD - maxSwing * 6;
+          raw.push({
+            type: '4team', teams: [A, B, C, D],
+            moves: [
+              {player: g1.player.name, from: A, to: B},
+              {player: g2.player.name, from: B, to: C},
+              {player: g3.player.name, from: C, to: D},
+              {player: g4.player.name, from: D, to: A}
+            ],
+            impacts: {[A]: impA, [B]: impB, [C]: impC, [D]: impD}, swing: maxSwing, score
+          });
+        }
+      }
+    }
+  }
+  raw.sort((a,b) => b.score - a.score);
+  const seen = new Set(), out = [];
+  for(const s of raw){
+    const key = [...s.teams].sort().join('|');
+    if(seen.has(key)) continue;
+    seen.add(key);
+    out.push(s);
+    if(out.length >= 6) break;
+  }
+  return out;
+}
+
 function buildSuggestions(){
   const twoTeam = [...generate1for1(), ...generate2for1(), ...generateBundleTrades()].sort((a,b)=>b.score-a.score);
   const threeTeam = generate3team(); // already sorted, deduped by team-set
+  const fourTeam = generate4team();  // already sorted, deduped by team-set
 
   const seenPairs = new Set(), out = [];
   function add(s){
@@ -1202,19 +1716,34 @@ function buildSuggestions(){
     return true;
   }
 
-  // guarantee up to 2 of the best 3-team trades get a seat, so the tool's
+  // guarantee a few 3-team and 4-team trades get a seat, so the tool's
   // multi-team capability shows up even when 2-team fits happen to score higher
   let added3 = 0;
   for(const s of threeTeam){
     if(added3 >= 2) break;
     if(add(s)) added3++;
   }
+  let added4 = 0;
+  for(const s of fourTeam){
+    if(added4 >= 2) break;
+    if(add(s)) added4++;
+  }
 
-  const combined = [...twoTeam, ...threeTeam].sort((a,b)=>b.score-a.score);
+  const combined = [...twoTeam, ...threeTeam, ...fourTeam].sort((a,b)=>b.score-a.score);
   for(const s of combined){
-    if(out.length >= 60) break; // keep a deep pool so team filtering & variety have options
+    if(out.length >= 80) break; // keep a deep pool so filtering & variety have options
     add(s);
   }
+
+  // attach a % lineup improvement figure to each suggestion, relative to
+  // league-average starting-lineup strength, for the filter/sort controls
+  const avgVals = TEAM_NAMES.map(t=>optimalLineupValue(LEAGUE[t]));
+  const leagueAvg = avgVals.reduce((a,b)=>a+b,0) / avgVals.length || 1;
+  out.forEach(s=>{
+    const impactVals = Object.values(s.impacts);
+    const avgImpact = impactVals.reduce((a,b)=>a+b,0) / impactVals.length;
+    s.pctImprovement = (avgImpact / leagueAvg) * 100;
+  });
 
   out.sort((a,b)=>b.score-a.score);
   return out;
@@ -1231,27 +1760,37 @@ function renderSuggestions(){
     return;
   }
 
-  const filterTeam = document.getElementById('suggFilter').value;
-  const filtered = filterTeam === 'ALL'
+  const filterTeam = state.suggFilterTeam;
+  const minImprovement = state.suggMinImprovement;
+  const sortBy = state.suggSortBy;
+
+  let filtered = filterTeam === 'ALL'
     ? suggestionCache
     : suggestionCache.filter(s => s.teams.includes(filterTeam));
+  filtered = filtered.filter(s => s.pctImprovement >= minImprovement);
 
   // keep at most one suggestion per unique team combination for variety
-  // (suggestionCache is pre-sorted by score, so this keeps the best variant)
   const seenTeamSets = new Set();
-  const deduped = [];
+  let deduped = [];
   for(const s of filtered){
     const key = [...s.teams].sort().join('|');
     if(seenTeamSets.has(key)) continue;
     seenTeamSets.add(key);
     deduped.push(s);
   }
-  const shown = deduped.slice(0, 8);
+
+  if(sortBy === 'balance'){
+    deduped.sort((a,b) => a.swing - b.swing);
+  } else if(sortBy === 'fewest'){
+    deduped.sort((a,b) => a.moves.length - b.moves.length || b.score - a.score);
+  } else {
+    deduped.sort((a,b) => b.score - a.score); // 'impact' default (cache is already this order, re-sort defensively)
+  }
+
+  const shown = deduped.slice(0, 12);
 
   if(shown.length === 0){
-    list.innerHTML = filterTeam === 'ALL'
-      ? `<div class="sugg-loading">No mutually beneficial trades found under current thresholds.</div>`
-      : `<div class="sugg-loading">No fits found involving ${filterTeam} under current thresholds.</div>`;
+    list.innerHTML = `<div class="sugg-loading">No trades clear the current filters — try lowering the minimum improvement or widening the team filter.</div>`;
     return;
   }
 
@@ -1275,16 +1814,17 @@ function renderSuggestions(){
 
     const impactStr = s.teams.map(t => `${t.length>14?t.slice(0,13)+'…':t} ${s.impacts[t]>=0?'+':''}${fmt(s.impacts[t])}`).join('  ·  ');
     const swingPct = Math.round((s.swing||0)*100);
+    const typeLabel = {'2team':'2-team','3team':'3-team','4team':'4-team'}[s.type] || s.type;
 
     card.innerHTML = `
       <div class="sugg-card-head">
         <span class="sugg-teams">${teamsLabel}</span>
-        <span class="sugg-type-tag">${s.type==='3team'?'3-team':'2-team'}</span>
+        <span class="sugg-type-tag">${typeLabel}</span>
       </div>
       <div class="sugg-moves-list">${movesHtml}</div>
       <div class="sugg-card-foot">
         <div class="sugg-impact-line">Lineup impact: <span class="figure">${impactStr}</span></div>
-        <div class="sugg-swing-line">Value balance: <span class="figure">±${swingPct}%</span></div>
+        <div class="sugg-swing-line">Value balance: <span class="figure">±${swingPct}%</span> · Avg improvement: <span class="figure">${s.pctImprovement>=0?'+':''}${s.pctImprovement.toFixed(1)}%</span></div>
         <button class="load-btn" data-idx="${idx}">Load into builder</button>
       </div>
     `;
@@ -1309,6 +1849,7 @@ function loadSuggestion(s){
   while(state.teams.length < 3) state.teams.push(TEAM_NAMES.find(t => !state.teams.includes(t)));
   state.moves = s.moves.map(m => ({player: m.player, from: m.from, to: m.to}));
   renderAll();
+  switchToTab('engine');
   document.getElementById('board').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
@@ -1320,7 +1861,11 @@ document.getElementById('sizeToggle').addEventListener('click', (e)=>{
   if(n === state.size) return;
   state.size = n;
   document.querySelectorAll('#sizeToggle button').forEach(b=>b.classList.toggle('active', b===btn));
-  // if switching to 3-team and any 2-team moves exist, drop them (destinations ambiguous)
+  while(state.teams.length < state.size){
+    const unused = TEAM_NAMES.find(t=>!state.teams.includes(t));
+    state.teams.push(unused || TEAM_NAMES[state.teams.length % TEAM_NAMES.length]);
+  }
+  // moves reset on size change since destinations become ambiguous
   state.moves = [];
   renderAll();
 });
@@ -1328,6 +1873,18 @@ document.getElementById('sizeToggle').addEventListener('click', (e)=>{
 document.getElementById('resetBtn').addEventListener('click', ()=>{
   state.moves = [];
   renderAll();
+});
+
+document.getElementById('completeTradeBtn').addEventListener('click', ()=>{
+  if(state.moves.length === 0) return;
+  const teamsInvolved = [...new Set(state.moves.map(m=>m.from))];
+  const summary = state.moves.map(m=>`${m.player}: ${m.from} → ${m.to}`).join('\n');
+  const ok = confirm(`Complete this trade? This permanently updates all rosters.\n\n${summary}`);
+  if(!ok) return;
+  state.moves.forEach(m => movePlayerBetweenTeams(m.from, m.to, m.player));
+  state.moves = [];
+  afterRosterChange();
+  showToast('Trade completed — rosters updated' + (storageAvailable ? ' and saved.' : ' (not saved — storage unavailable in this view).'));
 });
 
 renderAll();
@@ -1339,7 +1896,19 @@ TEAM_NAMES.forEach(t=>{
   opt.value = t; opt.textContent = t;
   suggFilterEl.appendChild(opt);
 });
-suggFilterEl.addEventListener('change', renderSuggestions);
+suggFilterEl.addEventListener('change', (e)=>{
+  state.suggFilterTeam = e.target.value;
+  renderSuggestions();
+});
+
+document.getElementById('suggMinImprovement').addEventListener('change', (e)=>{
+  state.suggMinImprovement = parseFloat(e.target.value);
+  renderSuggestions();
+});
+document.getElementById('suggSortBy').addEventListener('change', (e)=>{
+  state.suggSortBy = e.target.value;
+  renderSuggestions();
+});
 
 renderSuggestions();
 
@@ -1352,6 +1921,10 @@ document.getElementById('tabbar').addEventListener('click', (e)=>{
   const tab = btn.dataset.tab;
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b===btn));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id === 'tab-' + tab));
+  if(tab === 'rosters') renderRostersTab();
+  if(tab === 'suggested' && !suggestionCache) renderSuggestions();
+  if(tab === 'magic') renderMagicTab();
+  if(tab === 'freeagents') renderFreeAgentsTab();
 });
 
 function switchToTab(tab){
@@ -1375,6 +1948,8 @@ myTeamSelectEl.addEventListener('change', (e)=>{
   state.tradeBlock = [];
   state.targets = [];
   document.getElementById('targetSearch').value = '';
+  const faSel = document.getElementById('faTeamSelect');
+  if(faSel) faSel.value = state.myTeam;
   renderMagicTab();
 });
 
@@ -1890,6 +2465,243 @@ function renderMagicResults(cards){
 }
 
 renderMagicTab();
+
+// =====================================================================
+// ROSTERS TAB
+// =====================================================================
+const rosterTeamSelectEl = document.getElementById('rosterTeamSelect');
+TEAM_NAMES.forEach(t=>{
+  const opt = document.createElement('option');
+  opt.value = t; opt.textContent = t;
+  if(t === state.rosterTeam) opt.selected = true;
+  rosterTeamSelectEl.appendChild(opt);
+});
+rosterTeamSelectEl.addEventListener('change', (e)=>{
+  state.rosterTeam = e.target.value;
+  state.rosterEditing = false;
+  renderRostersTab();
+});
+
+document.getElementById('rosterEditToggle').addEventListener('click', (e)=>{
+  state.rosterEditing = !state.rosterEditing;
+  e.target.textContent = state.rosterEditing ? 'Done editing' : 'Edit roster';
+  e.target.classList.toggle('active', state.rosterEditing);
+  renderRostersTab();
+});
+
+document.getElementById('resetRostersBtn').addEventListener('click', ()=>{
+  const ok = confirm('Reset ALL ten rosters back to draft-day, discarding any edits and completed trades? This cannot be undone.');
+  if(!ok) return;
+  try{ localStorage.removeItem(STORAGE_KEY); } catch(e){ /* ignore */ }
+  location.reload();
+});
+
+function renderRostersTab(){
+  const card = document.getElementById('rosterDetailCard');
+  const team = state.rosterTeam;
+  const roster = [...LEAGUE[team]].sort((a,b)=>b.value-a.value);
+
+  let html = `
+    <div class="roster-detail-head">
+      <span>${team} <span style="color:var(--chalk-faint); font-weight:500; font-size:12.5px;">· ${roster.length} players</span></span>
+      ${wasRestored ? '<span style="color:var(--chalk-faint); font-weight:500; font-size:11.5px;">Showing saved edits from this browser</span>' : ''}
+    </div>
+  `;
+
+  if(state.rosterEditing){
+    html += `
+      <div class="roster-add-row">
+        <input type="text" id="rosterAddSearch" placeholder="Search free agents to add…" autocomplete="off">
+        <div class="roster-add-results" id="rosterAddResults"></div>
+      </div>
+    `;
+  }
+
+  html += `<div class="roster-scroll" style="max-height:none;" id="rosterDetailList"></div>`;
+  card.innerHTML = html;
+
+  const listEl = document.getElementById('rosterDetailList');
+  roster.forEach(p=>{
+    const row = document.createElement('div');
+    row.className = 'player-row';
+    row.style.cursor = 'default';
+    row.innerHTML = `
+      <span class="poschip ${p.pos}">${p.pos}</span>
+      <span class="player-name">${p.name}</span>
+      <span class="player-meta">${p.pos}${p.posRank} · #${p.ovrRank} ovr${p.earlyBoost && p.earlyBoost!==1 ? (p.earlyBoost>1 ? ' · easy early slate' : ' · tough early slate') : ''}</span>
+      <span class="player-val">${fmt(p.value)}</span>
+      ${state.rosterEditing ? `<button class="roster-remove-btn" data-name="${p.name.replace(/"/g,'&quot;')}">Drop</button>` : ''}
+    `;
+    listEl.appendChild(row);
+  });
+
+  if(state.rosterEditing){
+    listEl.querySelectorAll('.roster-remove-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        removePlayerFromTeam(team, btn.dataset.name);
+        afterRosterChange();
+      });
+    });
+
+    const searchEl = document.getElementById('rosterAddSearch');
+    const resultsEl = document.getElementById('rosterAddResults');
+    searchEl.addEventListener('input', ()=>{
+      const q = searchEl.value.trim().toLowerCase();
+      resultsEl.innerHTML = '';
+      if(!q) return;
+      const matches = FREE_AGENTS
+        .filter(p => p.name.toLowerCase().includes(q))
+        .sort((a,b)=>b.value-a.value)
+        .slice(0, 8);
+      if(matches.length === 0){
+        resultsEl.innerHTML = `<div class="target-result-row" style="color:var(--chalk-faint);">No free agents match</div>`;
+        return;
+      }
+      matches.forEach(p=>{
+        const row = document.createElement('div');
+        row.className = 'target-result-row';
+        row.innerHTML = `
+          <span class="poschip ${p.pos}">${p.pos}</span>
+          <span class="tr-name">${p.name}</span>
+          <span class="tr-team">${p.pos}${p.posRank} · #${p.ovrRank}</span>
+          <button class="add-btn">+ Add</button>
+        `;
+        row.querySelector('.add-btn').addEventListener('click', ()=>{
+          addFreeAgentToTeam(team, p.name);
+          searchEl.value = '';
+          afterRosterChange();
+        });
+        resultsEl.appendChild(row);
+      });
+    });
+  }
+}
+
+renderRostersTab();
+
+// =====================================================================
+// FREE AGENTS TAB
+// =====================================================================
+const STARTABLE_THRESH = {QB:10, RB:30, WR:30, TE:12, K:10, DEF:10};
+
+function freeAgentNote(p){
+  const notes = [];
+  const thresh = STARTABLE_THRESH[p.pos] || 10;
+  if(p.posRank <= thresh){
+    notes.push(`Startable ${p.pos} right now in most 10-team leagues`);
+  } else if(p.posRank <= thresh * 1.6){
+    notes.push(`Flex/streaming-caliber ${p.pos}`);
+  } else {
+    notes.push(`Deep stash`);
+  }
+  if(p.earlyBoost > 1){
+    notes.push(`favorable Weeks 1-4 schedule`);
+  } else if(p.earlyBoost < 1){
+    notes.push(`tougher early slate`);
+  }
+  if(p.ovrRank <= 120){
+    notes.push(`rare — top-120 overall value still unrostered`);
+  }
+  return notes.join(' · ');
+}
+
+function positionScarcityNote(pos){
+  const thresh = STARTABLE_THRESH[pos] || 10;
+  const startableCount = FREE_AGENTS.filter(p=>p.pos===pos && p.posRank<=thresh).length;
+  if(startableCount === 0) return `No startable-caliber ${pos}s left on waivers — thinnest position in the pool right now.`;
+  if(startableCount <= 2) return `Only ${startableCount} startable-caliber ${pos}${startableCount>1?'s':''} remain on waivers — thin, worth grabbing if you're searching here.`;
+  return `${startableCount} startable-caliber ${pos}s still available — reasonable depth if you want to add or upgrade.`;
+}
+
+const faTeamSelectEl = document.getElementById('faTeamSelect');
+TEAM_NAMES.forEach(t=>{
+  const opt = document.createElement('option');
+  opt.value = t; opt.textContent = t;
+  faTeamSelectEl.appendChild(opt);
+});
+faTeamSelectEl.addEventListener('change', (e)=>{
+  state.myTeam = e.target.value;
+  myTeamSelectEl.value = state.myTeam; // keep Trade Magic's picker in sync
+  renderFreeAgentsTab();
+});
+
+document.getElementById('faSearch').addEventListener('input', renderFreeAgentsTab);
+
+function faRow(p){
+  const canAdd = !!state.myTeam;
+  const row = document.createElement('div');
+  row.className = 'fa-row';
+  row.innerHTML = `
+    <div class="fa-main">
+      <span class="poschip ${p.pos}">${p.pos}</span>
+      <span class="fa-name">${p.name}</span>
+      <span class="fa-meta">${p.pos}${p.posRank} · #${p.ovrRank} ovr</span>
+    </div>
+    <span class="fa-val">${fmt(p.value)}</span>
+    <span class="fa-note">${freeAgentNote(p)}</span>
+    ${canAdd ? `<button class="add-btn">+ Add to ${state.myTeam}</button>` : ''}
+  `;
+  if(canAdd){
+    row.querySelector('.add-btn').addEventListener('click', ()=>{
+      addFreeAgentToTeam(state.myTeam, p.name);
+      afterRosterChange();
+      showToast(`${p.name} added to ${state.myTeam}.`);
+    });
+  }
+  return row;
+}
+
+function faSection(title, note, players){
+  const sec = document.createElement('div');
+  sec.className = 'fa-section';
+  sec.innerHTML = `
+    <div class="fa-section-head">
+      <h4>${title}</h4>
+      <div class="fa-section-note">${note}</div>
+    </div>
+  `;
+  const list = document.createElement('div');
+  list.className = 'fa-list';
+  if(players.length === 0){
+    list.innerHTML = `<div class="sugg-loading" style="padding:14px;">None available</div>`;
+  } else {
+    players.forEach(p => list.appendChild(faRow(p)));
+  }
+  sec.appendChild(list);
+  return sec;
+}
+
+function renderFreeAgentsTab(){
+  faTeamSelectEl.value = state.myTeam || '';
+
+  const wrap = document.getElementById('faContent');
+  const q = document.getElementById('faSearch').value.trim().toLowerCase();
+  wrap.innerHTML = '';
+
+  if(q){
+    const matches = [...FREE_AGENTS]
+      .filter(p => p.name.toLowerCase().includes(q))
+      .sort((a,b) => b.value - a.value)
+      .slice(0, 30);
+    wrap.appendChild(faSection(`Search results for "${q}"`, `${matches.length} match${matches.length===1?'':'es'}`, matches));
+    return;
+  }
+
+  const topOverall = [...FREE_AGENTS].sort((a,b)=>b.value-a.value).slice(0, 12);
+  wrap.appendChild(faSection(
+    'Best available pickups',
+    'Top free agents league-wide by value, regardless of position — the ones worth a look no matter what your roster needs.',
+    topOverall
+  ));
+
+  ['QB','RB','WR','TE'].forEach(pos=>{
+    const top = FREE_AGENTS.filter(p=>p.pos===pos).sort((a,b)=>b.value-a.value).slice(0, 5);
+    if(top.length === 0) return;
+    wrap.appendChild(faSection(`${pos} depth`, positionScarcityNote(pos), top));
+  });
+}
+
+renderFreeAgentsTab();
 
 </script>
 </body>
