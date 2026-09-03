@@ -357,6 +357,49 @@
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
+  /* ---------- trade help modal ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(2,6,14,0.78);
+    display:none; align-items:center; justify-content:center;
+    z-index:100; padding:20px;
+  }
+  .modal-overlay.show{display:flex;}
+  .modal-card{
+    background:var(--turf-1); border:1px solid var(--line); border-radius:6px;
+    max-width:620px; width:100%; max-height:85vh; overflow-y:auto;
+  }
+  .modal-head{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:16px 20px; border-bottom:1px solid var(--navy-line);
+    background:var(--navy);
+    position:sticky; top:0; z-index:1;
+  }
+  .modal-head h3{margin:0; font-family:'Space Grotesk',sans-serif; font-size:16.5px; font-weight:700;}
+  .modal-close{
+    background:transparent; border:none; color:var(--chalk-dim); font-size:24px; cursor:pointer; line-height:1;
+    padding:2px 6px;
+  }
+  .modal-close:hover{color:var(--chalk);}
+  .modal-body{padding:18px 20px 22px;}
+  .th-summary{font-size:13px; color:var(--chalk-dim); line-height:1.6; margin:0 0 16px;}
+  .th-summary b{color:var(--chalk);}
+  .th-card{
+    background:var(--turf-2); border:1px solid var(--line); border-radius:4px;
+    padding:14px 16px; margin-bottom:12px;
+  }
+  .th-card:last-child{margin-bottom:0;}
+  .th-label{font-size:10px; text-transform:uppercase; letter-spacing:0.06em; font-weight:700; margin-bottom:6px;}
+  .th-label.addition{color:var(--good);}
+  .th-label.subtraction{color:var(--warn);}
+  .th-label.thirdparty{color:var(--pos-wr);}
+  .th-note{font-size:13px; color:var(--chalk-dim); margin-bottom:12px; line-height:1.5;}
+  .th-apply-btn{
+    background:var(--amber); border:none; color:var(--turf-0); font-weight:700;
+    padding:8px 14px; border-radius:4px; cursor:pointer; font-size:12.5px;
+    font-family:'Archivo',sans-serif;
+  }
+  .th-apply-btn:hover{background:#f0b354;}
+
   .sugg-controls{display:flex;gap:14px;flex-wrap:wrap;}
 
   /* ---------- rosters tab ---------- */
@@ -692,7 +735,7 @@
     #teamSelectors{width:100%;}
     #teamSelectors > div{width:100%;}
     #teamSelectors select{width:100%;}
-    .setup .field[style*="margin-left:auto"]{margin-left:0;width:100%;}
+    .setup .field[style*="margin-left:auto"]{margin-left:0;width:100%;flex-wrap:wrap;}
     .reset-btn,.complete-btn{flex:1;padding:11px 10px;font-size:12.5px;}
 
     .board{gap:12px;margin-bottom:22px;}
@@ -808,7 +851,6 @@
   <div class="tabbar" id="tabbar">
     <button class="tab-btn active" data-tab="engine">Trade Engine</button>
     <button class="tab-btn" data-tab="suggested">Suggested Trades</button>
-    <button class="tab-btn" data-tab="magic">Trade Magic</button>
     <button class="tab-btn" data-tab="rosters">Rosters</button>
     <button class="tab-btn" data-tab="freeagents">Free Agents</button>
     <button class="tab-btn" data-tab="power">Power Rankings</button>
@@ -826,6 +868,7 @@
       </div>
       <div class="field" id="teamSelectors"></div>
       <div class="field" style="margin-left:auto; display:flex; flex-direction:row; gap:8px; align-items:flex-end;">
+        <button class="reset-btn" id="tradeHelpBtn">Trade Help</button>
         <button class="reset-btn" id="resetBtn">Clear trade</button>
         <button class="complete-btn" id="completeTradeBtn" disabled>Complete Trade</button>
       </div>
@@ -882,56 +925,6 @@
       <div class="suggestions-list" id="suggestionsList">
         <div class="sugg-loading">Scanning the league for fits…</div>
       </div>
-    </section>
-  </div>
-
-  <div class="tab-panel" id="tab-magic">
-    <section class="magic-panel">
-      <div class="magic-intro">
-        <h3>Trade Magic</h3>
-        <div class="suggestions-sub">Set what you'd move and who you want. The engine always searches for the deal that costs you the least — it protects your two most valuable block pieces by default and only offers them up if nothing cheaper gets accepted — then checks direct offers first, then a two-step chain: another team acquires your target from its current owner in a fair deal of its own (sometimes bundled with a depth piece to free up a log-jam), and only then do you flip something from your block to get it from them.</div>
-      </div>
-
-      <div class="magic-setup">
-        <div class="field">
-          <label>My team</label>
-          <select id="myTeamSelect">
-            <option value="">Select your team…</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="magic-grid" id="magicGrid" style="display:none;">
-        <div class="magic-col">
-          <div class="magic-col-head">
-            <div>
-              <h4>Trade block</h4>
-              <div class="magic-sub">Click players on your roster you'd be willing to move</div>
-            </div>
-            <div class="magic-col-actions">
-              <button class="mini-btn" id="selectAllBlock">Select all</button>
-              <button class="mini-btn" id="clearAllBlock">Clear</button>
-            </div>
-          </div>
-          <div class="list-head"><span class="lh-label">Player</span><span class="lh-value">Trade value</span></div>
-          <div class="roster-scroll" id="blockRosterList"></div>
-        </div>
-        <div class="magic-col">
-          <h4>Target list</h4>
-          <div class="magic-sub">Browse by overall rank or search any other roster</div>
-          <select id="targetRankDropdown" class="target-search" style="margin-bottom:8px;">
-            <option value="">Browse by overall rank…</option>
-          </select>
-          <input type="text" id="targetSearch" class="target-search" placeholder="Search players…" autocomplete="off">
-          <div class="target-search-results" id="targetSearchResults"></div>
-          <div class="target-list-head">On your list</div>
-          <div class="target-list-items" id="targetListItems">
-            <div class="sugg-loading" style="padding:14px;">Nothing targeted yet</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="magic-results" id="magicResults"></div>
     </section>
   </div>
 
@@ -1017,6 +1010,16 @@
 
 
 <div id="toast" class="toast"></div>
+
+<div class="modal-overlay" id="tradeHelpOverlay">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>Trade Help</h3>
+      <button class="modal-close" id="tradeHelpClose">&times;</button>
+    </div>
+    <div id="tradeHelpContent"></div>
+  </div>
+</div>
 
 <footer>
   Value is driven primarily by each player's overall consensus rank (FantasyPros ECR), converted through a decay curve so being a WR7 overall means meaningfully more than being an RB7 overall by rank alone — a modest position-scarcity multiplier (RB and TE run slightly hotter, since they're scarcer at the replacement level) and a starter-tier premium then nudge value up for players who'd actually crack a typical 10-team starting lineup, and down for pure bench depth, since bench production doesn't score points. A small early-season schedule adjustment (±5%, skill positions only) is also folded in for teams with a clearly favorable or unfavorable Weeks 1–4 slate per current research — the idea being a hot, easy-schedule start is a sell-high window, not a reason to overhaul a valuation. Starting-lineup impact assumes a 1 QB · 2 RB · 2 WR · 1 TE · 2 FLEX · 1 K · 1 DST lineup (5 bench, 3 IR) and compares each team's best possible starters before and after the deal. Chain paths are sequential, independent trades — the first happens on its own merits between two other teams, the next is your follow-up once it's actually happened — not a single combined transaction. Roster edits and completed trades are saved in this browser only (via local storage) — they won't sync across devices, and clearing your browser data will reset them.
@@ -1116,21 +1119,6 @@ function sanitizeMoves(){
   state.moves = state.moves.filter(m => LEAGUE[m.from] && LEAGUE[m.from].some(p=>p.name===m.player));
 }
 
-// Keep Trade Magic's block/target selections valid after any roster change.
-function resyncMagicState(){
-  if(state.myTeam && LEAGUE[state.myTeam]){
-    const mine = new Set(LEAGUE[state.myTeam].map(p=>p.name));
-    state.tradeBlock = state.tradeBlock.filter(n=>mine.has(n));
-  }
-  state.targets = state.targets.map(t=>{
-    if(LEAGUE[t.team] && LEAGUE[t.team].some(p=>p.name===t.name)) return t;
-    for(const team of TEAM_NAMES){
-      if(LEAGUE[team].some(p=>p.name===t.name)) return {team, name: t.name};
-    }
-    return null; // now a free agent (or otherwise gone) — drop from targets
-  }).filter(Boolean);
-}
-
 function showToast(msg){
   const el = document.getElementById('toast');
   if(!el) return;
@@ -1147,11 +1135,9 @@ function afterRosterChange(){
   suggestionCache = null;
   powerRankingsCache = null;
   sanitizeMoves();
-  resyncMagicState();
   renderAll();
   renderRostersTab();
   if(document.getElementById('tab-suggested').classList.contains('active')) renderSuggestions();
-  if(document.getElementById('tab-magic').classList.contains('active')) renderMagicTab();
   if(document.getElementById('tab-freeagents').classList.contains('active')) renderFreeAgentsTab();
   if(document.getElementById('tab-power').classList.contains('active')) renderPowerRankingsTab();
 }
@@ -1161,9 +1147,7 @@ const state = {
   teams: [TEAM_NAMES[0], TEAM_NAMES[1], TEAM_NAMES[2]],
   // moves: array of {player, from, to}
   moves: [],
-  myTeam: '',
-  tradeBlock: [],   // player names on my roster I'd move
-  targets: [],      // [{team, name}]
+  myTeam: '',       // used by the Free Agents tab's "add to team" picker
   rosterTeam: TEAM_NAMES[0],
   suggFilterTeam: 'ALL',
   suggMinImprovement: 0,
@@ -2063,7 +2047,6 @@ document.getElementById('tabbar').addEventListener('click', (e)=>{
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.id === 'tab-' + tab));
   if(tab === 'rosters') renderRostersTab();
   if(tab === 'suggested' && !suggestionCache) renderSuggestions();
-  if(tab === 'magic') renderMagicTab();
   if(tab === 'freeagents') renderFreeAgentsTab();
   if(tab === 'power') renderPowerRankingsTab();
 });
@@ -2074,192 +2057,17 @@ function switchToTab(tab){
 }
 
 // =====================================================================
-// TRADE MAGIC: trade block, target list, chain-trading engine
+// TRADE HELP — analyzes the trade currently being built and suggests
+// concrete fixes (add a piece, remove a piece, or bring in a third team)
+// to balance or complete it. Neutral by design: it isn't biased toward
+// any one team in the deal, since there's no "my team" concept here —
+// just "make the deal in front of you work."
 // =====================================================================
 
-// populate "my team" selector
-const myTeamSelectEl = document.getElementById('myTeamSelect');
-TEAM_NAMES.forEach(t=>{
-  const opt = document.createElement('option');
-  opt.value = t; opt.textContent = t;
-  myTeamSelectEl.appendChild(opt);
-});
-myTeamSelectEl.addEventListener('change', (e)=>{
-  state.myTeam = e.target.value;
-  state.tradeBlock = [];
-  state.targets = [];
-  document.getElementById('targetSearch').value = '';
-  const faSel = document.getElementById('faTeamSelect');
-  if(faSel) faSel.value = state.myTeam;
-  renderMagicTab();
-});
-
-document.getElementById('targetSearch').addEventListener('input', renderTargetSearchResults);
-
-document.getElementById('selectAllBlock').addEventListener('click', ()=>{
-  if(!state.myTeam) return;
-  state.tradeBlock = LEAGUE[state.myTeam].map(p=>p.name);
-  renderBlockRoster();
-  runChainEngine();
-});
-document.getElementById('clearAllBlock').addEventListener('click', ()=>{
-  state.tradeBlock = [];
-  renderBlockRoster();
-  runChainEngine();
-});
-
-document.getElementById('targetRankDropdown').addEventListener('change', (e)=>{
-  const val = e.target.value;
-  if(!val) return;
-  const sep = val.indexOf('::');
-  const team = val.slice(0, sep), name = val.slice(sep+2);
-  state.targets.push({team, name});
-  e.target.value = '';
-  renderTargetDropdown();
-  renderTargetListItems();
-  renderTargetSearchResults();
-  runChainEngine();
-});
-
-function renderMagicTab(){
-  const grid = document.getElementById('magicGrid');
-  if(!state.myTeam){
-    grid.style.display = 'none';
-    document.getElementById('magicResults').innerHTML = '';
-    return;
-  }
-  grid.style.display = 'grid';
-  renderBlockRoster();
-  renderTargetDropdown();
-  renderTargetSearchResults();
-  renderTargetListItems();
-  runChainEngine();
-}
-
-function renderTargetDropdown(){
-  const sel = document.getElementById('targetRankDropdown');
-  if(!state.myTeam){ sel.innerHTML = `<option value="">Browse by overall rank…</option>`; return; }
-  const already = new Set(state.targets.map(t=>t.team+':'+t.name));
-  const all = [];
-  for(const t of TEAM_NAMES){
-    if(t === state.myTeam) continue;
-    for(const p of LEAGUE[t]){
-      if(already.has(t+':'+p.name)) continue;
-      all.push({...p, team: t});
-    }
-  }
-  all.sort((a,b)=>a.ovrRank-b.ovrRank);
-  sel.innerHTML = `<option value="">Browse by overall rank…</option>` +
-    all.map(p=>`<option value="${p.team}::${p.name}">#${p.ovrRank} ${p.name} — ${p.pos} · ${p.team}</option>`).join('');
-}
-
-function renderBlockRoster(){
-  const wrap = document.getElementById('blockRosterList');
-  const savedScroll = wrap.scrollTop;
-  wrap.innerHTML = '';
-  const roster = [...LEAGUE[state.myTeam]].sort((a,b)=>b.value-a.value);
-  roster.forEach(p=>{
-    const onBlock = state.tradeBlock.includes(p.name);
-    const row = document.createElement('div');
-    row.className = 'player-row' + (onBlock ? ' selected' : '');
-    row.innerHTML = `
-      <span class="checkmark"><svg viewBox="0 0 10 10"><polyline points="1,5 4,8 9,1.5" fill="none" stroke="#0c1410" stroke-width="1.8"/></svg></span>
-      <span class="poschip ${p.pos}">${p.pos}</span>
-      <span class="player-name">${p.name}</span>
-      <span class="player-meta">${p.pos}${p.posRank} · #${p.ovrRank} ovr</span>
-      <span class="player-val">${fmt(p.value)}</span>
-    `;
-    row.addEventListener('click', ()=>{
-      if(onBlock){
-        state.tradeBlock = state.tradeBlock.filter(n=>n!==p.name);
-      } else {
-        state.tradeBlock.push(p.name);
-      }
-      renderBlockRoster();
-      runChainEngine();
-    });
-    wrap.appendChild(row);
-  });
-  wrap.scrollTop = savedScroll;
-}
-
-function renderTargetSearchResults(){
-  const q = document.getElementById('targetSearch').value.trim().toLowerCase();
-  const box = document.getElementById('targetSearchResults');
-  if(!q){ box.innerHTML = ''; return; }
-
-  const already = new Set(state.targets.map(t=>t.team+':'+t.name));
-  const results = [];
-  for(const t of TEAM_NAMES){
-    if(t === state.myTeam) continue;
-    for(const p of LEAGUE[t]){
-      if(already.has(t+':'+p.name)) continue;
-      if(p.name.toLowerCase().includes(q)){
-        results.push({...p, team: t});
-      }
-    }
-  }
-  results.sort((a,b)=>b.value-a.value);
-  const top = results.slice(0, 8);
-
-  if(top.length === 0){
-    box.innerHTML = `<div class="target-result-row" style="color:var(--chalk-faint);">No matches</div>`;
-    return;
-  }
-  box.innerHTML = '';
-  top.forEach(p=>{
-    const row = document.createElement('div');
-    row.className = 'target-result-row';
-    row.innerHTML = `
-      <span class="poschip ${p.pos}">${p.pos}</span>
-      <span class="tr-name">${p.name}</span>
-      <span class="tr-team">${p.team}</span>
-      <button class="add-btn">+ Add</button>
-    `;
-    row.querySelector('.add-btn').addEventListener('click', ()=>{
-      state.targets.push({team: p.team, name: p.name});
-      document.getElementById('targetSearch').value = '';
-      renderTargetSearchResults();
-      renderTargetDropdown();
-      renderTargetListItems();
-      runChainEngine();
-    });
-    box.appendChild(row);
-  });
-}
-
-function renderTargetListItems(){
-  const wrap = document.getElementById('targetListItems');
-  if(state.targets.length === 0){
-    wrap.innerHTML = `<div class="sugg-loading" style="padding:14px;">Nothing targeted yet</div>`;
-    return;
-  }
-  wrap.innerHTML = '';
-  state.targets.forEach((t, idx)=>{
-    const p = findPlayer(t.team, t.name);
-    const chip = document.createElement('div');
-    chip.className = 'target-chip';
-    chip.innerHTML = `
-      <span class="poschip ${p.pos}">${p.pos}</span>
-      <span class="tc-name">${p.name}</span>
-      <span class="tc-team">${t.team}</span>
-      <button class="remove-btn">×</button>
-    `;
-    chip.querySelector('.remove-btn').addEventListener('click', ()=>{
-      state.targets.splice(idx, 1);
-      renderTargetListItems();
-      renderTargetSearchResults();
-      renderTargetDropdown();
-      runChainEngine();
-    });
-    wrap.appendChild(chip);
-  });
-}
+function fmtSigned(v){ return (v>=0?'+':'') + fmt(v); }
 
 // Generate combinations of `pool` (sizes 1..maxSize) ranked by how closely
-// their combined value matches `targetValue` — a neutral value-match search,
-// used when evaluating a trade between two teams that AREN'T me (I have no
-// stake in skewing it, so find the realistic, balanced outcome).
+// their combined value matches `targetValue` — closest-match, no bias.
 function combosByValueMatch(pool, targetValue, maxSize){
   const capped = pool.length <= 12 ? pool : [...pool].sort((a,b)=>b.value-a.value).slice(0,12);
   const combos = [];
@@ -2281,333 +2089,169 @@ function combosByValueMatch(pool, targetValue, maxSize){
   return combos;
 }
 
-// Same combination generation, but ranked cheapest-total-value first — used
-// when I'M the one paying, so the search naturally tries to spend as little
-// of my value as possible before working its way up to pricier offers.
-function combosCheapestFirst(pool, maxSize){
-  let capped = pool;
-  if(pool.length > 12){
-    const sorted = [...pool].sort((a,b)=>a.value-b.value);
-    capped = [...sorted.slice(0,10), ...sorted.slice(-2)]; // cheapest 10 + priciest 2 as a last-resort option
-  }
-  const combos = [];
-  function rec(start, combo){
-    if(combo.length > 0){
-      const sumVal = combo.reduce((s,p)=>s+p.value, 0);
-      combos.push({bundle: combo.slice(), sumVal});
-    }
-    if(combo.length === maxSize) return;
-    for(let i=start; i<capped.length; i++){
-      combo.push(capped[i]);
-      rec(i+1, combo);
-      combo.pop();
-    }
-  }
-  rec(0, []);
-  combos.sort((a,b) => a.sumVal - b.sumVal);
-  return combos;
-}
+function analyzeTradeForHelp(){
+  const activeTeams = state.teams.slice(0, state.size);
+  if(state.moves.length === 0) return {empty: true};
 
-// Evaluate "giverTeam gives up requiredPlayers[], receiverTeam sends back a
-// bundle built from receiverGivePool", in one of two modes:
-//   'neutral' — closest realistic value match, no bias (two other teams).
-//   'favorMe' — receiverTeam is ME. Protects my top-2 most valuable pieces
-//     from the pool by default (won't offer my studs unless nothing else
-//     clears), and searches cheapest-first so I never pay more than the
-//     minimum that actually gets accepted — accepted meaning it clears a
-//     real lineup-benefit bar for the giver, not just a value-balance one.
-// Evaluate "giverTeam gives up requiredPlayers[], receiverTeam sends back a
-// bundle built from receiverGivePool", in one of two modes:
-//   'neutral' — realistic value match within a firm ±20% band, no bias
-//     (used between two teams that aren't me — I have no stake in skewing it).
-//   'favorMe' — receiverTeam is ME. Protects my top-2 most valuable pieces
-//     from the pool by default, and searches cheapest-first within a firm
-//     0.85x–1.15x value band, so I never pay more than necessary — but a
-//     trade that's outside realistic value range for BOTH sides never
-//     clears, no matter how much it happens to help a bench spot.
-function evaluateLegGeneral(giverRosterCurrent, requiredPlayers, receiverRosterCurrent, receiverGivePool, maxSize, mode){
-  const requiredVal = requiredPlayers.reduce((s,p)=>s+p.value, 0) || 0.01;
-  const reqNames = requiredPlayers.map(p=>p.name);
-  const baseGiver = optimalLineupValue(giverRosterCurrent);
-  const baseReceiver = optimalLineupValue(receiverRosterCurrent);
-
-  function evalCombo(bundle){
-    const newGiver = swapRoster(giverRosterCurrent, reqNames, bundle);
-    const newReceiver = swapRoster(receiverRosterCurrent, bundle.map(p=>p.name), requiredPlayers);
-    return {
-      bundle,
-      impGiver: optimalLineupValue(newGiver) - baseGiver,
-      impReceiver: optimalLineupValue(newReceiver) - baseReceiver,
-      sumVal: bundle.reduce((s,p)=>s+p.value, 0),
-      fitPos: positionFitNote(receiverRosterCurrent, newReceiver)
-    };
-  }
-
-  if(mode === 'favorMe'){
-    const sortedByValue = [...receiverGivePool].sort((a,b)=>b.value-a.value);
-    const protectedNames = new Set(sortedByValue.length > 2 ? sortedByValue.slice(0,2).map(p=>p.name) : []);
-    const depthPool = receiverGivePool.filter(p=>!protectedNames.has(p.name));
-
-    function walk(pool){
-      const combos = combosCheapestFirst(pool, maxSize);
-      let bestReach = null;
-      for(const c of combos){
-        const ratio = c.sumVal / requiredVal;
-        if(ratio > 1.5) break; // stop once absurdly expensive, nothing more to gain from trying pricier
-        const attempt = evalCombo(c.bundle);
-        attempt.swing = Math.abs(attempt.sumVal - requiredVal) / ((attempt.sumVal + requiredVal)/2 || 1);
-        attempt.ratio = ratio;
-        attempt.cleared = attempt.impGiver > 0.3 && ratio >= 0.85 && ratio <= 1.15;
-        if(attempt.cleared) return attempt; // cheapest-first, so first clear = best price for me
-        if(!bestReach || attempt.sumVal < bestReach.sumVal) bestReach = attempt;
-      }
-      return bestReach;
-    }
-
-    const depthResult = walk(depthPool);
-    if(depthResult && depthResult.cleared) return depthResult;
-    const fullResult = walk(receiverGivePool);
-    if(fullResult && fullResult.cleared) return fullResult;
-    return fullResult || depthResult; // best-effort reach info
-  }
-
-  // neutral mode — firm ±20% value band, no bias toward either side
-  const combos = combosByValueMatch(receiverGivePool, requiredVal, maxSize);
-  let bestReach = null;
-  for(const c of combos.slice(0, 12)){
-    const ratio = c.sumVal / requiredVal;
-    const attempt = evalCombo(c.bundle);
-    attempt.swing = c.swing;
-    attempt.ratio = ratio;
-    attempt.cleared = attempt.impGiver > -0.5 && ratio >= 0.80 && ratio <= 1.20;
-    if(attempt.cleared) return attempt;
-    if(!bestReach || c.swing < bestReach.swing) bestReach = attempt;
-  }
-  return bestReach;
-}
-
-// Which position (QB/RB/WR/TE) improved the most for the receiver — used to
-// describe *why* a leg makes sense for the team getting the incoming piece(s).
-function positionFitNote(beforeRoster, afterRoster){
-  let best = null, bestDelta = 0.4; // require a real bump, not noise
-  for(const pos of ['QB','RB','WR','TE']){
-    const delta = bestPositionValue(afterRoster, pos) - bestPositionValue(beforeRoster, pos);
-    if(delta > bestDelta){ bestDelta = delta; best = pos; }
-  }
-  return best;
-}
-
-function findDirectAcquisition(targetPlayer, targetTeam){
-  const myBlockPlayers = LEAGUE[state.myTeam].filter(p => state.tradeBlock.includes(p.name) && p.pos!=='K' && p.pos!=='DEF');
-  if(myBlockPlayers.length === 0) return null;
-  const leg = evaluateLegGeneral(LEAGUE[targetTeam], [targetPlayer], LEAGUE[state.myTeam], myBlockPlayers, 4, 'favorMe');
-  if(!leg) return null;
-  return {teamGiving: targetTeam, ...leg};
-}
-
-// Try a neutral leg where `giverTeamName` sends the target to `receiverRoster`
-// alone; if that doesn't clear a firm value band, try packaging the target
-// with one extra depth piece from the giver (protecting their top-2 assets
-// and never using a QB as a throw-in) — modeling a team freeing up a
-// positional log-jam to make the numbers work for both sides.
-function tryNeutralLegWithPackaging(giverTeamName, giverRoster, targetPlayer, receiverRoster, receiverGivePool, maxSize){
-  let leg = evaluateLegGeneral(giverRoster, [targetPlayer], receiverRoster, receiverGivePool, maxSize, 'neutral');
-  if(leg && leg.cleared) return {leg, extra: []};
-
-  const tPool = tradeable(giverTeamName).filter(p=>p.name !== targetPlayer.name && p.pos !== 'QB');
-  const tSorted = [...tPool].sort((a,b)=>b.value-a.value);
-  const tProtected = new Set(tSorted.length > 2 ? tSorted.slice(0,2).map(p=>p.name) : []);
-  const tExtras = tPool.filter(p=>!tProtected.has(p.name)).sort((a,b)=>b.value-a.value).slice(0,5);
-  for(const extra of tExtras){
-    const trial = evaluateLegGeneral(giverRoster, [targetPlayer, extra], receiverRoster, receiverGivePool, maxSize, 'neutral');
-    if(trial && trial.cleared) return {leg: trial, extra: [extra]};
-  }
-  return {leg, extra: []}; // best-effort reach, not cleared
-}
-
-// Multi-hop chain search — an extension of 3-team trades to 4- and 5-team
-// routes. At each step: can the current holder move the target to some new
-// team B in a fair, self-interested deal (a real trade B would want on its
-// own merits)? If so, try closing the loop with a favorMe offer from my
-// block; if that doesn't clear yet, keep extending the chain through
-// another team, up to 3 hops out (a 5-team route: T, B1, B2, B3, me).
-// Shorter chains are always preferred — deeper hops are only attempted once
-// every shorter route has been fully searched and failed.
-function searchChainAtDepth(chainLegs, currentTeamName, currentRoster, targetPlayer, usedTeams, remainingHops, myBlockPlayers){
-  const finalLeg = evaluateLegGeneral(currentRoster, [targetPlayer], LEAGUE[state.myTeam], myBlockPlayers, 4, 'favorMe');
-  if(finalLeg && finalLeg.cleared){
-    return [...chainLegs, {kind:'final', from: currentTeamName, to: state.myTeam, leg: finalLeg, extra: []}];
-  }
-  if(remainingHops <= 0) return null;
-
-  let bestPath = null, bestScore = -Infinity;
-  for(const B of TEAM_NAMES){
-    if(B === state.myTeam || usedTeams.has(B)) continue;
-    const bSorted = [...LEAGUE[B]].filter(p=>p.pos!=='K'&&p.pos!=='DEF').sort((x,y)=>y.value-x.value);
-    const protectB = new Set(bSorted.slice(0,2).map(p=>p.name));
-    const bGivePool = tradeable(B).filter(p=>!protectB.has(p.name));
-
-    const {leg, extra} = tryNeutralLegWithPackaging(currentTeamName, currentRoster, targetPlayer, LEAGUE[B], bGivePool, 3);
-    if(!leg || !leg.cleared) continue;
-
-    const newBRoster = swapRoster(LEAGUE[B], leg.bundle.map(p=>p.name), [targetPlayer, ...extra]);
-    const newUsed = new Set(usedTeams); newUsed.add(B);
-    const subPath = searchChainAtDepth(
-      [...chainLegs, {kind:'hop', from: currentTeamName, to: B, leg, extra}],
-      B, newBRoster, targetPlayer, newUsed, remainingHops - 1, myBlockPlayers
-    );
-    if(subPath){
-      const score = subPath.reduce((s,l)=> s + (l.leg.impGiver||0) + (l.leg.impReceiver||0), 0);
-      if(score > bestScore){ bestScore = score; bestPath = subPath; }
-    }
-  }
-  return bestPath;
-}
-
-function findChainAcquisition(targetPlayer, targetTeam){
-  const myBlockPlayers = LEAGUE[state.myTeam].filter(p => state.tradeBlock.includes(p.name) && p.pos!=='K' && p.pos!=='DEF');
-  if(myBlockPlayers.length === 0) return null;
-
-  // stage by depth: prefer the shortest working chain (4-team, then 5-team)
-  for(let hops=1; hops<=3; hops++){
-    const path = searchChainAtDepth([], targetTeam, LEAGUE[targetTeam], targetPlayer, new Set([targetTeam]), hops, myBlockPlayers);
-    if(path) return path;
-  }
-  return null;
-}
-
-function runChainEngine(){
-  const results = document.getElementById('magicResults');
-  if(!state.myTeam || state.targets.length === 0){
-    results.innerHTML = '';
-    return;
-  }
-  results.innerHTML = state.targets.map(()=>'').join(''); // clear
-  const cards = state.targets.map(t=>{
-    const p = findPlayer(t.team, t.name);
-    if(t.team === state.myTeam){
-      return {target: p, team: t.team, direct: null, chainPath: null, own: true};
-    }
-    const direct = findDirectAcquisition(p, t.team);
-    const chainPath = (!direct || !direct.cleared) ? findChainAcquisition(p, t.team) : null;
-    return {target: p, team: t.team, direct, chainPath};
+  const teamStats = activeTeams.map(team=>{
+    const sends = sentByFrom(team);
+    const receives = receivedByTo(team);
+    const sendTotal = sends.reduce((s,m)=>s + findPlayer(m.from, m.player).value, 0);
+    const recTotal = receives.reduce((s,m)=>s + findPlayer(m.from, m.player).value, 0);
+    return {team, sendTotal, recTotal, net: recTotal - sendTotal, sends, receives};
   });
-  renderMagicResults(cards);
-}
 
-function fmtSigned(v){ return (v>=0?'+':'') + fmt(v); }
+  const sorted = [...teamStats].sort((a,b)=>a.net-b.net);
+  const loser = sorted[0];               // most shortchanged
+  const winner = sorted[sorted.length-1]; // getting the best of it
 
-function renderMagicResults(cards){
-  const wrap = document.getElementById('magicResults');
-  wrap.innerHTML = '';
-  cards.forEach((c, idx)=>{
-    const card = document.createElement('div');
-    card.className = 'mr-card';
+  const totalMoved = teamStats.reduce((s,t)=>s+t.sendTotal, 0);
+  const avgPerTeam = (totalMoved / activeTeams.length) || 1;
+  const swingPct = Math.abs(winner.net) / avgPerTeam;
 
-    let body = `
-      <div class="mr-head">
-        <span class="poschip ${c.target.pos}">${c.target.pos}</span>
-        <span class="mr-name">${c.target.name}</span>
-        <span class="mr-team">${c.team}</span>
-        <span class="mr-value">${fmt(c.target.value)}</span>
-      </div>
-    `;
+  if(swingPct < 0.08 || winner.team === loser.team){
+    return {balanced: true, teamStats, loser, winner};
+  }
 
-    if(c.own){
-      body += `<div class="mr-none">This player is already on your roster.</div>`;
-    } else if(c.direct && c.direct.cleared){
-      const costNote = c.direct.sumVal < c.target.value
-        ? `you're paying below market for this — worth locking in`
-        : `close to full value`;
-      const fitNote = c.direct.fitPos ? ` · fills their ${c.direct.fitPos} need` : '';
-      body += `
-        <div class="mr-path direct">
-          <div class="mr-path-label">Direct trade available</div>
-          <div class="mr-step-moves">
-            ${c.direct.bundle.map(p=>`<div class="sugg-move"><span class="poschip ${p.pos}">${p.pos}</span><span class="sugg-move-name">${p.name}</span><span class="sugg-move-route">${state.myTeam} <span class="arrow">→</span> ${c.team}</span></div>`).join('')}
-          </div>
-          <div class="mr-fair">You send ${fmt(c.direct.sumVal)} vs their ${fmt(c.target.value)} (${costNote}) · ${c.team} lineup impact ${fmtSigned(c.direct.impGiver)}${fitNote}</div>
-          <button class="mr-load-btn" data-idx="${idx}" data-kind="direct">Load into Trade Engine</button>
-        </div>
-      `;
-    } else if(c.chainPath){
-      const teamsInPath = [c.team, ...c.chainPath.map(s=>s.to)];
-      body += `
-        <div class="mr-path chain">
-          <div class="mr-path-label">${c.chainPath.length}-step chain via ${teamsInPath.slice(1,-1).join(' → ') || teamsInPath[1]} (${teamsInPath.length}-team route)</div>
-      `;
-      c.chainPath.forEach((step, stepIdx)=>{
-        const stepNum = stepIdx + 1;
-        const isFinal = step.kind === 'final';
-        const extraNote = step.extra && step.extra.length
-          ? ` (packaged with ${step.extra.map(p=>p.name).join(', ')} to free up depth for ${step.from})`
-          : '';
-        const fitNote = step.leg.fitPos ? ` · fills ${step.to}'s ${step.leg.fitPos} need` : '';
-        if(!isFinal){
-          body += `
-            <div class="mr-step"><b>Step ${stepNum}</b> — independent of you, but a fair deal for both sides: ${step.from} sends <b>${c.target.name}</b>${extraNote} to ${step.to} for ${step.leg.bundle.map(p=>p.name).join(', ')}.
-              <div class="mr-fair">${step.from} lineup impact ${fmtSigned(step.leg.impGiver)} · ${step.to} lineup impact ${fmtSigned(step.leg.impReceiver)}${fitNote} · value balance ±${Math.round(step.leg.swing*100)}%</div>
-              ${stepIdx===0 ? `<button class="mr-load-btn" data-idx="${idx}" data-kind="step1">Load Step 1</button>` : ''}
-            </div>
-          `;
-        } else {
-          body += `
-            <div class="mr-step"><b>Step ${stepNum}</b> — once prior steps have happened, you approach ${step.from}: you send ${step.leg.bundle.map(p=>p.name).join(', ')} for <b>${c.target.name}</b>.
-              <div class="mr-fair">You send ${fmt(step.leg.sumVal)} vs their ${fmt(c.target.value)} · ${step.from} lineup impact ${fmtSigned(step.leg.impGiver)}</div>
-            </div>
-          `;
-        }
+  const gap = winner.net;
+  const usedNames = new Set(state.moves.map(m=>m.player));
+  const suggestions = [];
+
+  // ---- Addition: winner sends more to loser ----
+  const winnerPool = tradeable(winner.team).filter(p => !usedNames.has(p.name));
+  if(winnerPool.length > 0 && gap > 0.5){
+    const combos = combosByValueMatch(winnerPool, gap, 3);
+    if(combos.length && combos[0].swing < 0.45){
+      const best = combos[0];
+      suggestions.push({
+        type: 'addition',
+        from: winner.team, to: loser.team,
+        bundle: best.bundle,
+        note: `${winner.team} adds ${best.bundle.map(p=>p.name).join(', ')} to what they're sending ${loser.team} (+${fmt(best.sumVal)} value) — brings both sides much closer to even.`
       });
-      body += `</div>`;
-    } else if(c.direct){
-      // best-effort reach that never cleared the fairness bar
-      body += `
-        <div class="mr-path chain">
-          <div class="mr-path-label">Reach only</div>
-          <div class="mr-step">Cheapest offer found (${c.direct.bundle.map(p=>p.name).join(', ')}, worth ${fmt(c.direct.sumVal)} vs their ${fmt(c.target.value)}) is outside a realistic value range for ${c.team} — they'd likely want closer to full value, or this player isn't available for what you're offering.</div>
-        </div>
-      `;
-    } else {
-      body += `<div class="mr-none">No fair direct or chain path found (searched up to 5-team routes) with your current trade block. Try adding more pieces to your block.</div>`;
     }
+  }
 
-    card.innerHTML = body;
-    wrap.appendChild(card);
-  });
-
-  wrap.querySelectorAll('.mr-load-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const idx = parseInt(btn.dataset.idx, 10);
-      const kind = btn.dataset.kind;
-      const c = cards[idx];
-      if(kind === 'direct'){
-        state.size = 2;
-        state.teams = [state.myTeam, c.team, TEAM_NAMES.find(t=>t!==state.myTeam && t!==c.team)];
-        state.moves = [
-          ...c.direct.bundle.map(p=>({player:p.name, from: state.myTeam, to: c.team})),
-          {player: c.target.name, from: c.team, to: state.myTeam}
-        ];
-      } else if(kind === 'step1'){
-        const firstHop = c.chainPath[0];
-        state.size = 2;
-        state.teams = [firstHop.from, firstHop.to, TEAM_NAMES.find(t=>t!==firstHop.from && t!==firstHop.to)];
-        state.moves = [
-          {player: c.target.name, from: firstHop.from, to: firstHop.to},
-          ...firstHop.extra.map(p=>({player:p.name, from: firstHop.from, to: firstHop.to})),
-          ...firstHop.leg.bundle.map(p=>({player:p.name, from: firstHop.to, to: firstHop.from}))
-        ];
+  // ---- Subtraction: loser sends less ----
+  if(loser.sends.length >= 2){
+    let bestRemoval = null, bestRemovalGap = Infinity;
+    for(const m of loser.sends){
+      const p = findPlayer(m.from, m.player);
+      const newSend = loser.sendTotal - p.value;
+      const newNet = loser.recTotal - newSend;
+      if(Math.abs(newNet) < bestRemovalGap){
+        bestRemovalGap = Math.abs(newNet);
+        bestRemoval = {move: m, player: p};
       }
+    }
+    if(bestRemoval){
+      suggestions.push({
+        type: 'subtraction',
+        move: bestRemoval.move,
+        note: `Pull ${bestRemoval.player.name} back out of what ${loser.team} is sending (−${fmt(bestRemoval.player.value)} value) — reduces what they're giving up without needing anyone else to add anything.`
+      });
+    }
+  }
+
+  // ---- Third team: someone else has a piece loser would want ----
+  if(state.size < 4){
+    const candidateTeams = TEAM_NAMES.filter(t => !activeTeams.includes(t));
+    let best = null, bestScore = -Infinity;
+    for(const D of candidateTeams){
+      const gift = bestGift(D, loser.team);
+      if(!gift.player || usedNames.has(gift.player.name)) continue;
+      const fromLoser = bestGift(loser.team, D);
+      const fromWinner = bestGift(winner.team, D);
+      const returnGift = (fromLoser.player && (!fromWinner.player || fromLoser.score >= fromWinner.score)) ? {...fromLoser, fromTeam: loser.team} : (fromWinner.player ? {...fromWinner, fromTeam: winner.team} : null);
+      if(!returnGift || !returnGift.player || usedNames.has(returnGift.player.name)) continue;
+      if(gift.score > bestScore){
+        bestScore = gift.score;
+        best = {newTeam: D, incoming: gift.player, outgoing: returnGift.player, outgoingFrom: returnGift.fromTeam};
+      }
+    }
+    if(best){
+      suggestions.push({
+        type: 'thirdparty',
+        newTeam: best.newTeam, toTeam: loser.team,
+        incoming: best.incoming, outgoing: best.outgoing, outgoingFrom: best.outgoingFrom,
+        note: `Bring in ${best.newTeam}: they send ${best.incoming.name} to ${loser.team}, and ${best.outgoingFrom} sends ${best.outgoing.name} back to ${best.newTeam} in return.`
+      });
+    }
+  }
+
+  return {teamStats, loser, winner, gap, swingPct, suggestions};
+}
+
+function applyTradeHelpSuggestion(s){
+  if(s.type === 'addition'){
+    s.bundle.forEach(p => state.moves.push({player: p.name, from: s.from, to: s.to}));
+  } else if(s.type === 'subtraction'){
+    state.moves = state.moves.filter(m => !(m.from === s.move.from && m.player === s.move.player));
+  } else if(s.type === 'thirdparty'){
+    const activeTeams = state.teams.slice(0, state.size);
+    if(!activeTeams.includes(s.newTeam) && state.size < 4){
+      if(state.teams.length > state.size) state.teams[state.size] = s.newTeam;
+      else state.teams.push(s.newTeam);
+      state.size += 1;
       document.querySelectorAll('#sizeToggle button').forEach(b=>{
         b.classList.toggle('active', parseInt(b.dataset.n,10) === state.size);
       });
-      renderAll();
-      switchToTab('engine');
-      document.getElementById('board').scrollIntoView({behavior:'smooth', block:'start'});
-    });
-  });
+    }
+    state.moves.push({player: s.incoming.name, from: s.newTeam, to: s.toTeam});
+    state.moves.push({player: s.outgoing.name, from: s.outgoingFrom, to: s.newTeam});
+  }
+  renderAll();
+  showToast('Trade Help suggestion applied.');
 }
 
-renderMagicTab();
+function renderTradeHelpModal(){
+  const overlay = document.getElementById('tradeHelpOverlay');
+  const content = document.getElementById('tradeHelpContent');
+  const analysis = analyzeTradeForHelp();
+
+  let html = '<div class="modal-body">';
+  if(analysis.empty){
+    html += `<p class="sugg-loading">Select at least one player in the trade above first — Trade Help looks at what you've already built and suggests how to balance or complete it.</p>`;
+  } else if(analysis.balanced){
+    html += `<p class="sugg-loading">This trade already looks well balanced — no adjustments needed.</p>`;
+  } else {
+    html += `<p class="th-summary"><b>${analysis.winner.team}</b> is currently getting the better end of this deal (net ${fmtSigned(analysis.winner.net)}), while <b>${analysis.loser.team}</b> is giving up the most (net ${fmtSigned(analysis.loser.net)}). Here's how to close that gap:</p>`;
+    if(analysis.suggestions.length === 0){
+      html += `<p class="sugg-loading">No clean fix found automatically — try adjusting the trade manually, or add more teams to open up more options.</p>`;
+    }
+    analysis.suggestions.forEach((s, idx)=>{
+      const labelText = {addition:'Add a piece', subtraction:'Remove a piece', thirdparty:'Bring in a third team'}[s.type];
+      html += `
+        <div class="th-card">
+          <div class="th-label ${s.type}">${labelText}</div>
+          <div class="th-note">${s.note}</div>
+          <button class="th-apply-btn" data-idx="${idx}">Apply</button>
+        </div>
+      `;
+    });
+  }
+  html += '</div>';
+  content.innerHTML = html;
+
+  content.querySelectorAll('.th-apply-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      applyTradeHelpSuggestion(analysis.suggestions[parseInt(btn.dataset.idx,10)]);
+      closeTradeHelpModal();
+    });
+  });
+
+  overlay.classList.add('show');
+}
+
+function closeTradeHelpModal(){
+  document.getElementById('tradeHelpOverlay').classList.remove('show');
+}
+
+document.getElementById('tradeHelpBtn').addEventListener('click', renderTradeHelpModal);
+document.getElementById('tradeHelpClose').addEventListener('click', closeTradeHelpModal);
+document.getElementById('tradeHelpOverlay').addEventListener('click', (e)=>{
+  if(e.target.id === 'tradeHelpOverlay') closeTradeHelpModal();
+});
 
 // =====================================================================
 // ROSTERS TAB
@@ -2755,7 +2399,6 @@ TEAM_NAMES.forEach(t=>{
 });
 faTeamSelectEl.addEventListener('change', (e)=>{
   state.myTeam = e.target.value;
-  myTeamSelectEl.value = state.myTeam; // keep Trade Magic's picker in sync
   renderFreeAgentsTab();
 });
 
