@@ -709,6 +709,34 @@
   .pr-stat-val.good{color:var(--good);}
   .pr-stat-val.bad{color:var(--bad);}
 
+  /* ---------- settings tab ---------- */
+  .settings-section{margin-bottom:28px;}
+  .settings-section h4{
+    font-family:'Space Grotesk',sans-serif;font-size:14.5px;font-weight:700;
+    margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line);
+  }
+  .settings-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+    gap:10px;
+  }
+  .settings-field{
+    background:var(--turf-1); border:1px solid var(--line); border-radius:3px;
+    padding:9px 11px;
+  }
+  .settings-field.non-standard{
+    background:rgba(232,163,61,0.08); border-color:var(--amber-dim);
+  }
+  .settings-field label{
+    display:block; font-size:11px; color:var(--chalk-dim); margin-bottom:6px; line-height:1.3;
+  }
+  .settings-field.non-standard label{color:var(--amber);}
+  .settings-field input{
+    width:100%; background:var(--turf-0); border:1px solid var(--line); color:var(--chalk);
+    padding:6px 8px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px;
+    border-radius:3px;
+  }
+  .settings-field input:focus{outline:1px solid var(--amber);}
+
   .pr-chart-caption{
     font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--chalk-faint);font-weight:600;
     margin-bottom:12px;
@@ -897,6 +925,7 @@
     <button class="tab-btn" data-tab="rosters">Rosters</button>
     <button class="tab-btn" data-tab="freeagents">Free Agents</button>
     <button class="tab-btn" data-tab="power">Power Rankings</button>
+    <button class="tab-btn" data-tab="settings">Settings</button>
   </div>
 
   <div class="tab-panel active" id="tab-engine">
@@ -1081,6 +1110,22 @@
       <div class="pr-table" id="powerRankingsList"></div>
     </section>
   </div>
+
+  <div class="tab-panel" id="tab-settings">
+    <section class="settings-panel">
+      <div class="magic-intro">
+        <h3>Scoring Settings</h3>
+        <div class="suggestions-sub">This league's actual scoring rules, pre-loaded from its settings page. Fields highlighted below are the ones that differ from a typical bare-bones format (half-PPR reception, deep-ball FG bonuses, and a much richer defense scoring system that also rewards total yards allowed, not just points). These settings drive real adjustments to player and positional value — save changes below to recalculate every player's value across the whole tool immediately.</div>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-bottom:24px; flex-wrap:wrap;">
+        <button class="th-apply-btn" id="settingsSaveBtn" style="padding:10px 20px;">Save &amp; recalculate values</button>
+        <button class="reset-btn" id="settingsResetBtn">Reset to league defaults</button>
+      </div>
+
+      <div id="settingsContent"></div>
+    </section>
+  </div>
 </main>
 
 
@@ -1119,6 +1164,117 @@ let LEAGUE = {};        // team -> mutable array of player objects (live roster 
 let FREE_AGENTS = [];   // players not currently on any of the 10 rosters
 let storageAvailable = true;
 
+// =====================================================================
+// LEAGUE SCORING SETTINGS — drives live player/positional value adjustments
+// =====================================================================
+// This league's actual settings (from the league's scoring page), used as
+// the starting values in the Settings tab. Editable there for leagues with
+// different rules — saving recalculates every player's value immediately.
+const DEFAULT_SCORING = {
+  passYardPts: 0.04, passTD: 4, passInt: -2, pass2pt: 2,
+  rushYardPts: 0.1, rushTD: 6, rush2pt: 2,
+  reception: 0.5, recYardPts: 0.1, recTD: 6, rec2pt: 2,
+  fg0_19: 3, fg20_29: 3, fg30_39: 3, fg40_49: 3, fg50_59: 4, fg60plus: 5,
+  patMade: 1, fgMissed: -1, patMissed: -1,
+  defTD: 6, pa0: 5, pa1_6: 4, pa7_13: 3, pa14_20: 1, pa21_27: 0, pa28_34: -1, pa35plus: -4,
+  ydsA_lt100: 5, ydsA_100_199: 3, ydsA_200_299: 2, ydsA_300_349: -1, ydsA_350_399: -3,
+  ydsA_400_449: -3, ydsA_450_499: -5, ydsA_500_549: -6, ydsA_550plus: -7,
+  sack: 1, defInt: 2, fumbleRec: 2, safety: 2, forcedFumble: 1, blockedKick: 2,
+  stTD: 6, stForcedFumble: 1, stFumbleRec: 1,
+  stPlayerTD: 6, stPlayerForcedFumble: 1, stPlayerFumbleRec: 1,
+  fumbleLost: -2, fumbleRecTD: 6
+};
+
+// Neutral reference point used purely to measure how far this league's
+// settings deviate from a common baseline — not shown to the user, just
+// the zero-point for the multiplier math below.
+const NEUTRAL_SCORING = {
+  reception: 0.5, passTD: 4, rushTD: 6, recTD: 6,
+  fg0_19: 3, fg20_29: 3, fg30_39: 3, fg40_49: 3, fg50_59: 3, fg60plus: 3,
+  pa0: 5, pa35plus: -4,
+  ydsA_lt100: 0, ydsA_100_199: 0, ydsA_200_299: 0, ydsA_300_349: 0, ydsA_350_399: 0,
+  ydsA_400_449: 0, ydsA_450_499: 0, ydsA_500_549: 0, ydsA_550plus: 0
+};
+
+let SCORING_SETTINGS = {...DEFAULT_SCORING};
+
+// Position value multipliers baked from the position/decay model — these
+// are the position-scarcity weights before any scoring-settings adjustment.
+const VALUE_SCALE = 45.0;
+const VALUE_DECAY = 40.0;
+const BASE_POS_MULT = {QB:0.85, RB:1.12, WR:1.00, TE:1.05, K:0.12, DEF:0.12};
+const BASE_STARTABLE = {QB:10, RB:33, WR:33, TE:14, K:10, DEF:10};
+
+// Translates the league's scoring settings into modest, explainable
+// position-level multipliers. These are directional adjustments grounded in
+// how the scoring format shifts real fantasy value (PPR tilts pass-catchers,
+// deep FG bonuses help kickers a little, rich defense scoring raises DEF's
+// ceiling) — not a full stat-line re-simulation, which this tool has no way
+// to do without real box-score projections per player.
+function computeScoringMultipliers(s){
+  const mult = {QB:1, RB:1, WR:1, TE:1, K:1, DEF:1};
+
+  const pprDelta = (s.reception - NEUTRAL_SCORING.reception);
+  mult.WR *= (1 + pprDelta * 0.30);
+  mult.TE *= (1 + pprDelta * 0.25);
+  mult.RB *= (1 + pprDelta * 0.10);
+
+  const passTDDelta = (s.passTD - NEUTRAL_SCORING.passTD);
+  mult.QB *= (1 + passTDDelta * 0.07);
+
+  const rushRecTDDelta = ((s.rushTD - NEUTRAL_SCORING.rushTD) + (s.recTD - NEUTRAL_SCORING.recTD)) / 2;
+  mult.RB *= (1 + rushRecTDDelta * 0.03);
+  mult.WR *= (1 + rushRecTDDelta * 0.02);
+  mult.TE *= (1 + rushRecTDDelta * 0.02);
+
+  // Kicker richness: weighted-average FG value vs a flat-3 baseline, using a
+  // rough real-world distribution of attempt distances
+  const distWeights = {fg0_19:0.05, fg20_29:0.25, fg30_39:0.30, fg40_49:0.25, fg50_59:0.12, fg60plus:0.03};
+  let weightedFG = 0;
+  for(const k in distWeights) weightedFG += (s[k] ?? NEUTRAL_SCORING[k]) * distWeights[k];
+  mult.K *= (1 + (weightedFG - 3) * 0.12);
+
+  // Defense richness: wider points-allowed spread and/or active yardage-
+  // allowed tiers both raise a defense's scoring ceiling (and bust risk),
+  // making quality defenses meaningfully more valuable than in a bare-bones
+  // points-allowed-only system
+  const paSpread = (s.pa0 - s.pa35plus);
+  const baselineSpread = (NEUTRAL_SCORING.pa0 - NEUTRAL_SCORING.pa35plus) || 9;
+  let defBump = ((paSpread - baselineSpread) / baselineSpread) * 0.5;
+  const yardageKeys = ['ydsA_lt100','ydsA_100_199','ydsA_200_299','ydsA_300_349','ydsA_350_399','ydsA_400_449','ydsA_450_499','ydsA_500_549','ydsA_550plus'];
+  const yardageActive = yardageKeys.some(k => Math.abs(s[k] ?? 0) > 0.01);
+  if(yardageActive) defBump += 0.30;
+  mult.DEF *= (1 + defBump);
+
+  return mult;
+}
+
+function computePlayerValue(p, scoringMult){
+  const base = VALUE_SCALE * Math.exp(-p.ovrRank / VALUE_DECAY);
+  const posMult = BASE_POS_MULT[p.pos] * (scoringMult[p.pos] || 1.0);
+  const threshold = BASE_STARTABLE[p.pos] || 10;
+  let starterMult;
+  if(p.posRank <= threshold) starterMult = 1.15;
+  else if(p.posRank <= threshold * 1.6) starterMult = 1.0;
+  else starterMult = 0.75;
+  const esm = p.earlyBoost || 1.0;
+  return Math.round(base * posMult * starterMult * esm * 10) / 10;
+}
+
+// Recomputes every player's value from current SCORING_SETTINGS and pushes
+// the result into ALL_PLAYERS and every live clone in LEAGUE/FREE_AGENTS —
+// called once at startup and again any time settings are saved.
+function recomputeAllValues(){
+  const mult = computeScoringMultipliers(SCORING_SETTINGS);
+  for(const name in ALL_PLAYERS){
+    ALL_PLAYERS[name].value = computePlayerValue(ALL_PLAYERS[name], mult);
+  }
+  for(const team of TEAM_NAMES){
+    if(LEAGUE[team]) LEAGUE[team].forEach(p => { p.value = ALL_PLAYERS[p.name].value; });
+  }
+  FREE_AGENTS.forEach(p => { p.value = ALL_PLAYERS[p.name].value; });
+}
+
 function clonePlayer(name){
   const p = ALL_PLAYERS[name];
   return p ? {...p} : null;
@@ -1140,14 +1296,18 @@ function loadRosterState(){
     const raw = localStorage.getItem(STORAGE_KEY);
     if(raw){
       const saved = JSON.parse(raw);
+      if(saved && saved.scoringSettings) SCORING_SETTINGS = {...DEFAULT_SCORING, ...saved.scoringSettings};
+      recomputeAllValues();
       if(saved && saved.rosters){
         const built = buildFromRosterMap(saved.rosters);
         LEAGUE = built.league;
         FREE_AGENTS = built.freeAgents;
         return {restored: true, myTeam: saved.myTeam || ''};
       }
+    } else {
+      recomputeAllValues();
     }
-  } catch(e){ storageAvailable = false; }
+  } catch(e){ storageAvailable = false; recomputeAllValues(); }
   const built = buildFromRosterMap(INITIAL_ROSTERS);
   LEAGUE = built.league;
   FREE_AGENTS = built.freeAgents;
@@ -1158,7 +1318,7 @@ function persistRosterState(){
   try{
     const rosterMap = {};
     for(const team of TEAM_NAMES) rosterMap[team] = LEAGUE[team].map(p=>p.name);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({rosters: rosterMap, myTeam: state.myTeam || '', savedAt: new Date().toISOString()}));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({rosters: rosterMap, myTeam: state.myTeam || '', scoringSettings: SCORING_SETTINGS, savedAt: new Date().toISOString()}));
   } catch(e){ storageAvailable = false; }
 }
 
@@ -2188,6 +2348,7 @@ document.getElementById('tabbar').addEventListener('click', (e)=>{
   if(tab === 'suggested') renderSuggestions();
   if(tab === 'freeagents') renderFreeAgentsTab();
   if(tab === 'power') renderPowerRankingsTab();
+  if(tab === 'settings') renderSettingsTab();
 });
 
 function switchToTab(tab){
@@ -2878,6 +3039,127 @@ function renderPowerRankingsTab(){
 }
 
 renderPowerRankingsTab();
+
+// =====================================================================
+// SETTINGS TAB
+// =====================================================================
+const NON_STANDARD_KEYS = new Set([
+  'passInt','reception','fg40_49','fg50_59','fg60plus','pa0','pa1_6','pa7_13',
+  'ydsA_lt100','ydsA_100_199','ydsA_200_299','ydsA_300_349','ydsA_350_399',
+  'ydsA_400_449','ydsA_450_499','ydsA_500_549','ydsA_550plus'
+]);
+
+const SCORING_FIELDS = [
+  {group:'Passing', key:'passYardPts', label:'Passing Yards (per yard)', step:0.01},
+  {group:'Passing', key:'passTD', label:'Passing TD'},
+  {group:'Passing', key:'passInt', label:'Pass Intercepted'},
+  {group:'Passing', key:'pass2pt', label:'2-Pt Conversion'},
+  {group:'Rushing', key:'rushYardPts', label:'Rushing Yards (per yard)', step:0.01},
+  {group:'Rushing', key:'rushTD', label:'Rushing TD'},
+  {group:'Rushing', key:'rush2pt', label:'2-Pt Conversion'},
+  {group:'Receiving', key:'reception', label:'Reception', step:0.1},
+  {group:'Receiving', key:'recYardPts', label:'Receiving Yards (per yard)', step:0.01},
+  {group:'Receiving', key:'recTD', label:'Receiving TD'},
+  {group:'Receiving', key:'rec2pt', label:'2-Pt Conversion'},
+  {group:'Kicking', key:'fg0_19', label:'FG Made (0-19 yards)'},
+  {group:'Kicking', key:'fg20_29', label:'FG Made (20-29 yards)'},
+  {group:'Kicking', key:'fg30_39', label:'FG Made (30-39 yards)'},
+  {group:'Kicking', key:'fg40_49', label:'FG Made (40-49 yards)'},
+  {group:'Kicking', key:'fg50_59', label:'FG Made (50-59 yards)'},
+  {group:'Kicking', key:'fg60plus', label:'FG Made (60+ yards)'},
+  {group:'Kicking', key:'patMade', label:'PAT Made'},
+  {group:'Kicking', key:'fgMissed', label:'FG Missed'},
+  {group:'Kicking', key:'patMissed', label:'PAT Missed'},
+  {group:'Team Defense', key:'defTD', label:'Defense TD'},
+  {group:'Team Defense', key:'pa0', label:'Points Allowed: 0'},
+  {group:'Team Defense', key:'pa1_6', label:'Points Allowed: 1-6'},
+  {group:'Team Defense', key:'pa7_13', label:'Points Allowed: 7-13'},
+  {group:'Team Defense', key:'pa14_20', label:'Points Allowed: 14-20'},
+  {group:'Team Defense', key:'pa21_27', label:'Points Allowed: 21-27'},
+  {group:'Team Defense', key:'pa28_34', label:'Points Allowed: 28-34'},
+  {group:'Team Defense', key:'pa35plus', label:'Points Allowed: 35+'},
+  {group:'Team Defense', key:'ydsA_lt100', label:'Yards Allowed: <100'},
+  {group:'Team Defense', key:'ydsA_100_199', label:'Yards Allowed: 100-199'},
+  {group:'Team Defense', key:'ydsA_200_299', label:'Yards Allowed: 200-299'},
+  {group:'Team Defense', key:'ydsA_300_349', label:'Yards Allowed: 300-349'},
+  {group:'Team Defense', key:'ydsA_350_399', label:'Yards Allowed: 350-399'},
+  {group:'Team Defense', key:'ydsA_400_449', label:'Yards Allowed: 400-449'},
+  {group:'Team Defense', key:'ydsA_450_499', label:'Yards Allowed: 450-499'},
+  {group:'Team Defense', key:'ydsA_500_549', label:'Yards Allowed: 500-549'},
+  {group:'Team Defense', key:'ydsA_550plus', label:'Yards Allowed: 550+'},
+  {group:'Team Defense', key:'sack', label:'Sack'},
+  {group:'Team Defense', key:'defInt', label:'Interception'},
+  {group:'Team Defense', key:'fumbleRec', label:'Fumble Recovery'},
+  {group:'Team Defense', key:'safety', label:'Safety'},
+  {group:'Team Defense', key:'forcedFumble', label:'Forced Fumble'},
+  {group:'Team Defense', key:'blockedKick', label:'Blocked Kick'},
+  {group:'Special Teams Defense', key:'stTD', label:'Special Teams TD'},
+  {group:'Special Teams Defense', key:'stForcedFumble', label:'Forced Fumble'},
+  {group:'Special Teams Defense', key:'stFumbleRec', label:'Fumble Recovery'},
+  {group:'Special Teams Player', key:'stPlayerTD', label:'Special Teams Player TD'},
+  {group:'Special Teams Player', key:'stPlayerForcedFumble', label:'Forced Fumble'},
+  {group:'Special Teams Player', key:'stPlayerFumbleRec', label:'Fumble Recovery'},
+  {group:'Misc', key:'fumbleLost', label:'Fumble Lost'},
+  {group:'Misc', key:'fumbleRecTD', label:'Fumble Recovery TD'}
+];
+
+function renderSettingsTab(){
+  const wrap = document.getElementById('settingsContent');
+  wrap.innerHTML = '';
+  const groups = [...new Set(SCORING_FIELDS.map(f=>f.group))];
+  groups.forEach(g=>{
+    const section = document.createElement('div');
+    section.className = 'settings-section';
+    section.innerHTML = `<h4>${g}</h4>`;
+    const grid = document.createElement('div');
+    grid.className = 'settings-grid';
+    SCORING_FIELDS.filter(f=>f.group===g).forEach(f=>{
+      const isNonStandard = NON_STANDARD_KEYS.has(f.key);
+      const field = document.createElement('div');
+      field.className = 'settings-field' + (isNonStandard ? ' non-standard' : '');
+      field.innerHTML = `
+        <label>${f.label}${isNonStandard ? ' <span style="font-weight:700;">·  non-standard</span>' : ''}</label>
+        <input type="number" step="${f.step || 1}" data-key="${f.key}" value="${SCORING_SETTINGS[f.key]}">
+      `;
+      grid.appendChild(field);
+    });
+    section.appendChild(grid);
+    wrap.appendChild(section);
+  });
+}
+
+function refreshEverythingAfterSettingsChange(){
+  recomputeAllValues();
+  persistRosterState();
+  suggestionCache = null;
+  powerRankingsCache = null;
+  sanitizeMoves();
+  renderAll();
+  renderRostersTab();
+  renderSuggestions();
+  renderFreeAgentsTab();
+  renderPowerRankingsTab();
+}
+
+document.getElementById('settingsSaveBtn').addEventListener('click', ()=>{
+  document.querySelectorAll('#settingsContent input[data-key]').forEach(input=>{
+    const val = parseFloat(input.value);
+    if(!isNaN(val)) SCORING_SETTINGS[input.dataset.key] = val;
+  });
+  refreshEverythingAfterSettingsChange();
+  showToast('Scoring settings saved — every player\'s value has been recalculated.');
+});
+
+document.getElementById('settingsResetBtn').addEventListener('click', ()=>{
+  const ok = confirm("Reset scoring settings back to this league's defaults? Any custom changes will be lost.");
+  if(!ok) return;
+  SCORING_SETTINGS = {...DEFAULT_SCORING};
+  renderSettingsTab();
+  refreshEverythingAfterSettingsChange();
+  showToast('Scoring settings reset to league defaults.');
+});
+
+renderSettingsTab();
 
 </script>
 
