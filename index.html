@@ -932,7 +932,7 @@
     <section class="rosters-panel">
       <div class="magic-intro">
         <h3>Rosters</h3>
-        <div class="suggestions-sub">View any team's current roster. Drop a player straight to free agency, or pick one up from the pool of players not currently rostered on any of the 10 teams — useful for keeping this tool in sync with real waiver moves.</div>
+        <div class="suggestions-sub">View any team's current roster. Drop a player straight to free agency, or pick one up from the pool of players not currently rostered on any of the 10 teams — useful for keeping this tool in sync with real waiver moves. Roster changes save automatically in this browser, but that storage is tied to this exact device and browser — <b>export a backup below before switching devices, browsers, or updating this file</b>, then import it back afterward.</div>
       </div>
 
       <div class="magic-setup" style="justify-content:space-between; align-items:flex-end; display:flex; flex-wrap:wrap; gap:16px;">
@@ -940,7 +940,10 @@
           <label>Team</label>
           <select id="rosterTeamSelect"></select>
         </div>
-        <div style="display:flex; gap:8px;">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="mini-btn" id="exportRostersBtn">Export rosters</button>
+          <button class="mini-btn" id="importRostersBtn">Import rosters</button>
+          <input type="file" id="importRostersFile" accept="application/json" style="display:none;">
           <button class="reset-btn" id="resetRostersBtn">Reset all rosters to draft day</button>
         </div>
       </div>
@@ -2273,6 +2276,62 @@ document.getElementById('resetRostersBtn').addEventListener('click', ()=>{
   if(!ok) return;
   try{ localStorage.removeItem(STORAGE_KEY); } catch(e){ /* ignore */ }
   location.reload();
+});
+
+// Export/Import: a manual, portable backup of all 10 rosters that doesn't
+// depend on browser storage at all — works across devices, browsers, or a
+// freshly updated copy of this file, since it's just a JSON file you keep.
+document.getElementById('exportRostersBtn').addEventListener('click', ()=>{
+  const rosterMap = {};
+  for(const team of TEAM_NAMES) rosterMap[team] = LEAGUE[team].map(p=>p.name);
+  const payload = {source: 'LHS Trade Desk', exportedAt: new Date().toISOString(), rosters: rosterMap};
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `lhs-trade-desk-rosters-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Rosters exported — keep this file until after your next update, then import it back.');
+});
+
+document.getElementById('importRostersBtn').addEventListener('click', ()=>{
+  document.getElementById('importRostersFile').click();
+});
+
+document.getElementById('importRostersFile').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    try{
+      const data = JSON.parse(ev.target.result);
+      if(!data || typeof data.rosters !== 'object') throw new Error('bad format');
+      const rosterMap = {};
+      let totalPlayers = 0, dropped = 0;
+      for(const team of TEAM_NAMES){
+        const names = Array.isArray(data.rosters[team]) ? data.rosters[team] : [];
+        const valid = names.filter(n => ALL_PLAYERS[n]);
+        dropped += names.length - valid.length;
+        totalPlayers += valid.length;
+        rosterMap[team] = valid;
+      }
+      if(totalPlayers === 0) throw new Error('no valid players found');
+      const built = buildFromRosterMap(rosterMap);
+      LEAGUE = built.league;
+      FREE_AGENTS = built.freeAgents;
+      afterRosterChange();
+      showToast(dropped > 0
+        ? `Rosters imported (${dropped} player${dropped===1?'':'s'} from the file no longer matched and were skipped).`
+        : 'Rosters imported successfully.');
+    } catch(err){
+      showToast('Could not read that file — make sure it\'s a roster export from this tool.');
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
 });
 
 function renderRostersTab(){
