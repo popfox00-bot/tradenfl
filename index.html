@@ -1191,10 +1191,15 @@
 {"dbrook":["Jahmyr Gibbs","Josh Allen","Brock Bowers","Emeka Egbuka","Breece Hall","Tyler Warren","Jalen Hurts","Makai Lemon","Courtland Sutton","Philadelphia Eagles","Kyle Monangai","Baltimore Ravens","Jake Bates","Wan'Dale Robinson","Xavier Worthy"],"mariaa":["Bijan Robinson","Kenneth Walker III","Colston Loveland","Tetairoa McMillan","Tee Higgins","Jayden Daniels","Seattle Seahawks","Parker Washington","Tony Pollard","Ka'imi Fairbairn","Travis Kelce","Josh Downs","De'Zhaun Stribling","Mike Washington Jr.","Rachaad White"],"ZorroCo":["Christian McCaffrey","Ashton Jeanty","Bo Nix","DeVonta Smith","Zay Flowers","Denver Broncos","Tucker Kraft","Brandon Aubrey","Kyle Pitts Sr.","Jonathon Brooks","Matthew Stafford","Quentin Johnston","Isaiah Likely","Patrick Mahomes II","Jakobi Meyers"],"2003in73":["Ja'Marr Chase","Omarion Hampton","A.J. Brown","Ladd McConkey","Jaylen Waddle","David Montgomery","Jadarian Price","Harold Fannin Jr.","Justin Herbert","Rico Dowdle","Michael Wilson","Kenny Gainwell","Jake Ferguson","Evan McPherson","Minnesota Vikings"],"mTeam5":["Jonathan Taylor","Nico Collins","Drake Maye","Sam LaPorta","Travis Etienne Jr.","Los Angeles Rams","Jameson Williams","Christian Watson","J.K. Dobbins","Jayden Reed","Stefon Diggs","Chris Rodriguez Jr.","Jason Myers","Brenton Strange","Woody Marks"],"Shado":["Amon-Ra St. Brown","Justin Jefferson","Drake London","Javonte Williams","Bucky Irving","TreVeyon Henderson","DJ Moore","DK Metcalf","Brian Thomas Jr.","Jordan Mason","Jacory Croskey-Merritt","Jaxson Dart","New England Patriots","Dallas Goedert","Harrison Mevis"],"jatrujillo":["Puka Nacua","Chase Brown","Rashee Rice","Jeremiyah Love","Cam Skattebo","Joe Burrow","Carnell Tate","Jaylen Warren","Marvin Harrison Jr.","Chuba Hubbard","MarShawn Lloyd","Michael Pittman Jr.","Mark Andrews","Los Angeles Chargers","Will Reichard"],"JFoxMan":["Jaxon Smith-Njigba","Saquon Barkley","Lamar Jackson","Malik Nabers","Terry McLaurin","Davante Adams","Bhayshul Tuten","Mike Evans","Chris Godwin Jr.","Dalton Kincaid","Houston Texans","Romeo Doubs","Zach Charbonnet","Jordyn Tyson","Jordan Love"],"MomFo":["James Cook III","Derrick Henry","Kyren Williams","Chris Olave","D'Andre Swift","Quinshon Judkins","Rome Odunze","Rhamondre Stevenson","George Kittle","Dak Prescott","Jordan Addison","Trevor Lawrence","KC Concepcion","Cam Little","Jacksonville Jaguars"],"potat":["CeeDee Lamb","De'Von Achane","George Pickens","Trey McBride","Josh Jacobs","Garrett Wilson","Caleb Williams","Luther Burden III","Blake Corum","RJ Harvey","Alec Pierce","Cameron Dicker","Aaron Jones Sr.","Matthew Golden","Dallas Cowboys"]}
 </script>
 
+<script id="league3-rosters-data" type="application/json">
+{"Boutte":["Jahmyr Gibbs","Javonte Williams","Drake London","Jaylen Waddle","Tyler Warren","Jaylen Warren","Dak Prescott","Rico Dowdle","Alec Pierce","Quentin Johnston","Mark Andrews","Tyler Shough","Rachaad White","Kayshon Boutte","Detroit Lions"],"TheCh":["Josh Allen","Kyren Williams","Malik Nabers","Emeka Egbuka","Sam LaPorta","Josh Jacobs","Houston Texans","DK Metcalf","Cameron Dicker","Jacory Croskey-Merritt","Kenny Gainwell","Jordyn Tyson","Josh Downs","Juwan Johnson","Kaelon Black"],"TheGr":["Bijan Robinson","A.J. Brown","Brock Bowers","Jeremiyah Love","Garrett Wilson","Mike Evans","Luther Burden III","Shedeur Sanders","Jordan Love","Aaron Jones Sr.","Cam Little","Matthew Golden","Aaron Rodgers","Green Bay Packers","Riley Leonard"],"mariaa2":["Ja'Marr Chase","Nico Collins","Trey McBride","Bucky Irving","Drake Maye","Bhayshul Tuten","Rome Odunze","Marvin Harrison Jr.","Denver Broncos","Jayden Reed","Jason Myers","Jaxson Dart","Wan'Dale Robinson","Hunter Henry","Tank Bigsby"],"Mike2":["Jaxon Smith-Njigba","George Pickens","George Kittle","Jadarian Price","Joe Burrow","RJ Harvey","Christian Watson","Parker Washington","Jordan Mason","MarShawn Lloyd","Will Reichard","Jared Goff","Buffalo Bills","Fernando Mendoza","Tank Dell"],"Njigbas":["Jonathan Taylor","Ashton Jeanty","Patrick Mahomes II","Cam Skattebo","Bo Nix","Xavier Worthy","Romeo Doubs","Baltimore Ravens","Chuba Hubbard","Harrison Butker","Jordan Addison","KC Concepcion","Jakobi Meyers","Khalil Shakir","Brenton Strange"],"Multipl":["Christian McCaffrey","Kenneth Walker III","Chris Olave","Tetairoa McMillan","Jalen Hurts","DJ Moore","Tucker Kraft","Seattle Seahawks","Blake Corum","Trevor Lawrence","Jake Ferguson","Jake Bates","Ja'Kobi Lane","Jalen Coker","Tyrone Tracy Jr."],"Cooked":["James Cook III","Omarion Hampton","DeVonta Smith","Tee Higgins","D'Andre Swift","Jameson Williams","Carnell Tate","Caleb Williams","Deshaun Watson","Isaiah Likely","Tyler Allgeier","De'Zhaun Stribling","Woody Marks","New England Patriots","Evan McPherson"],"BabyB":["Amon-Ra St. Brown","Chase Brown","Ladd McConkey","Travis Etienne Jr.","David Montgomery","Quinshon Judkins","TreVeyon Henderson","Justin Herbert","Michael Wilson","Travis Kelce","Ka'imi Fairbairn","Michael Pittman Jr.","Brock Purdy","Jonah Coleman","Minnesota Vikings"],"PukaM":["Puka Nacua","De'Von Achane","Rashee Rice","Brian Thomas Jr.","Jayden Daniels","Harold Fannin Jr.","Tony Pollard","Chris Godwin Jr.","Dalton Kincaid","Stefon Diggs","Mike Washington Jr.","Philadelphia Eagles","Harrison Mevis","Tyjae Spears"]}
+</script>
+
 <script>
 const ALL_PLAYERS = JSON.parse(document.getElementById('all-players-data').textContent); // name -> {name,pos,posRank,ovrRank,team,value,earlyBoost}
 const INITIAL_ROSTERS = JSON.parse(document.getElementById('initial-rosters-data').textContent); // team -> [names]
 const LEAGUE2_ROSTERS = JSON.parse(document.getElementById('league2-rosters-data').textContent); // team -> [names], second pre-loaded league
+const LEAGUE3_ROSTERS = JSON.parse(document.getElementById('league3-rosters-data').textContent); // team -> [names], third pre-loaded league
 const DEFAULT_TEAM_NAMES = Object.keys(INITIAL_ROSTERS);
 let TEAM_NAMES = DEFAULT_TEAM_NAMES;
 const MAX_PER_TEAM = 6;
@@ -1387,6 +1392,20 @@ function makeLeague2Record(){
   };
 }
 
+function makeLeague3Record(){
+  const teamNames = Object.keys(LEAGUE3_ROSTERS);
+  const rosters = {};
+  for(const team of teamNames) rosters[team] = [...LEAGUE3_ROSTERS[team]];
+  return {
+    id: 'primetime-cte',
+    name: 'Primetime CTE',
+    teamNames,
+    rosters,
+    scoringSettings: {...DEFAULT_SCORING},
+    myTeam: ''
+  };
+}
+
 function makeEmptyLeagueRecord(name){
   const teamNames = Array.from({length: 10}, (_,i) => `Team ${i+1}`);
   const rosters = {};
@@ -1455,6 +1474,9 @@ function loadAllLeaguesState(){
   if(!LEAGUES['broncos-league']){
     LEAGUES['broncos-league'] = makeLeague2Record();
   }
+  if(!LEAGUES['primetime-cte']){
+    LEAGUES['primetime-cte'] = makeLeague3Record();
+  }
 
   return applyActiveLeague(restored);
 }
@@ -1480,9 +1502,16 @@ const loadResult = loadAllLeaguesState();
 // wherever a dropdown was populated once at startup rather than re-rendered
 // on every paint, since switching leagues can mean a totally different set
 // of team names.
-function repopulateTeamOptions(selectEl, blankLabel){
+// Rebuilds a <select>'s team options from the CURRENT TEAM_NAMES — needed
+// wherever a dropdown was populated once at startup rather than re-rendered
+// on every paint, since switching leagues can mean a totally different set
+// of team names. Takes the value it SHOULD show explicitly (from app state)
+// rather than trying to preserve whatever the dropdown happened to display
+// before — the old displayed value belongs to the league we just left, and
+// keeping it around was what caused My Team to appear to "forget" itself
+// when the old value didn't happen to also exist in the new league.
+function repopulateTeamOptions(selectEl, blankLabel, desiredValue){
   if(!selectEl) return;
-  const currentVal = selectEl.value;
   selectEl.innerHTML = '';
   if(blankLabel !== null){
     const opt = document.createElement('option');
@@ -1494,15 +1523,16 @@ function repopulateTeamOptions(selectEl, blankLabel){
     opt.value = t; opt.textContent = t;
     selectEl.appendChild(opt);
   });
-  selectEl.value = TEAM_NAMES.includes(currentVal) ? currentVal : (blankLabel !== null ? '' : (TEAM_NAMES[0] || ''));
+  const fallback = blankLabel !== null ? '' : (TEAM_NAMES[0] || '');
+  selectEl.value = (desiredValue && TEAM_NAMES.includes(desiredValue)) ? desiredValue : fallback;
 }
 
 function refreshAllTeamDropdowns(){
-  repopulateTeamOptions(document.getElementById('globalMyTeamSelect'), 'Not set');
-  repopulateTeamOptions(document.getElementById('suggTeam1'), 'Any team');
-  repopulateTeamOptions(document.getElementById('suggTeam2'), 'Any team');
-  repopulateTeamOptions(document.getElementById('rosterTeamSelect'), null);
-  repopulateTeamOptions(document.getElementById('faTeamSelect'), 'Select a team…');
+  repopulateTeamOptions(document.getElementById('globalMyTeamSelect'), 'Not set', state.myTeam);
+  repopulateTeamOptions(document.getElementById('suggTeam1'), 'Any team', state.suggTeam1);
+  repopulateTeamOptions(document.getElementById('suggTeam2'), 'Any team', state.suggTeam2);
+  repopulateTeamOptions(document.getElementById('rosterTeamSelect'), null, state.rosterTeam);
+  repopulateTeamOptions(document.getElementById('faTeamSelect'), 'Select a team…', state.faAddTeam);
 }
 
 function renderEverythingForLeagueSwitch(){
