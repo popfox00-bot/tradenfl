@@ -737,6 +737,41 @@
   }
   .settings-field input:focus{outline:1px solid var(--amber);}
 
+  /* ---------- AI help ---------- */
+  .aihelp-input-wrap{
+    display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap;
+    margin-bottom:22px;
+  }
+  .aihelp-input-wrap textarea{
+    flex:1; min-width:260px;
+    background:var(--turf-1); border:1px solid var(--line); color:var(--chalk);
+    padding:12px 14px; font-family:'Archivo',sans-serif; font-size:14px; line-height:1.5;
+    border-radius:4px; resize:vertical;
+  }
+  .aihelp-input-wrap textarea:focus{outline:1px solid var(--amber);}
+  .aihelp-cmd-card{
+    background:var(--turf-2); border:1px solid var(--line); border-radius:4px;
+    padding:14px 16px; margin-bottom:12px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  .aihelp-cmd-text{font-size:13.5px; color:var(--chalk); flex:1; min-width:200px;}
+  .aihelp-cmd-text .aihelp-cmd-type{
+    display:block; font-size:9.5px; text-transform:uppercase; letter-spacing:0.06em;
+    color:var(--pos-wr); font-weight:700; margin-bottom:4px;
+  }
+  .aihelp-cmd-run{flex:none;}
+  .aihelp-unparsed{
+    background:rgba(232,163,61,0.08); border:1px solid var(--amber-dim); border-radius:4px;
+    padding:14px 16px; margin-bottom:12px; font-size:13px; color:var(--chalk-dim); line-height:1.5;
+  }
+  .aihelp-examples{margin-top:28px; padding-top:20px; border-top:1px solid var(--line);}
+  .aihelp-example-chip{
+    background:var(--turf-1); border:1px solid var(--line); color:var(--chalk-dim);
+    padding:8px 14px; border-radius:20px; font-size:12.5px; font-family:'Archivo',sans-serif;
+    cursor:pointer; margin:0 8px 8px 0;
+  }
+  .aihelp-example-chip:hover{border-color:var(--amber-dim); color:var(--chalk);}
+
   .settings-impact-panel{
     background:var(--turf-1); border:1px solid var(--navy-line); border-radius:4px;
     padding:16px 18px; margin-bottom:28px;
@@ -958,6 +993,7 @@
     <button class="tab-btn" data-tab="freeagents">Free Agents</button>
     <button class="tab-btn" data-tab="power">Power Rankings</button>
     <button class="tab-btn" data-tab="settings">Settings</button>
+    <button class="tab-btn" data-tab="aihelp">AI Help</button>
   </div>
 
   <div class="tab-panel active" id="tab-engine">
@@ -1074,8 +1110,7 @@
         </div>
       </div>
 
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:22px;">
-        <button class="mini-btn" id="renameLeagueBtn">Rename this league</button>
+      <div style="display:flex; justify-content:flex-end; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:22px;">
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
           <button class="mini-btn" id="exportRostersBtn">Export rosters</button>
           <button class="mini-btn" id="importRostersBtn">Import rosters</button>
@@ -1156,6 +1191,31 @@
   <div class="tab-panel" id="tab-settings">
     <section class="settings-panel">
       <div class="magic-intro">
+        <h3>Settings</h3>
+        <div class="suggestions-sub">League details, app appearance, and this league's scoring rules — all in one place.</div>
+      </div>
+
+      <div class="settings-section">
+        <h4>League</h4>
+        <div class="settings-impact-panel" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px;">
+          <div style="font-size:13px; color:var(--chalk-dim);">Currently editing: <b style="color:var(--chalk);" id="settingsLeagueNameLabel">—</b></div>
+          <button class="mini-btn" id="renameLeagueBtn">Rename this league</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h4>App appearance</h4>
+        <div class="settings-impact-panel">
+          <div class="suggestions-sub" style="margin-bottom:14px;">Pick a base color and the whole app's palette (backgrounds, cards, borders, header) is generated from it automatically. This is a device preference, not tied to any one league.</div>
+          <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+            <input type="color" id="bgColorPicker" value="#0a2a6e" style="width:56px; height:38px; border:1px solid var(--line); border-radius:4px; background:none; cursor:pointer; padding:2px;">
+            <button class="th-apply-btn" id="applyThemeBtn" style="padding:9px 18px;">Apply color</button>
+            <button class="reset-btn" id="resetThemeBtn">Reset to default</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="magic-intro" style="margin-top:8px;">
         <h3>Scoring Settings</h3>
         <div class="suggestions-sub">This league's actual scoring rules, pre-loaded from its settings page. Fields highlighted below are the ones that differ from a typical bare-bones format (half-PPR reception, deep-ball FG bonuses, and a much richer defense scoring system that also rewards total yards allowed, not just points). These settings drive real adjustments to player and positional value — save changes below to recalculate every player's value across the whole tool immediately.</div>
       </div>
@@ -1168,6 +1228,32 @@
       <div class="settings-impact-panel" id="settingsImpact"></div>
 
       <div id="settingsContent"></div>
+    </section>
+  </div>
+
+  <div class="tab-panel" id="tab-aihelp">
+    <section class="aihelp-panel">
+      <div class="magic-intro">
+        <h3>AI Help</h3>
+        <div class="suggestions-sub">Describe what you're trying to do in plain words and I'll pull out the specific actions and show them as buttons — nothing runs until you tap one. Works for things like adding or dropping players, setting your team, jumping to a tab, or scoping Suggested Trades to a position or team. Type a few things at once ("add De'Von Achane and drop the Vikings def") and I'll split it into separate commands.</div>
+      </div>
+
+      <div class="aihelp-input-wrap">
+        <textarea id="aiHelpInput" placeholder="e.g. add Devon achane to my team and drop the Vikings def&#10;e.g. find a trade for a top 15 rb&#10;e.g. show me the rosters tab" rows="3"></textarea>
+        <button class="th-apply-btn" id="aiHelpParseBtn" style="padding:10px 22px;">Find commands</button>
+      </div>
+
+      <div id="aiHelpResults"></div>
+
+      <div class="aihelp-examples">
+        <div class="fa-section-note" style="margin-bottom:10px;">A few things you can try:</div>
+        <button class="aihelp-example-chip">add Puka Nacua to my team</button>
+        <button class="aihelp-example-chip">drop the Titans defense</button>
+        <button class="aihelp-example-chip">find a trade for a rb</button>
+        <button class="aihelp-example-chip">set my team to kalenvenn</button>
+        <button class="aihelp-example-chip">show me power rankings</button>
+        <button class="aihelp-example-chip">switch to Let's Go Broncos</button>
+      </div>
     </section>
   </div>
 </main>
@@ -1519,6 +1605,70 @@ function persistRosterState(){
 }
 
 const loadResult = loadAllLeaguesState();
+
+// =====================================================================
+// APP APPEARANCE — a device preference, not tied to any one league
+// =====================================================================
+const THEME_STORAGE_KEY = 'lhsTradeDeskThemeColor_v1';
+const DEFAULT_THEME_HEX = '#0a2a6e';
+
+function hexToHsl(hex){
+  hex = hex.replace('#','');
+  const r = parseInt(hex.substr(0,2),16) / 255;
+  const g = parseInt(hex.substr(2,2),16) / 255;
+  const b = parseInt(hex.substr(4,2),16) / 255;
+  const max = Math.max(r,g,b), min = Math.min(r,g,b);
+  let h = 0, s = 0;
+  const l = (max + min) / 2;
+  if(max !== min){
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch(max){
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
+    }
+    h /= 6;
+  }
+  return {h: Math.round(h*360), s: Math.round(s*100), l: Math.round(l*100)};
+}
+
+// Derives the app's whole dark palette from one chosen color, keeping the
+// same lightness ladder the hand-picked navy theme uses (so header/ledger
+// zones still read as distinctly "richer" than the card body around them)
+// — just re-hued to whatever the user picked instead of navy specifically.
+function applyCustomTheme(hex){
+  const {h, s} = hexToHsl(hex);
+  const sat = Math.max(20, Math.min(s, 65));
+  const accentSat = Math.min(sat + 15, 85);
+  const root = document.documentElement.style;
+  root.setProperty('--turf-0', `hsl(${h}, ${Math.round(sat*0.7)}%, 6%)`);
+  root.setProperty('--turf-1', `hsl(${h}, ${Math.round(sat*0.65)}%, 11%)`);
+  root.setProperty('--turf-2', `hsl(${h}, ${Math.round(sat*0.6)}%, 17%)`);
+  root.setProperty('--line', `hsl(${h}, ${Math.round(sat*0.5)}%, 24%)`);
+  root.setProperty('--navy', `hsl(${h}, ${accentSat}%, 14%)`);
+  root.setProperty('--navy-2', `hsl(${h}, ${accentSat}%, 19%)`);
+  root.setProperty('--navy-line', `hsl(${h}, ${Math.min(accentSat+5,90)}%, 28%)`);
+  const bodyHighlight = `hsl(${h}, ${Math.round(sat*0.75)}%, 20%)`;
+  document.body.style.background =
+    `radial-gradient(ellipse 1200px 600px at 50% -10%, ${bodyHighlight} 0%, transparent 60%),
+     radial-gradient(ellipse 900px 500px at 100% 0%, hsl(${h}, ${Math.round(sat*0.5)}%, 8%) 0%, transparent 55%),
+     var(--turf-0)`;
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if(metaTheme) metaTheme.content = hex;
+}
+
+function resetCustomTheme(){
+  const root = document.documentElement.style;
+  ['--turf-0','--turf-1','--turf-2','--line','--navy','--navy-2','--navy-line'].forEach(v => root.removeProperty(v));
+  document.body.style.background = '';
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if(metaTheme) metaTheme.content = '#021d4a';
+}
+
+let savedThemeHex = null;
+try{ savedThemeHex = localStorage.getItem(THEME_STORAGE_KEY); } catch(e){ /* ignore */ }
+if(savedThemeHex) applyCustomTheme(savedThemeHex);
 
 // Rebuilds a <select>'s team options from the CURRENT TEAM_NAMES — needed
 // wherever a dropdown was populated once at startup rather than re-rendered
@@ -2924,6 +3074,8 @@ function renameCurrentLeague(){
   current.name = newName.trim();
   persistRosterState();
   renderLeaguePicker();
+  const nameLabel = document.getElementById('settingsLeagueNameLabel');
+  if(nameLabel) nameLabel.textContent = current.name;
   showToast(`League renamed to "${current.name}".`);
 }
 
@@ -3006,6 +3158,21 @@ rosterTeamSelectEl.addEventListener('change', (e)=>{
 });
 
 document.getElementById('renameLeagueBtn').addEventListener('click', renameCurrentLeague);
+
+const bgColorPickerEl = document.getElementById('bgColorPicker');
+if(savedThemeHex) bgColorPickerEl.value = savedThemeHex;
+document.getElementById('applyThemeBtn').addEventListener('click', ()=>{
+  const hex = bgColorPickerEl.value;
+  applyCustomTheme(hex);
+  try{ localStorage.setItem(THEME_STORAGE_KEY, hex); } catch(e){ /* ignore */ }
+  showToast('Theme color applied.');
+});
+document.getElementById('resetThemeBtn').addEventListener('click', ()=>{
+  resetCustomTheme();
+  bgColorPickerEl.value = DEFAULT_THEME_HEX;
+  try{ localStorage.removeItem(THEME_STORAGE_KEY); } catch(e){ /* ignore */ }
+  showToast('Theme reset to default.');
+});
 document.getElementById('renameTeamBtn').addEventListener('click', renameCurrentTeam);
 document.getElementById('addTeamBtn').addEventListener('click', addTeamToLeague);
 document.getElementById('deleteTeamBtn').addEventListener('click', deleteTeamFromLeague);
@@ -3608,6 +3775,9 @@ function renderSettingsImpact(){
 }
 
 function renderSettingsTab(){
+  const nameLabel = document.getElementById('settingsLeagueNameLabel');
+  if(nameLabel && LEAGUES[ACTIVE_LEAGUE_ID]) nameLabel.textContent = LEAGUES[ACTIVE_LEAGUE_ID].name;
+
   const wrap = document.getElementById('settingsContent');
   wrap.innerHTML = '';
   const groups = [...new Set(SCORING_FIELDS.map(f=>f.group))];
@@ -3666,6 +3836,283 @@ document.getElementById('settingsResetBtn').addEventListener('click', ()=>{
 });
 
 renderSettingsTab();
+
+// =====================================================================
+// AI HELP — a rule-based natural-language command parser. This runs
+// entirely client-side (no network calls) by pattern-matching common
+// phrasings against real app data (players, teams, leagues, tabs) and
+// turning what it finds into concrete, reviewable actions. It's closer to
+// a smart command parser than a general conversational AI — it covers the
+// specific action types this app actually supports, not open-ended chat.
+// =====================================================================
+
+function normStr(s){
+  return (s || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function matchPlayerInPool(query, pool){
+  const wantsDef = /\b(defense|def|dst)\b/i.test(query);
+  const q = normStr(query).replace(/\b(defense|def|dst)\b/g, '').trim();
+  if(!q) return null;
+  let best = null, bestScore = 0;
+  for(const p of pool){
+    if(!p) continue;
+    if(wantsDef && p.pos !== 'DEF') continue;
+    const n = normStr(p.name);
+    let score = 0;
+    if(n === q) score = 100;
+    else if(n.includes(q) || q.includes(n)) score = 85;
+    else {
+      const qTokens = q.split(' ').filter(Boolean);
+      const nTokens = n.split(' ').filter(Boolean);
+      if(qTokens.length && nTokens.length){
+        const overlap = qTokens.filter(t => nTokens.some(nt => nt === t || nt.startsWith(t) || t.startsWith(nt))).length;
+        score = (overlap / qTokens.length) * 70;
+      }
+    }
+    if(score > bestScore){ bestScore = score; best = p; }
+  }
+  return bestScore >= 45 ? best : null;
+}
+
+function matchPlayerAnywhere(query){
+  return matchPlayerInPool(query, Object.values(ALL_PLAYERS));
+}
+
+function matchTeamName(query){
+  const q = normStr(query);
+  if(!q) return null;
+  let best = null, bestScore = 0;
+  for(const t of TEAM_NAMES){
+    const n = normStr(t);
+    let score = 0;
+    if(n === q) score = 100;
+    else if(n.includes(q) || q.includes(n)) score = 80;
+    if(score > bestScore){ bestScore = score; best = t; }
+  }
+  return bestScore >= 60 ? best : null;
+}
+
+function matchLeagueName(query){
+  const q = normStr(query);
+  if(!q) return null;
+  let best = null, bestScore = 0;
+  for(const id in LEAGUES){
+    const n = normStr(LEAGUES[id].name);
+    let score = 0;
+    if(n === q) score = 100;
+    else if(n.includes(q) || q.includes(n)) score = 75;
+    else {
+      const qTokens = q.split(' ').filter(Boolean);
+      const overlap = qTokens.filter(t => n.includes(t)).length;
+      score = qTokens.length ? (overlap / qTokens.length) * 60 : 0;
+    }
+    if(score > bestScore){ bestScore = score; best = id; }
+  }
+  return bestScore >= 40 ? best : null;
+}
+
+const AIHELP_TAB_KEYWORDS = [
+  ['trade engine', 'engine'], ['trade machine', 'engine'], ['trade builder', 'engine'], ['engine', 'engine'],
+  ['suggested trades', 'suggested'], ['suggestions', 'suggested'], ['suggested', 'suggested'],
+  ['rosters', 'rosters'], ['roster', 'rosters'],
+  ['free agents', 'freeagents'], ['free agent', 'freeagents'], ['waivers', 'freeagents'], ['waiver', 'freeagents'],
+  ['power rankings', 'power'], ['power ranking', 'power'], ['rankings', 'power'],
+  ['settings', 'settings']
+];
+
+function aihelpTabLabel(tabId){
+  const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+  return btn ? btn.textContent : tabId;
+}
+
+function parseAIHelpClause(rawClause){
+  const clause = rawClause.trim();
+  const lower = clause.toLowerCase();
+  if(!lower) return null;
+
+  // ---- ADD player ----
+  let m = lower.match(/^(?:add|pick up|sign|acquire)\s+(.+)$/);
+  if(m){
+    let rest = m[1], teamPart = null;
+    const toMatch = rest.match(/^(.*?)\s+to\s+(.+)$/);
+    if(toMatch){ rest = toMatch[1]; teamPart = toMatch[2]; }
+    const player = matchPlayerAnywhere(rest);
+    if(player){
+      const team = (!teamPart || /\bmy team\b/i.test(teamPart)) ? (state.myTeam || null) : matchTeamName(teamPart);
+      return {
+        type: 'Add player',
+        text: `Add <b>${player.name}</b> to <b>${team || 'My Team'}</b>${team ? '' : ' — set My Team first, or name a team'}`,
+        run: ()=>{
+          if(!team){ showToast('Set My Team first (top right), or say which team.'); return; }
+          if(currentTeamOf(player.name)){ showToast(`${player.name} is already rostered — drop them first to move them.`); return; }
+          addFreeAgentToTeam(team, player.name);
+          afterRosterChange();
+          showToast(`${player.name} added to ${team}.`);
+        }
+      };
+    }
+  }
+
+  // ---- DROP player ----
+  m = lower.match(/^(?:drop|cut|release|bench)\s+(?:the\s+)?(.+)$/);
+  if(m){
+    let rest = m[1], teamPart = null;
+    const fromMatch = rest.match(/^(.*?)\s+from\s+(.+)$/);
+    if(fromMatch){ rest = fromMatch[1]; teamPart = fromMatch[2]; }
+
+    let team = null;
+    if(teamPart && !/\bmy team\b/i.test(teamPart)) team = matchTeamName(teamPart);
+    else if(state.myTeam) team = state.myTeam;
+
+    const pool = team ? (LEAGUE[team] || []) : TEAM_NAMES.flatMap(t => LEAGUE[t] || []);
+    const player = matchPlayerInPool(rest, pool);
+    if(player){
+      const resolvedTeam = team || currentTeamOf(player.name);
+      if(resolvedTeam){
+        return {
+          type: 'Drop player',
+          text: `Drop <b>${player.name}</b> from <b>${resolvedTeam}</b>`,
+          run: ()=>{
+            removePlayerFromTeam(resolvedTeam, player.name);
+            afterRosterChange();
+            showToast(`${player.name} dropped from ${resolvedTeam}.`);
+          }
+        };
+      }
+    }
+  }
+
+  // ---- SET MY TEAM ----
+  m = lower.match(/\bset my team to\s+(.+)$/) || lower.match(/\bmake\s+(.+?)\s+my team\b/);
+  if(m){
+    const team = matchTeamName(m[1]);
+    if(team){
+      return {
+        type: 'Set My Team',
+        text: `Set My Team to <b>${team}</b>`,
+        run: ()=>{
+          state.myTeam = team;
+          applyMyTeamDefaults(team);
+          persistRosterState();
+          refreshAllTeamDropdowns();
+          renderAll(); renderRostersTab(); renderSuggestions(); renderFreeAgentsTab(); renderPowerRankingsTab();
+          showToast(`My Team set to ${team}.`);
+        }
+      };
+    }
+  }
+
+  // ---- SWITCH LEAGUE ----
+  m = lower.match(/\bswitch(?:\s+to)?\s+(?:the\s+)?(.+?)(?:\s+league)?$/);
+  if(m){
+    const leagueId = matchLeagueName(m[1]);
+    if(leagueId && leagueId !== ACTIVE_LEAGUE_ID){
+      return {
+        type: 'Switch league',
+        text: `Switch to <b>${LEAGUES[leagueId].name}</b>`,
+        run: ()=>{ switchToLeague(leagueId); }
+      };
+    }
+  }
+
+  // ---- FIND / SUGGEST TRADE FOR POSITION ----
+  if(/\btrade\b/.test(lower) && /\b(find|suggest|get|show|want|need|looking for)\b/.test(lower)){
+    const posMap = {qb:'QB', quarterback:'QB', rb:'RB', 'running back':'RB', wr:'WR', receiver:'WR', te:'TE', 'tight end':'TE',
+                     flex:'FLEX', k:'K', kicker:'K', dst:'DST', def:'DST', defense:'DST'};
+    let pos = null;
+    for(const key in posMap){
+      if(new RegExp(`\\b${key}\\b`).test(lower)){ pos = posMap[key]; break; }
+    }
+    return {
+      type: 'Find trades',
+      text: pos
+        ? `Open Suggested Trades, filtered to <b>${pos}</b>${state.myTeam ? ` for <b>${state.myTeam}</b>` : ' (set My Team first for a personalized filter)'}`
+        : `Open Suggested Trades${state.myTeam ? ` for <b>${state.myTeam}</b>` : ''}`,
+      run: ()=>{
+        if(state.myTeam) state.suggTeam1 = state.myTeam;
+        if(pos) state.suggTradeForPos = pos;
+        document.querySelector('.tab-btn[data-tab="suggested"]').click();
+        const posSel = document.getElementById('suggTradeForPos');
+        if(posSel) posSel.value = state.suggTradeForPos || 'ALL';
+        renderSuggestions();
+        showToast('Suggested Trades filtered.');
+      }
+    };
+  }
+
+  // ---- NAVIGATE TO TAB ----
+  for(const [key, tabId] of AIHELP_TAB_KEYWORDS){
+    if(lower.includes(key)){
+      return {
+        type: 'Go to tab',
+        text: `Open the <b>${aihelpTabLabel(tabId)}</b> tab`,
+        run: ()=>{ document.querySelector(`.tab-btn[data-tab="${tabId}"]`).click(); }
+      };
+    }
+  }
+
+  return null;
+}
+
+function parseAIHelpInput(text){
+  const clauses = text.split(/\s*(?:,|;|\band\b)\s*/i).map(c=>c.trim()).filter(Boolean);
+  const commands = [], unparsed = [];
+  for(const clause of clauses){
+    const cmd = parseAIHelpClause(clause);
+    if(cmd) commands.push(cmd);
+    else unparsed.push(clause);
+  }
+  return {commands, unparsed};
+}
+
+function renderAIHelpResults(text){
+  const wrap = document.getElementById('aiHelpResults');
+  wrap.innerHTML = '';
+  if(!text || !text.trim()) return;
+
+  const {commands, unparsed} = parseAIHelpInput(text);
+  if(commands.length === 0){
+    wrap.innerHTML = `<div class="aihelp-unparsed">I couldn't pull a specific action out of that. Try phrasing like "add [player] to my team", "drop [player]", "find a trade for a [position]", or "show me [tab name]".</div>`;
+    return;
+  }
+  commands.forEach(cmd=>{
+    const card = document.createElement('div');
+    card.className = 'aihelp-cmd-card';
+    card.innerHTML = `
+      <div class="aihelp-cmd-text"><span class="aihelp-cmd-type">${cmd.type}</span>${cmd.text}</div>
+      <button class="th-apply-btn aihelp-cmd-run">Run</button>
+    `;
+    card.querySelector('.aihelp-cmd-run').addEventListener('click', ()=>{
+      cmd.run();
+      card.style.opacity = '0.55';
+      const btn = card.querySelector('.aihelp-cmd-run');
+      btn.textContent = 'Done'; btn.disabled = true;
+    });
+    wrap.appendChild(card);
+  });
+  if(unparsed.length > 0){
+    const note = document.createElement('div');
+    note.className = 'aihelp-unparsed';
+    note.textContent = `Couldn't find an action for: "${unparsed.join('", "')}"`;
+    wrap.appendChild(note);
+  }
+}
+
+document.getElementById('aiHelpParseBtn').addEventListener('click', ()=>{
+  renderAIHelpResults(document.getElementById('aiHelpInput').value);
+});
+document.getElementById('aiHelpInput').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter' && (e.metaKey || e.ctrlKey)){
+    renderAIHelpResults(document.getElementById('aiHelpInput').value);
+  }
+});
+document.querySelectorAll('.aihelp-example-chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    document.getElementById('aiHelpInput').value = chip.textContent;
+    renderAIHelpResults(chip.textContent);
+  });
+});
 
 </script>
 
