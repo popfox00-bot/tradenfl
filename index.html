@@ -1067,6 +1067,15 @@
           <select id="rosterTeamSelect"></select>
         </div>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="mini-btn" id="renameTeamBtn">Rename team</button>
+          <button class="mini-btn" id="addTeamBtn">Add team</button>
+          <button class="mini-btn" id="deleteTeamBtn">Delete team</button>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:22px;">
+        <button class="mini-btn" id="renameLeagueBtn">Rename this league</button>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
           <button class="mini-btn" id="exportRostersBtn">Export rosters</button>
           <button class="mini-btn" id="importRostersBtn">Import rosters</button>
           <input type="file" id="importRostersFile" accept="application/json" style="display:none;">
@@ -1192,7 +1201,7 @@
 </script>
 
 <script id="league3-rosters-data" type="application/json">
-{"Boutte":["Jahmyr Gibbs","Javonte Williams","Drake London","Jaylen Waddle","Tyler Warren","Jaylen Warren","Dak Prescott","Rico Dowdle","Alec Pierce","Quentin Johnston","Mark Andrews","Tyler Shough","Rachaad White","Kayshon Boutte","Detroit Lions"],"TheCh":["Josh Allen","Kyren Williams","Malik Nabers","Emeka Egbuka","Sam LaPorta","Josh Jacobs","Houston Texans","DK Metcalf","Cameron Dicker","Jacory Croskey-Merritt","Kenny Gainwell","Jordyn Tyson","Josh Downs","Juwan Johnson","Kaelon Black"],"TheGr":["Bijan Robinson","A.J. Brown","Brock Bowers","Jeremiyah Love","Garrett Wilson","Mike Evans","Luther Burden III","Shedeur Sanders","Jordan Love","Aaron Jones Sr.","Cam Little","Matthew Golden","Aaron Rodgers","Green Bay Packers","Riley Leonard"],"mariaa2":["Ja'Marr Chase","Nico Collins","Trey McBride","Bucky Irving","Drake Maye","Bhayshul Tuten","Rome Odunze","Marvin Harrison Jr.","Denver Broncos","Jayden Reed","Jason Myers","Jaxson Dart","Wan'Dale Robinson","Hunter Henry","Tank Bigsby"],"Mike2":["Jaxon Smith-Njigba","George Pickens","George Kittle","Jadarian Price","Joe Burrow","RJ Harvey","Christian Watson","Parker Washington","Jordan Mason","MarShawn Lloyd","Will Reichard","Jared Goff","Buffalo Bills","Fernando Mendoza","Tank Dell"],"Njigbas":["Jonathan Taylor","Ashton Jeanty","Patrick Mahomes II","Cam Skattebo","Bo Nix","Xavier Worthy","Romeo Doubs","Baltimore Ravens","Chuba Hubbard","Harrison Butker","Jordan Addison","KC Concepcion","Jakobi Meyers","Khalil Shakir","Brenton Strange"],"Multipl":["Christian McCaffrey","Kenneth Walker III","Chris Olave","Tetairoa McMillan","Jalen Hurts","DJ Moore","Tucker Kraft","Seattle Seahawks","Blake Corum","Trevor Lawrence","Jake Ferguson","Jake Bates","Ja'Kobi Lane","Jalen Coker","Tyrone Tracy Jr."],"Cooked":["James Cook III","Omarion Hampton","DeVonta Smith","Tee Higgins","D'Andre Swift","Jameson Williams","Carnell Tate","Caleb Williams","Deshaun Watson","Isaiah Likely","Tyler Allgeier","De'Zhaun Stribling","Woody Marks","New England Patriots","Evan McPherson"],"BabyB":["Amon-Ra St. Brown","Chase Brown","Ladd McConkey","Travis Etienne Jr.","David Montgomery","Quinshon Judkins","TreVeyon Henderson","Justin Herbert","Michael Wilson","Travis Kelce","Ka'imi Fairbairn","Michael Pittman Jr.","Brock Purdy","Jonah Coleman","Minnesota Vikings"],"PukaM":["Puka Nacua","De'Von Achane","Rashee Rice","Brian Thomas Jr.","Jayden Daniels","Harold Fannin Jr.","Tony Pollard","Chris Godwin Jr.","Dalton Kincaid","Stefon Diggs","Mike Washington Jr.","Philadelphia Eagles","Harrison Mevis","Tyjae Spears"]}
+{"Boutte":["Jahmyr Gibbs","Javonte Williams","Drake London","Jaylen Waddle","Tyler Warren","Jaylen Warren","Dak Prescott","Rico Dowdle","Alec Pierce","Quentin Johnston","Mark Andrews","Tyler Shough","Rachaad White","Kayshon Boutte","Detroit Lions"],"TheCh":["Josh Allen","Kyren Williams","Malik Nabers","Emeka Egbuka","Sam LaPorta","Josh Jacobs","Houston Texans","DK Metcalf","Cameron Dicker","Jacory Croskey-Merritt","Kenny Gainwell","Jordyn Tyson","Josh Downs","Juwan Johnson","Kaelon Black"],"TheGr":["Bijan Robinson","A.J. Brown","Brock Bowers","Jeremiyah Love","Garrett Wilson","Mike Evans","Luther Burden III","Shedeur Sanders","Jordan Love","Aaron Jones Sr.","Cam Little","Matthew Golden","Aaron Rodgers","Green Bay Packers","Riley Leonard"],"mariaa2":["Ja'Marr Chase","Nico Collins","Trey McBride","Bucky Irving","Drake Maye","Bhayshul Tuten","Rome Odunze","Marvin Harrison Jr.","Denver Broncos","Jayden Reed","Jason Myers","Jaxson Dart","Wan'Dale Robinson","Hunter Henry","Tank Bigsby"],"Mike2":["Jaxon Smith-Njigba","George Pickens","George Kittle","Jadarian Price","Joe Burrow","RJ Harvey","Christian Watson","Parker Washington","Jordan Mason","MarShawn Lloyd","Will Reichard","Jared Goff","Buffalo Bills","Fernando Mendoza","Tank Dell"],"Njigbas":["Jonathan Taylor","Ashton Jeanty","Patrick Mahomes II","Cam Skattebo","Bo Nix","Xavier Worthy","Romeo Doubs","Baltimore Ravens","Chuba Hubbard","Harrison Butker","Jordan Addison","KC Concepcion","Jakobi Meyers","Khalil Shakir","Brenton Strange"],"Multipl":["Christian McCaffrey","Kenneth Walker III","Chris Olave","Tetairoa McMillan","Jalen Hurts","DJ Moore","Tucker Kraft","Seattle Seahawks","Blake Corum","Trevor Lawrence","Jake Ferguson","Jake Bates","Ja'Kobi Lane","Jalen Coker","Tyrone Tracy Jr."],"Cooked":["James Cook III","Omarion Hampton","DeVonta Smith","Tee Higgins","D'Andre Swift","Jameson Williams","Carnell Tate","Caleb Williams","Deshaun Watson","Isaiah Likely","Tyler Allgeier","De'Zhaun Stribling","Woody Marks","New England Patriots","Evan McPherson"],"BabyB":["Amon-Ra St. Brown","Chase Brown","Ladd McConkey","Travis Etienne Jr.","David Montgomery","Quinshon Judkins","TreVeyon Henderson","Justin Herbert","Michael Wilson","Travis Kelce","Ka'imi Fairbairn","Michael Pittman Jr.","Brock Purdy","Jonah Coleman","Minnesota Vikings"],"PukaM":["Puka Nacua","De'Von Achane","Rashee Rice","Brian Thomas Jr.","Jayden Daniels","Harold Fannin Jr.","Tony Pollard","Chris Godwin Jr.","Dalton Kincaid","Stefon Diggs","Mike Washington Jr.","Philadelphia Eagles","Harrison Mevis","Tyjae Spears"],"Barkha":["Saquon Barkley","Derrick Henry","Zay Flowers","Colston Loveland","Matthew Stafford","Brandon Aubrey","Los Angeles Rams","Courtland Sutton","Baker Mayfield","Makai Lemon","Dallas Goedert","Chris Rodriguez Jr.","Rashid Shaheed","Sam Darnold","Nicholas Singleton"],"B1gwea":["CeeDee Lamb","Justin Jefferson","Lamar Jackson","Breece Hall","Terry McLaurin","Davante Adams","J.K. Dobbins","Kyle Pitts Sr.","Jonathon Brooks","Kyle Monangai","Deebo Samuel Sr.","Zach Charbonnet","Chris Boswell","Los Angeles Chargers","Kyler Murray"]}
 </script>
 
 <script>
@@ -1476,6 +1485,18 @@ function loadAllLeaguesState(){
   }
   if(!LEAGUES['primetime-cte']){
     LEAGUES['primetime-cte'] = makeLeague3Record();
+  } else {
+    // Additive patch: Primetime CTE actually has 12 teams, not the 10 it
+    // originally shipped with — add whichever are missing without touching
+    // the other teams' current rosters (which may already have edits/trades).
+    const fresh = makeLeague3Record();
+    const rec = LEAGUES['primetime-cte'];
+    fresh.teamNames.forEach(team=>{
+      if(!rec.teamNames.includes(team)){
+        rec.teamNames.push(team);
+        rec.rosters[team] = [...fresh.rosters[team]];
+      }
+    });
   }
 
   return applyActiveLeague(restored);
@@ -2847,6 +2868,94 @@ document.getElementById('tradeHelpOverlay').addEventListener('click', (e)=>{
 // =====================================================================
 // ROSTERS TAB
 // =====================================================================
+
+// After directly mutating TEAM_NAMES/LEAGUE (add/rename/delete a team),
+// rebuild LEAGUE and FREE_AGENTS from scratch so everything stays
+// consistent — fresh clones, correct free-agent pool, no stale references.
+function rebuildLeagueFromCurrentState(){
+  const rosterMap = {};
+  for(const t of TEAM_NAMES) rosterMap[t] = LEAGUE[t].map(p=>p.name);
+  const built = buildFromRosterMap(rosterMap);
+  LEAGUE = built.league;
+  FREE_AGENTS = built.freeAgents;
+}
+
+function renameCurrentLeague(){
+  const current = LEAGUES[ACTIVE_LEAGUE_ID];
+  const newName = prompt('Rename this league:', current.name);
+  if(!newName || !newName.trim() || newName.trim() === current.name) return;
+  current.name = newName.trim();
+  persistRosterState();
+  renderLeaguePicker();
+  showToast(`League renamed to "${current.name}".`);
+}
+
+function renameCurrentTeam(){
+  const oldName = state.rosterTeam;
+  if(!oldName) return;
+  const newName = prompt(`Rename "${oldName}" to:`, oldName);
+  if(!newName || !newName.trim() || newName.trim() === oldName) return;
+  const trimmed = newName.trim();
+  if(TEAM_NAMES.includes(trimmed)){ showToast('A team with that name already exists in this league.'); return; }
+
+  const idx = TEAM_NAMES.indexOf(oldName);
+  TEAM_NAMES[idx] = trimmed;
+  LEAGUE[trimmed] = LEAGUE[oldName];
+  delete LEAGUE[oldName];
+
+  [['rosterTeam'],['myTeam'],['faAddTeam'],['suggTeam1'],['suggTeam2']].forEach(([key])=>{
+    if(state[key] === oldName) state[key] = trimmed;
+  });
+  state.teams = state.teams.map(t => t === oldName ? trimmed : t);
+
+  persistRosterState();
+  renderEverythingForLeagueSwitch();
+  showToast(`Renamed to "${trimmed}".`);
+}
+
+function addTeamToLeague(){
+  const name = prompt('New team name:');
+  if(!name || !name.trim()) return;
+  const trimmed = name.trim();
+  if(TEAM_NAMES.includes(trimmed)){ showToast('A team with that name already exists in this league.'); return; }
+
+  TEAM_NAMES.push(trimmed);
+  LEAGUE[trimmed] = [];
+  state.rosterTeam = trimmed;
+
+  persistRosterState();
+  renderEverythingForLeagueSwitch();
+  showToast(`"${trimmed}" added to this league.`);
+}
+
+function deleteTeamFromLeague(){
+  const team = state.rosterTeam;
+  if(!team) return;
+  if(TEAM_NAMES.length <= 2){ showToast('A league needs at least 2 teams.'); return; }
+  const playerCount = LEAGUE[team].length;
+  const ok = confirm(`Delete "${team}"?${playerCount > 0 ? ` Its ${playerCount} player${playerCount===1?'':'s'} will become free agents.` : ''} This cannot be undone.`);
+  if(!ok) return;
+
+  delete LEAGUE[team];
+  TEAM_NAMES = TEAM_NAMES.filter(t => t !== team);
+  rebuildLeagueFromCurrentState();
+
+  state.rosterTeam = TEAM_NAMES[0] || '';
+  [['myTeam'],['faAddTeam'],['suggTeam1'],['suggTeam2']].forEach(([key])=>{
+    if(state[key] === team) state[key] = '';
+  });
+  state.teams = state.teams.filter(t => t !== team);
+  while(state.teams.length < 2 && TEAM_NAMES.length >= 2){
+    const unused = TEAM_NAMES.find(t=>!state.teams.includes(t));
+    if(unused) state.teams.push(unused); else break;
+  }
+  if(state.size > TEAM_NAMES.length) state.size = Math.max(2, TEAM_NAMES.length);
+
+  persistRosterState();
+  renderEverythingForLeagueSwitch();
+  showToast(`"${team}" deleted — its players are now free agents.`);
+}
+
 const rosterTeamSelectEl = document.getElementById('rosterTeamSelect');
 TEAM_NAMES.forEach(t=>{
   const opt = document.createElement('option');
@@ -2858,6 +2967,11 @@ rosterTeamSelectEl.addEventListener('change', (e)=>{
   state.rosterTeam = e.target.value;
   renderRostersTab();
 });
+
+document.getElementById('renameLeagueBtn').addEventListener('click', renameCurrentLeague);
+document.getElementById('renameTeamBtn').addEventListener('click', renameCurrentTeam);
+document.getElementById('addTeamBtn').addEventListener('click', addTeamToLeague);
+document.getElementById('deleteTeamBtn').addEventListener('click', deleteTeamFromLeague);
 
 document.getElementById('resetRostersBtn').addEventListener('click', ()=>{
   const isDefault = ACTIVE_LEAGUE_ID === 'lhs-default';
