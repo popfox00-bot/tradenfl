@@ -1756,7 +1756,15 @@ async function pullFromBackend(){
     if(json && json.ok && json.data) return json.data;
     lastSyncError = 'Backend responded but reported an error: ' + ((json && json.error) || 'unknown error') + '.';
   } catch(e){
-    lastSyncError = 'Could not reach the backend at all — network error, CORS block, or the URL is wrong. Browser said: ' + (e && e.message ? e.message : e);
+    // Apps Script only sends CORS headers when doGet actually runs. A login
+    // redirect, "Authorization required" page, or Google error page has none,
+    // so the browser reports it as a bare "Failed to fetch" rather than
+    // letting us read the HTML — that's almost always a deployment setting.
+    lastSyncError = 'Could not read a response from the backend (browser said: ' + (e && e.message ? e.message : e) + '). ' +
+      'With Apps Script this almost always means Google served a sign-in or authorization page instead of running the script. ' +
+      'Open the /exec URL directly in a new browser tab: it should show {"ok":true,...}. If it shows a sign-in page, "Authorization required", or an error, ' +
+      'go to Deploy > Manage deployments > pencil icon, set Execute as: Me and Who has access: Anyone (not "Anyone with Google account"), choose Version: New version, Deploy, ' +
+      'click through the authorization prompt, and use the /exec URL shown there.';
   }
   return null;
 }
