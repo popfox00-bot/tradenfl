@@ -1787,10 +1787,25 @@ function diagnoseNonJsonResponse(resp, text){
   return `Backend response wasn't valid JSON (HTTP ${resp.status}): "${text.slice(0,150)}"`;
 }
 
+// Pushes are serialized: each one sends the full state, so if two were in
+// flight at once and landed out of order, an older snapshot could overwrite
+// a newer one. While one is in flight, further calls just mark the state
+// dirty and a single follow-up push goes out when it finishes.
+let pushInFlight = false;
+let pushPending = false;
+
 function pushToBackend(){
   if(!BACKEND_URL) return;
+  if(pushInFlight){ pushPending = true; return; }
+  pushInFlight = true;
+  pushPending = false;
   syncStatus = 'syncing'; updateSyncStatusUI();
-  const payload = {activeLeagueId: ACTIVE_LEAGUE_ID, leagues: LEAGUES, savedAt: new Date().toISOString()};
+  let savedAt = new Date().toISOString();
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) savedAt = JSON.parse(raw).savedAt || savedAt;
+  } catch(e){ /* ignore */ }
+  const payload = {activeLeagueId: ACTIVE_LEAGUE_ID, leagues: LEAGUES, savedAt};
   fetch(BACKEND_URL, {
     method: 'POST',
     headers: {'Content-Type': 'text/plain;charset=utf-8'}, // avoids a CORS preflight against Apps Script
@@ -1809,6 +1824,10 @@ function pushToBackend(){
       syncStatus = 'error';
       lastSyncError = (e && e.message) ? e.message : 'Could not reach the backend.';
       updateSyncStatusUI();
+    })
+    .finally(()=>{
+      pushInFlight = false;
+      if(pushPending) pushToBackend();
     });
 }
 
@@ -1836,7 +1855,13 @@ async function syncFromBackendOnLoad(){
   } catch(e){ /* ignore */ }
 
   const remoteIsNewer = !localSavedAt || (remote.savedAt && new Date(remote.savedAt) > new Date(localSavedAt));
-  if(!remoteIsNewer){ syncStatus = 'synced'; updateSyncStatusUI(); return; }
+  if(!remoteIsNewer){
+    const localIsNewer = localSavedAt && (!remote.savedAt || new Date(localSavedAt) > new Date(remote.savedAt));
+    // local edits the backend never received (made offline, or while a push
+    // failed) — upload them now instead of leaving them stranded on this device
+    if(localIsNewer){ pushToBackend(); return; }
+    syncStatus = 'synced'; updateSyncStatusUI(); return;
+  }
 
   LEAGUES = remote.leagues;
   ACTIVE_LEAGUE_ID = (remote.activeLeagueId && LEAGUES[remote.activeLeagueId]) ? remote.activeLeagueId : Object.keys(LEAGUES)[0];
@@ -4706,6 +4731,17 @@ if(syncNowBtn){
 if(BACKEND_URL){
   syncFromBackendOnLoad();
 }
+
+// Re-sync whenever the app comes back to the foreground or regains a
+// connection — a tab or home-screen app left open for days would otherwise
+// keep editing its stale copy and overwrite newer changes made on another
+// device, and edits made offline would never get uploaded.
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState === 'visible' && BACKEND_URL) syncFromBackendOnLoad();
+});
+window.addEventListener('online', ()=>{
+  if(BACKEND_URL) syncFromBackendOnLoad();
+});
 
 </script>
 

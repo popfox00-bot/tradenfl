@@ -5,7 +5,7 @@
 // available. If a request has never been cached and the network fails, it
 // simply fails — there's nothing to fall back to yet.
 
-const CACHE_NAME = 'lhs-trade-desk-v2';
+const CACHE_NAME = 'lhs-trade-desk-v3';
 const PRECACHE_URLS = [
   './index.html',
   './manifest.json',
