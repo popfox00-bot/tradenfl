@@ -1227,6 +1227,7 @@
             <button class="th-apply-btn" id="connectBackendBtn" style="padding:9px 18px;">Connect</button>
             <button class="mini-btn" id="syncNowBtn">Sync now</button>
           </div>
+          <div id="syncErrorDetail" style="display:none; margin-top:12px; padding:10px 12px; background:rgba(214,84,84,0.1); border:1px solid var(--bad); border-radius:4px; font-size:12.5px; color:var(--chalk); line-height:1.5;"></div>
         </div>
       </div>
 
@@ -1730,20 +1731,52 @@ function updateSyncStatusUI(){
   const [text, cls] = labels[syncStatus] || labels.off;
   el.textContent = text;
   el.className = 'sync-badge' + (cls ? ' ' + cls : '');
-  el.title = syncStatus === 'error' ? lastSyncError : '';
+  const errEl = document.getElementById('syncErrorDetail');
+  if(errEl){
+    if(syncStatus === 'error' && lastSyncError){
+      errEl.textContent = lastSyncError;
+      errEl.style.display = 'block';
+    } else {
+      errEl.style.display = 'none';
+    }
+  }
 }
 
 async function pullFromBackend(){
   if(!BACKEND_URL) return null;
   try{
     const resp = await fetch(BACKEND_URL + '?action=load', {method: 'GET'});
-    const json = await resp.json();
+    const text = await resp.text();
+    let json;
+    try{ json = JSON.parse(text); }
+    catch(parseErr){
+      lastSyncError = diagnoseNonJsonResponse(resp, text);
+      return null;
+    }
     if(json && json.ok && json.data) return json.data;
-    lastSyncError = (json && json.error) || 'Unexpected response from backend.';
+    lastSyncError = 'Backend responded but reported an error: ' + ((json && json.error) || 'unknown error') + '.';
   } catch(e){
-    lastSyncError = 'Could not reach the backend (offline, or the URL/deployment is wrong).';
+    lastSyncError = 'Could not reach the backend at all — network error, CORS block, or the URL is wrong. Browser said: ' + (e && e.message ? e.message : e);
   }
   return null;
+}
+
+// A non-JSON response almost always means Apps Script served an HTML page
+// (an auth/permission screen, a Google login redirect, or a script error
+// page) instead of actually running doGet — nearly always a deployment
+// setting, not a network problem. Try to name which one from the HTML.
+function diagnoseNonJsonResponse(resp, text){
+  const lower = text.toLowerCase();
+  if(lower.includes('accounts.google.com') || lower.includes('sign in')){
+    return `Got a Google sign-in page instead of data (HTTP ${resp.status}). This almost always means the deployment's "Execute as" is set to "User accessing the web app" instead of "Me" — edit the deployment (Deploy > Manage deployments > pencil icon), set Execute as: Me, Who has access: Anyone, then choose "New version" and Deploy again.`;
+  }
+  if(lower.includes('authorization required') || lower.includes('needs your permission') || lower.includes('requested action')){
+    return `Got an authorization page instead of data (HTTP ${resp.status}). Open the deployed /exec URL directly in your browser once and click through the "Google hasn't verified this app" > Advanced > Go to (unsafe) prompt to finish authorizing the script, then try Connect again.`;
+  }
+  if(lower.includes('<html')){
+    return `Got an HTML page instead of JSON data (HTTP ${resp.status}) — likely a deployment permissions issue. Open the /exec URL directly in your browser to see what it actually returns.`;
+  }
+  return `Backend response wasn't valid JSON (HTTP ${resp.status}): "${text.slice(0,150)}"`;
 }
 
 function pushToBackend(){
@@ -1755,13 +1788,20 @@ function pushToBackend(){
     headers: {'Content-Type': 'text/plain;charset=utf-8'}, // avoids a CORS preflight against Apps Script
     body: JSON.stringify(payload)
   })
-    .then(r => r.json())
-    .then(json=>{
+    .then(async r=>{
+      const text = await r.text();
+      let json;
+      try{ json = JSON.parse(text); }
+      catch(parseErr){ throw new Error(diagnoseNonJsonResponse(r, text)); }
       if(json && json.ok){ syncStatus = 'synced'; }
-      else { syncStatus = 'error'; lastSyncError = (json && json.error) || 'Backend rejected the update.'; }
+      else { syncStatus = 'error'; lastSyncError = 'Backend rejected the update: ' + ((json && json.error) || 'unknown error'); }
       updateSyncStatusUI();
     })
-    .catch(()=>{ syncStatus = 'error'; lastSyncError = 'Could not reach the backend.'; updateSyncStatusUI(); });
+    .catch(e=>{
+      syncStatus = 'error';
+      lastSyncError = (e && e.message) ? e.message : 'Could not reach the backend.';
+      updateSyncStatusUI();
+    });
 }
 
 // Pulls whatever's on the backend and adopts it if it's newer than what's
