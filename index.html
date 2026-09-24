@@ -721,7 +721,15 @@
   .settings-section h4{
     font-family:'Space Grotesk',sans-serif;font-size:14.5px;font-weight:700;
     margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
   }
+  .sync-badge{
+    font-family:'Archivo',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;
+    padding:3px 9px;border-radius:10px;border:1px solid var(--line);color:var(--chalk-faint);
+  }
+  .sync-badge.syncing{border-color:var(--amber-dim);color:var(--amber);}
+  .sync-badge.synced{border-color:var(--good);color:var(--good);}
+  .sync-badge.error{border-color:var(--bad);color:var(--bad);}
   .settings-grid{
     display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
     gap:10px;
@@ -1211,6 +1219,18 @@
       </div>
 
       <div class="settings-section">
+        <h4>Cross-Device Sync <span class="sync-badge" id="syncStatusBadge">Sync: not configured</span></h4>
+        <div class="settings-impact-panel">
+          <div class="suggestions-sub" style="margin-bottom:14px;">Connect a small Google Sheet + Apps Script backend (same pattern as the RÊVE Pamphlet Builder) so a roster edit or completed trade made on one device shows up when you open the app on another — phone to laptop, either direction. Without this connected, everything still works exactly as before, just local to this one browser. Deploy the Apps Script I gave you separately, paste its Web App URL below, and click Connect.</div>
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <input type="text" id="backendUrlInput" placeholder="https://script.google.com/macros/s/.../exec" style="flex:1; min-width:260px; background:var(--turf-0); border:1px solid var(--line); color:var(--chalk); padding:9px 11px; font-family:'Archivo',sans-serif; font-size:12.5px; border-radius:4px;">
+            <button class="th-apply-btn" id="connectBackendBtn" style="padding:9px 18px;">Connect</button>
+            <button class="mini-btn" id="syncNowBtn">Sync now</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
         <h4>App appearance</h4>
         <div class="settings-impact-panel">
           <div class="suggestions-sub" style="margin-bottom:14px;">Pick a base color and the whole app's palette (backgrounds, cards, borders, header) is generated from it automatically. This is a device preference, not tied to any one league.</div>
@@ -1679,6 +1699,129 @@ function persistRosterState(){
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify({activeLeagueId: ACTIVE_LEAGUE_ID, leagues: LEAGUES, savedAt: new Date().toISOString()}));
   } catch(e){ storageAvailable = false; }
+  pushToBackend();
+}
+
+// =====================================================================
+// CROSS-DEVICE SYNC — an optional Google Sheet + Apps Script backend
+// (same pattern as the RÊVE Pamphlet Builder). localStorage remains the
+// local cache and fallback; this layer just keeps devices reconciled when
+// a backend URL is configured. Every failure mode here falls back to
+// local-only operation silently — a missing/unreachable backend should
+// never break the app.
+// =====================================================================
+const BACKEND_URL_KEY = 'lhsTradeDeskBackendUrl_v1';
+let BACKEND_URL = '';
+try{ BACKEND_URL = localStorage.getItem(BACKEND_URL_KEY) || ''; } catch(e){ /* ignore */ }
+
+let syncStatus = BACKEND_URL ? 'idle' : 'off'; // 'off' | 'idle' | 'syncing' | 'synced' | 'error'
+let lastSyncError = '';
+
+function updateSyncStatusUI(){
+  const el = document.getElementById('syncStatusBadge');
+  if(!el) return;
+  const labels = {
+    off: ['Sync: not configured', ''],
+    idle: ['Sync: configured', ''],
+    syncing: ['Syncing…', 'syncing'],
+    synced: ['Synced', 'synced'],
+    error: ['Sync error', 'error']
+  };
+  const [text, cls] = labels[syncStatus] || labels.off;
+  el.textContent = text;
+  el.className = 'sync-badge' + (cls ? ' ' + cls : '');
+  el.title = syncStatus === 'error' ? lastSyncError : '';
+}
+
+async function pullFromBackend(){
+  if(!BACKEND_URL) return null;
+  try{
+    const resp = await fetch(BACKEND_URL + '?action=load', {method: 'GET'});
+    const json = await resp.json();
+    if(json && json.ok && json.data) return json.data;
+    lastSyncError = (json && json.error) || 'Unexpected response from backend.';
+  } catch(e){
+    lastSyncError = 'Could not reach the backend (offline, or the URL/deployment is wrong).';
+  }
+  return null;
+}
+
+function pushToBackend(){
+  if(!BACKEND_URL) return;
+  syncStatus = 'syncing'; updateSyncStatusUI();
+  const payload = {activeLeagueId: ACTIVE_LEAGUE_ID, leagues: LEAGUES, savedAt: new Date().toISOString()};
+  fetch(BACKEND_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'text/plain;charset=utf-8'}, // avoids a CORS preflight against Apps Script
+    body: JSON.stringify(payload)
+  })
+    .then(r => r.json())
+    .then(json=>{
+      if(json && json.ok){ syncStatus = 'synced'; }
+      else { syncStatus = 'error'; lastSyncError = (json && json.error) || 'Backend rejected the update.'; }
+      updateSyncStatusUI();
+    })
+    .catch(()=>{ syncStatus = 'error'; lastSyncError = 'Could not reach the backend.'; updateSyncStatusUI(); });
+}
+
+// Pulls whatever's on the backend and adopts it if it's newer than what's
+// already loaded locally — runs once at startup, after the normal
+// localStorage-based load, so the app always renders instantly from local
+// data first and only "upgrades" to synced data a moment later if needed.
+async function syncFromBackendOnLoad(){
+  if(!BACKEND_URL){ syncStatus = 'off'; updateSyncStatusUI(); return; }
+  syncStatus = 'syncing'; updateSyncStatusUI();
+  const remote = await pullFromBackend();
+  if(!remote){ syncStatus = 'error'; updateSyncStatusUI(); return; }
+
+  const remoteHasData = remote.leagues && Object.keys(remote.leagues).length > 0;
+  if(!remoteHasData){
+    // nothing on the backend yet — seed it with what we have locally
+    pushToBackend();
+    return;
+  }
+
+  let localSavedAt = null;
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) localSavedAt = JSON.parse(raw).savedAt || null;
+  } catch(e){ /* ignore */ }
+
+  const remoteIsNewer = !localSavedAt || (remote.savedAt && new Date(remote.savedAt) > new Date(localSavedAt));
+  if(!remoteIsNewer){ syncStatus = 'synced'; updateSyncStatusUI(); return; }
+
+  LEAGUES = remote.leagues;
+  ACTIVE_LEAGUE_ID = (remote.activeLeagueId && LEAGUES[remote.activeLeagueId]) ? remote.activeLeagueId : Object.keys(LEAGUES)[0];
+  if(!LEAGUES['broncos-league']) LEAGUES['broncos-league'] = makeLeague2Record();
+  if(!LEAGUES['primetime-cte']) LEAGUES['primetime-cte'] = makeLeague3Record();
+  else {
+    const fresh = makeLeague3Record();
+    const rec = LEAGUES['primetime-cte'];
+    fresh.teamNames.forEach(team=>{
+      if(!rec.teamNames.includes(team)){
+        rec.teamNames.push(team);
+        rec.rosters[team] = [...fresh.rosters[team]];
+      }
+    });
+  }
+
+  applyActiveLeague(true);
+  state.myTeam = LEAGUES[ACTIVE_LEAGUE_ID].myTeam || '';
+  state.moves = [];
+  state.teams = TEAM_NAMES.slice(0, 3);
+  while(state.teams.length < 3) state.teams.push(TEAM_NAMES[state.teams.length % TEAM_NAMES.length] || '');
+  state.rosterTeam = TEAM_NAMES[0] || '';
+  state.faAddTeam = ''; state.suggTeam1 = ''; state.suggTeam2 = '';
+  if(state.myTeam) applyMyTeamDefaults(state.myTeam);
+  suggestionCache = null; powerRankingsCache = null;
+
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({activeLeagueId: ACTIVE_LEAGUE_ID, leagues: LEAGUES, savedAt: remote.savedAt || new Date().toISOString()}));
+  } catch(e){ /* ignore */ }
+
+  renderEverythingForLeagueSwitch();
+  syncStatus = 'synced'; updateSyncStatusUI();
+  showToast('Synced the latest data from your other device.');
 }
 
 const loadResult = loadAllLeaguesState();
@@ -4469,6 +4612,52 @@ document.querySelectorAll('.aihelp-example-chip').forEach(chip=>{
     renderAIHelpResults(chip.textContent);
   });
 });
+
+// =====================================================================
+// CROSS-DEVICE SYNC — Settings tab wiring
+// =====================================================================
+const backendUrlInputEl = document.getElementById('backendUrlInput');
+if(backendUrlInputEl) backendUrlInputEl.value = BACKEND_URL;
+updateSyncStatusUI();
+
+const connectBackendBtn = document.getElementById('connectBackendBtn');
+if(connectBackendBtn){
+  connectBackendBtn.addEventListener('click', ()=>{
+    const url = (backendUrlInputEl.value || '').trim();
+    if(url && !/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(url)){
+      const ok = confirm("That doesn't look like a typical Apps Script Web App URL (should start with https://script.google.com/macros/s/ and end in /exec). Use it anyway?");
+      if(!ok) return;
+    }
+    BACKEND_URL = url;
+    try{
+      if(url) localStorage.setItem(BACKEND_URL_KEY, url);
+      else localStorage.removeItem(BACKEND_URL_KEY);
+    } catch(e){ /* ignore */ }
+    if(!url){
+      syncStatus = 'off'; updateSyncStatusUI();
+      showToast('Cross-device sync disconnected — this device is local-only again.');
+      return;
+    }
+    showToast('Connecting…');
+    syncFromBackendOnLoad();
+  });
+}
+
+const syncNowBtn = document.getElementById('syncNowBtn');
+if(syncNowBtn){
+  syncNowBtn.addEventListener('click', ()=>{
+    if(!BACKEND_URL){ showToast('Connect a backend URL first.'); return; }
+    syncFromBackendOnLoad();
+  });
+}
+
+// Kick off the initial reconciliation once the whole app has finished its
+// normal synchronous, local-first startup — the app is already fully
+// usable at this point; this just quietly upgrades to synced data if a
+// newer version exists on another device.
+if(BACKEND_URL){
+  syncFromBackendOnLoad();
+}
 
 </script>
 
