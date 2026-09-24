@@ -730,6 +730,20 @@
   .sync-badge.syncing{border-color:var(--amber-dim);color:var(--amber);}
   .sync-badge.synced{border-color:var(--good);color:var(--good);}
   .sync-badge.error{border-color:var(--bad);color:var(--bad);}
+  .save-status-bar{
+    display:none;align-items:center;gap:8px;margin:0 0 14px;padding:8px 12px;
+    border:1px solid var(--line);border-left-width:3px;border-radius:4px;background:var(--turf-1);
+    font-family:'Archivo',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.02em;color:var(--chalk);
+  }
+  .save-status-bar.show{display:flex;}
+  .save-status-bar .dot{width:8px;height:8px;border-radius:50%;flex:none;background:currentColor;}
+  .save-status-bar.syncing{border-left-color:var(--amber);}
+  .save-status-bar.syncing .dot{color:var(--amber);animation:saveStatusPulse 1s ease-in-out infinite;}
+  .save-status-bar.synced{border-left-color:var(--good);}
+  .save-status-bar.synced .dot{color:var(--good);}
+  .save-status-bar.error{border-left-color:var(--bad);}
+  .save-status-bar.error .dot{color:var(--bad);}
+  @keyframes saveStatusPulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
   .settings-grid{
     display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
     gap:10px;
@@ -1012,6 +1026,7 @@
   </div>
 
   <div class="tab-panel active" id="tab-engine">
+    <div class="save-status-bar" data-save-status role="status" aria-live="polite"></div>
     <div class="setup">
       <div class="field">
         <label>Trade size</label>
@@ -1107,6 +1122,7 @@
   </div>
 
   <div class="tab-panel" id="tab-rosters">
+    <div class="save-status-bar" data-save-status role="status" aria-live="polite"></div>
     <section class="rosters-panel">
       <div class="magic-intro">
         <h3>Rosters</h3>
@@ -1139,6 +1155,7 @@
   </div>
 
   <div class="tab-panel" id="tab-freeagents">
+    <div class="save-status-bar" data-save-status role="status" aria-live="polite"></div>
     <section class="fa-panel">
       <div class="magic-intro">
         <h3>Free Agents</h3>
@@ -1204,6 +1221,7 @@
   </div>
 
   <div class="tab-panel" id="tab-settings">
+    <div class="save-status-bar" data-save-status role="status" aria-live="polite"></div>
     <section class="settings-panel">
       <div class="magic-intro">
         <h3>Settings</h3>
@@ -1273,6 +1291,7 @@
   </div>
 
   <div class="tab-panel" id="tab-aihelp">
+    <div class="save-status-bar" data-save-status role="status" aria-live="polite"></div>
     <section class="aihelp-panel">
       <div class="magic-intro">
         <h3>AI Help</h3>
@@ -1731,6 +1750,7 @@ function updateSyncStatusUI(){
   const [text, cls] = labels[syncStatus] || labels.off;
   el.textContent = text;
   el.className = 'sync-badge' + (cls ? ' ' + cls : '');
+  updateSaveStatusBars();
   const errEl = document.getElementById('syncErrorDetail');
   if(errEl){
     if(syncStatus === 'error' && lastSyncError){
@@ -1740,6 +1760,25 @@ function updateSyncStatusUI(){
       errEl.style.display = 'none';
     }
   }
+}
+
+// The status bar at the top of every tab where edits happen (Trade Engine,
+// Rosters, Free Agents, Settings, AI Help). Hidden when no backend is set up.
+let lastSavedAt = null;
+function updateSaveStatusBars(){
+  if(syncStatus === 'synced') lastSavedAt = new Date();
+  const time = lastSavedAt ? lastSavedAt.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}) : '';
+  const labels = {
+    syncing: 'Update in progress…',
+    synced: 'Updates saved' + (time ? ' · ' + time : ''),
+    error: "Updates couldn't be saved to the backend — they're kept on this device. See Settings > Cross-Device Sync."
+  };
+  const text = labels[syncStatus];
+  document.querySelectorAll('[data-save-status]').forEach(el=>{
+    el.className = 'save-status-bar' + (text ? ' show ' + syncStatus : '');
+    el.innerHTML = text ? '<span class="dot"></span><span></span>' : '';
+    if(text) el.lastChild.textContent = text;
+  });
 }
 
 async function pullFromBackend(){
