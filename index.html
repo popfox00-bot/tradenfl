@@ -411,6 +411,20 @@
   .th-label.addition{color:var(--good);}
   .th-label.subtraction{color:var(--warn);}
   .th-label.thirdparty{color:var(--pos-wr);}
+  .th-label.optimize{color:var(--amber);}
+  .th-section-title{
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13.5px;margin:18px 0 10px;
+    display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;
+  }
+  .th-section-title:first-child{margin-top:0;}
+  .th-section-title span{font-family:'Archivo',sans-serif;font-size:11px;font-weight:500;color:var(--chalk-faint);}
+  .th-changes{margin:0 0 10px;font-size:13px;}
+  .th-change{padding:2px 0;font-weight:600;}
+  .th-change span{color:var(--chalk-faint);font-weight:500;font-size:12px;margin-left:6px;}
+  .th-change.add{color:var(--good);}
+  .th-change.remove{color:var(--bad);}
+  .th-teams{font-size:12.5px;color:var(--chalk-dim);margin-bottom:12px;line-height:1.7;}
+  .th-teams b{color:var(--chalk);}
   .th-note{font-size:13px; color:var(--chalk-dim); margin-bottom:12px; line-height:1.5;}
   .th-apply-btn{
     background:var(--amber); border:none; color:var(--turf-0); font-weight:700;
@@ -426,6 +440,22 @@
   }
   .sugg-controls-grid .field{min-width:140px;}
   .sugg-tradefor-field{flex-basis:100%;}
+  .sugg-text-input{
+    background:var(--turf-0);border:1px solid var(--line);color:var(--chalk);
+    padding:8px 10px;font-family:'Archivo',sans-serif;font-size:13px;border-radius:4px;min-width:170px;
+  }
+  .sugg-check-row{flex-direction:row;flex-wrap:wrap;gap:18px;align-items:center;flex-basis:100%;}
+  .field .sugg-check{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--chalk-dim);text-transform:none;letter-spacing:0;font-weight:600;cursor:pointer;}
+  .sugg-count{font-size:12.5px;color:var(--chalk-faint);margin:-8px 0 14px;}
+  .sugg-count b{color:var(--chalk);}
+  .sugg-more-btn{grid-column:1/-1;justify-self:center;}
+  .need-tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;}
+  .need-tag{
+    font-size:10.5px;font-weight:700;letter-spacing:0.02em;padding:3px 8px;border-radius:10px;
+    border:1px solid var(--amber-dim);color:var(--amber);background:rgba(232,163,61,0.08);
+  }
+  .need-tag.bad{border-color:var(--bad);color:var(--bad);background:rgba(209,92,92,0.08);}
+  .need-tag.good{border-color:var(--good);color:var(--good);background:rgba(79,174,110,0.08);}
   .field-hint{font-size:9px; text-transform:none; letter-spacing:0; color:var(--chalk-faint); font-weight:500;}
 
   /* ---------- rosters tab ---------- */
@@ -829,6 +859,35 @@
     .impact-mini-val,.impact-mini-pct{grid-column:2; text-align:left;}
   }
 
+  .pr-controls{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:22px;}
+  .pr-breakdown{
+    background:var(--turf-1);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px 18px 18px;margin-bottom:26px;
+  }
+  .pr-breakdown-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
+  .pr-breakdown-head h4{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;margin:0 0 3px;}
+  .pr-breakdown-sub{font-size:12px;color:var(--chalk-faint);}
+  .pr-tag-group{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 8px;}
+  .pr-tag-label{font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:var(--chalk-faint);font-weight:700;margin-right:2px;}
+  .pr-pos-row{
+    display:grid;grid-template-columns:44px 1fr 52px 70px 64px;gap:10px;align-items:center;
+    padding:9px 0;border-top:1px solid var(--line);
+  }
+  .pr-pos-row.head{border-top:none;padding:4px 0;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:var(--chalk-faint);font-weight:700;}
+  .pr-pos-row .poschip{justify-self:start;}
+  .pr-pos-track{position:relative;height:16px;background:var(--turf-0);border:1px solid var(--line);border-radius:3px;}
+  .pr-pos-fill{position:absolute;left:0;top:0;bottom:0;border-radius:2px;}
+  .pr-pos-avg{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--chalk);opacity:0.75;}
+  .pr-pos-players{grid-column:2/-1;font-size:11.5px;color:var(--chalk-faint);margin-top:-4px;}
+  .pr-pos-num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;text-align:right;}
+  .pr-pos-num.good{color:var(--good);} .pr-pos-num.bad{color:var(--bad);}
+  .pr-breakdown-foot{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;align-items:center;}
+  .pr-breakdown-note{font-size:11.5px;color:var(--chalk-faint);}
+  .poschip.FLEX{background:var(--chalk-dim);color:var(--turf-0);}
+  @media (max-width:600px){
+    .pr-pos-row{grid-template-columns:40px 1fr 46px 58px;}
+    .pr-pos-row > :nth-child(5){display:none;}
+  }
   .pr-chart-caption{
     font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--chalk-faint);font-weight:600;
     margin-bottom:12px;
@@ -1055,7 +1114,7 @@
       <div class="suggestions-head">
         <div>
           <h3>Suggested trades</h3>
-          <div class="suggestions-sub">League-wide scan across 2, 3, 4, and 5-team routes · ranked by combined starting-lineup gain, filtered to trades within reasonable value balance. Values include a modest early-season schedule adjustment — see note below.</div>
+          <div class="suggestions-sub">Every workable trade in the league — every 1-for-1 through 2-for-2 and 3-for-1 between each pair of teams, plus 3, 4 and 5-team deals — ranked by combined starting-lineup gain, with extra weight for filling a team need. Use the filters to narrow the pool. Values include a modest early-season schedule adjustment — see note below.</div>
         </div>
         <button class="reset-btn" id="refreshTradesBtn" style="flex:none;">Refresh trades</button>
       </div>
@@ -1074,9 +1133,30 @@
           </select>
         </div>
         <div class="field">
+          <label>Teams in trade</label>
+          <select id="suggTeamCount">
+            <option value="0">Any number</option>
+            <option value="2">2 teams</option>
+            <option value="3">3 teams</option>
+            <option value="4">4 teams</option>
+            <option value="5">5 teams</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Fairness (value gap)</label>
+          <select id="suggMaxSwing">
+            <option value="1">Any</option>
+            <option value="0.05">Within ±5%</option>
+            <option value="0.1">Within ±10%</option>
+            <option value="0.2">Within ±20%</option>
+            <option value="0.3">Within ±30%</option>
+            <option value="0.5">Within ±50%</option>
+          </select>
+        </div>
+        <div class="field">
           <label>Min. improvement</label>
           <select id="suggMinImprovement">
-            <option value="0">Any</option>
+            <option value="-99">Any</option>
             <option value="0.5">0.5%+</option>
             <option value="1">1%+</option>
             <option value="1.5">1.5%+</option>
@@ -1093,12 +1173,43 @@
           </select>
         </div>
         <div class="field">
+          <label>Value in motion</label>
+          <select id="suggMinValue">
+            <option value="0">Any</option>
+            <option value="10">10+ pts</option>
+            <option value="20">20+ pts</option>
+            <option value="30">30+ pts</option>
+            <option value="50">50+ pts</option>
+            <option value="75">75+ pts</option>
+            <option value="100">100+ pts</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Players moved</label>
+          <select id="suggMaxPlayers">
+            <option value="0">Any</option>
+            <option value="2">2 (1-for-1)</option>
+            <option value="3">Up to 3</option>
+            <option value="4">Up to 4</option>
+            <option value="6">Up to 6</option>
+          </select>
+        </div>
+        <div class="field">
           <label>Sort by</label>
           <select id="suggSortBy">
-            <option value="impact">Best impact</option>
+            <option value="impact">Best overall</option>
+            <option value="even">Best for every team</option>
+            <option value="needs">Fills team needs</option>
+            <option value="team1">Biggest gain for Team 1</option>
             <option value="balance">Most balanced value</option>
+            <option value="value">Most value moved</option>
             <option value="fewest">Fewest players moved</option>
           </select>
+        </div>
+        <div class="field">
+          <label>Involves player</label>
+          <input type="text" id="suggPlayer" list="suggPlayerList" placeholder="Any player" autocomplete="off" class="sugg-text-input">
+          <datalist id="suggPlayerList"></datalist>
         </div>
         <div class="field sugg-tradefor-field">
           <label>Trade for <span class="field-hint">(Team 1, or Team 2 if Team 1 is blank)</span></label>
@@ -1113,8 +1224,14 @@
             <option value="DST">DST</option>
           </select>
         </div>
+        <div class="field sugg-check-row">
+          <label class="sugg-check"><input type="checkbox" id="suggEveryoneWins" checked> Every team's lineup improves</label>
+          <label class="sugg-check"><input type="checkbox" id="suggFillsNeed"> Fills a team need <span class="field-hint">(Team 1's, if set)</span></label>
+          <label class="sugg-check"><input type="checkbox" id="suggVariety"> One trade per team group</label>
+        </div>
       </div>
 
+      <div class="sugg-count" id="suggCount"></div>
       <div class="suggestions-list" id="suggestionsList">
         <div class="sugg-loading">Scanning the league for fits…</div>
       </div>
@@ -1205,7 +1322,14 @@
         <div class="suggestions-sub">Overall view: ranked 1–10 by optimal starting-lineup value, with playoff odds and projected record from a Monte Carlo simulation of a 13-game regular season (thousands of randomized trials, top-6 playoff format — this tool doesn't have your league's actual schedule, so treat it as a strength-based estimate, not a prediction). Switch to a position below and it becomes a straight strength chart — just each team's QB/RB/WR/TE corps ranked 1–10, no season simulation attached, since positional depth and playoff odds are different questions.</div>
       </div>
 
-      <div class="field" style="margin-bottom:22px;">
+      <div class="pr-controls">
+      <div class="field">
+        <label>Team breakdown</label>
+        <select id="powerTeamSelect">
+          <option value="">Select a team…</option>
+        </select>
+      </div>
+      <div class="field">
         <label>Rank by</label>
         <select id="powerPosFilter">
           <option value="ALL">Overall (starting lineup)</option>
@@ -1215,7 +1339,9 @@
           <option value="TE">TE</option>
         </select>
       </div>
+      </div>
 
+      <div id="powerTeamBreakdown"></div>
       <div class="pr-table" id="powerRankingsList"></div>
     </section>
   </div>
@@ -1332,7 +1458,7 @@
 </div>
 
 <footer>
-  Value is driven primarily by each player's overall consensus rank (FantasyPros ECR, kept current via periodic Rest-of-Season refreshes), converted through a decay curve so being a WR7 overall means meaningfully more than being an RB7 overall by rank alone — a modest position-scarcity multiplier (RB and TE run slightly hotter, since they're scarcer at the replacement level) and a starter-tier premium then nudge value up for players who'd actually crack a typical 10-team starting lineup, and down for pure bench depth, since bench production doesn't score points. On top of that, four real per-player signals from FantasyPros nudge value further: a small early-season adjustment (±5%, skill positions only) for a clearly favorable or unfavorable Weeks 1–4 slate — the idea being a hot, easy-schedule start is a sell-high window, not a reason to overhaul a valuation — a full-season strength-of-schedule rating (±4%, every position, 1–5 stars), a fantasy-playoff-weeks schedule rating (±3%, 1–5 stars, since a brutal Weeks 15–17 slate matters even if the rest of the year looks fine), and an upside/bust spread (±6%) reflecting how much boom-or-bust risk is priced into a player's range of outcomes. None of these are large enough to flip a bad player into a good one — they shift things at the margins, the way a real analyst's notes would. On top of all of that, any player can be manually adjusted (the ± button in Rosters/Free Agents) for fast-breaking news — an injury, a role change — between full data refreshes. Starting-lineup impact assumes a 1 QB · 2 RB · 2 WR · 1 TE · 2 FLEX · 1 K · 1 DST lineup (5 bench, 3 IR) and compares each team's best possible starters before and after the deal. Chain paths are sequential, independent trades — the first happens on its own merits between two other teams, the next is your follow-up once it's actually happened — not a single combined transaction. Roster edits and completed trades are saved in this browser only (via local storage) — they won't sync across devices, and clearing your browser data will reset them.
+  Value is driven primarily by each player's overall consensus rank (FantasyPros ECR, kept current via periodic Rest-of-Season refreshes), converted through a decay curve so being a WR7 overall means meaningfully more than being an RB7 overall by rank alone — a modest position-scarcity multiplier (RB and TE run slightly hotter, since they're scarcer at the replacement level) and a starter-tier premium then nudge value up for players who'd actually crack a typical 10-team starting lineup, and down for pure bench depth, since bench production doesn't score points. On top of that, four real per-player signals from FantasyPros nudge value further: a small early-season adjustment (±5%, skill positions only) for a clearly favorable or unfavorable Weeks 1–4 slate — the idea being a hot, easy-schedule start is a sell-high window, not a reason to overhaul a valuation — a full-season strength-of-schedule rating (±4%, every position, 1–5 stars), a fantasy-playoff-weeks schedule rating (±3%, 1–5 stars, since a brutal Weeks 15–17 slate matters even if the rest of the year looks fine), and an upside/bust spread (±6%) reflecting how much boom-or-bust risk is priced into a player's range of outcomes. None of these are large enough to flip a bad player into a good one — they shift things at the margins, the way a real analyst's notes would. On top of all of that, any player can be manually adjusted (the ± button in Rosters/Free Agents) for fast-breaking news — an injury, a role change — between full data refreshes. Starting-lineup impact assumes a 1 QB · 2 RB · 2 WR · 1 TE · 2 FLEX · 1 K · 1 DST lineup (5 bench, 3 IR) and compares each team's best possible starters before and after the deal. Chain paths are sequential, independent trades — the first happens on its own merits between two other teams, the next is your follow-up once it's actually happened — not a single combined transaction. Roster edits and completed trades are saved in this browser, and synced across your devices once a backend is connected under Settings › Cross-Device Sync.
 </footer>
 
 <script id="all-players-data" type="application/json">
@@ -1925,7 +2051,7 @@ async function syncFromBackendOnLoad(){
   state.rosterTeam = TEAM_NAMES[0] || '';
   state.faAddTeam = ''; state.suggTeam1 = ''; state.suggTeam2 = '';
   if(state.myTeam) applyMyTeamDefaults(state.myTeam);
-  suggestionCache = null; powerRankingsCache = null;
+  invalidateSuggestions(); powerRankingsCache = null;
 
   try{
     localStorage.setItem(STORAGE_KEY, JSON.stringify({activeLeagueId: ACTIVE_LEAGUE_ID, leagues: LEAGUES, savedAt: remote.savedAt || new Date().toISOString()}));
@@ -2037,11 +2163,13 @@ function refreshAllTeamDropdowns(){
   repopulateTeamOptions(document.getElementById('suggTeam2'), 'Any team', state.suggTeam2);
   repopulateTeamOptions(document.getElementById('rosterTeamSelect'), null, state.rosterTeam);
   repopulateTeamOptions(document.getElementById('faTeamSelect'), 'Select a team…', state.faAddTeam);
+  if(!TEAM_NAMES.includes(state.powerTeam)) state.powerTeam = state.myTeam || '';
+  repopulateTeamOptions(document.getElementById('powerTeamSelect'), 'Select a team…', state.powerTeam);
 }
 
 function renderEverythingForLeagueSwitch(){
   refreshAllTeamDropdowns();
-  suggestionCache = null;
+  invalidateSuggestions();
   powerRankingsCache = null;
   renderAll();
   renderRostersTab();
@@ -2151,7 +2279,7 @@ function showToast(msg){
 // keep every tab's view of the league consistent and persist it.
 function afterRosterChange(){
   persistRosterState();
-  suggestionCache = null;
+  invalidateSuggestions();
   powerRankingsCache = null;
   sanitizeMoves();
   renderAll();
@@ -2172,8 +2300,18 @@ const state = {
   suggTeam1: '',
   suggTeam2: '',
   suggTradeForPos: 'ALL',
-  suggMinImprovement: 0,
+  suggMinImprovement: -99,
   suggSortBy: 'impact',
+  suggTeamCount: 0,
+  suggMaxSwing: 1,
+  suggMinValue: 0,
+  suggMaxPlayers: 0,
+  suggPlayer: '',
+  suggEveryoneWins: true,
+  suggVariety: false,
+  suggFillsNeed: false,
+  powerTeam: '',
+  suggShowCount: 48,
   faPosFilter: 'ALL',
   faViewMode: 'available'
 };
@@ -2182,6 +2320,7 @@ const state = {
 // This only sets defaults — it never fights a selection the user has since
 // made manually elsewhere, and only fires when My Team itself changes.
 function applyMyTeamDefaults(team){
+  state.powerTeam = team;
   if(!team) return;
   const existingIdx = state.teams.indexOf(team);
   if(existingIdx > 0){
@@ -2259,38 +2398,20 @@ function moveDestination(team, name){
 }
 
 // optimal starting lineup value: 1 QB, 2 RB, 2 WR, 1 TE, 2 FLEX(RB/WR/TE), 1 K, 1 DST
+// Single pass over the roster sorted best-first: each player takes an open
+// slot at their position, and RB/WR/TE overflow falls into FLEX. Because the
+// pass is best-first, FLEX ends up holding the two best leftover skill
+// players — the same result as filling fixed slots first and FLEX after,
+// but cheap enough for the suggestion engine to call millions of times.
+const LINEUP_SLOTS = {QB:1, RB:2, WR:2, TE:1, K:1, DEF:1};
+const FLEX_SLOTS = 2;
 function optimalLineupValue(roster){
-  const byPos = {QB:[], RB:[], WR:[], TE:[], K:[], DEF:[]};
-  roster.forEach(p => byPos[p.pos].push(p));
-  Object.values(byPos).forEach(arr => arr.sort((a,b)=>b.value-a.value));
-
-  const used = new Set();
-  let total = 0;
-
-  function take(pos, n){
-    let count = 0;
-    for(const p of byPos[pos]){
-      if(used.has(p.name)) continue;
-      used.add(p.name);
-      total += p.value;
-      count++;
-      if(count===n) break;
-    }
-  }
-  take('QB',1);
-  take('RB',2);
-  take('WR',2);
-  take('TE',1);
-  take('K',1);
-  take('DEF',1);
-
-  // 2 flex spots from remaining RB/WR/TE
-  const flexPool = [...byPos.RB, ...byPos.WR, ...byPos.TE]
-    .filter(p => !used.has(p.name))
-    .sort((a,b)=>b.value-a.value);
-  for(let i=0; i<2 && i<flexPool.length; i++){
-    used.add(flexPool[i].name);
-    total += flexPool[i].value;
+  const sorted = roster.slice().sort((a,b)=>b.value-a.value);
+  const used = {QB:0, RB:0, WR:0, TE:0, K:0, DEF:0};
+  let flex = 0, total = 0;
+  for(const p of sorted){
+    if(used[p.pos] < LINEUP_SLOTS[p.pos]){ used[p.pos]++; total += p.value; }
+    else if(flex < FLEX_SLOTS && (p.pos === 'RB' || p.pos === 'WR' || p.pos === 'TE')){ flex++; total += p.value; }
   }
   return total;
 }
@@ -2558,6 +2679,85 @@ function renderAll(){
 }
 
 // =====================================================================
+// TEAM NEEDS — each team's starting slots by position, compared against
+// the rest of the league. A "need" is a position where a team's starters
+// sit well below league average (or near the bottom of the league); an
+// upgrade there is worth more to that team than the same raw lineup gain
+// somewhere they're already strong. Used by Power Rankings' team
+// breakdown, the Suggested Trades tags/ranking, and Trade Help.
+// =====================================================================
+const BREAKDOWN_POSITIONS = ['QB','RB','WR','TE','FLEX','K','DEF'];
+const NEED_POSITIONS = ['QB','RB','WR','TE'];
+
+// The optimal lineup (same rules as optimalLineupValue), grouped by slot.
+function lineupBreakdown(roster){
+  const sorted = roster.slice().sort((a,b)=>b.value-a.value);
+  const slots = {QB:[], RB:[], WR:[], TE:[], FLEX:[], K:[], DEF:[]};
+  const bench = {QB:[], RB:[], WR:[], TE:[], K:[], DEF:[]};
+  for(const p of sorted){
+    if(slots[p.pos].length < LINEUP_SLOTS[p.pos]) slots[p.pos].push(p);
+    else if(slots.FLEX.length < FLEX_SLOTS && (p.pos === 'RB' || p.pos === 'WR' || p.pos === 'TE')) slots.FLEX.push(p);
+    else bench[p.pos].push(p);
+  }
+  const scores = {};
+  BREAKDOWN_POSITIONS.forEach(pos => scores[pos] = slots[pos].reduce((s,p)=>s+p.value,0));
+  return {slots, bench, scores};
+}
+
+function positionScores(roster){ return lineupBreakdown(roster).scores; }
+
+function computeLeagueProfiles(){
+  const n = TEAM_NAMES.length;
+  const teams = {};
+  TEAM_NAMES.forEach(t => teams[t] = {team: t, ...lineupBreakdown(LEAGUE[t])});
+  const league = {};
+  BREAKDOWN_POSITIONS.forEach(pos=>{
+    const vals = TEAM_NAMES.map(t => teams[t].scores[pos]);
+    const avg = vals.reduce((a,b)=>a+b,0) / (n || 1);
+    league[pos] = {avg, best: Math.max(...vals, 0.1)};
+    const ranked = [...TEAM_NAMES].sort((a,b)=>teams[b].scores[pos]-teams[a].scores[pos]);
+    ranked.forEach((t, i) => {
+      teams[t].rank = teams[t].rank || {};
+      teams[t].vsAvg = teams[t].vsAvg || {};
+      teams[t].rank[pos] = i + 1;
+      teams[t].vsAvg[pos] = avg > 0 ? (teams[t].scores[pos] - avg) / avg : 0;
+    });
+  });
+  TEAM_NAMES.forEach(t=>{
+    const tp = teams[t];
+    // needs: clearly below average, or in the league's bottom two
+    tp.needs = NEED_POSITIONS
+      .filter(pos => tp.vsAvg[pos] <= -0.10 || tp.rank[pos] >= n - 1)
+      .sort((a,b) => tp.vsAvg[a] - tp.vsAvg[b])
+      .slice(0, 2)
+      .map(pos => ({pos, severity: Math.max(0.1, -tp.vsAvg[pos])}));
+    // strengths: clearly above average, or top two — where a team can afford to deal from
+    tp.strengths = NEED_POSITIONS
+      .filter(pos => !tp.needs.some(nd => nd.pos === pos) && (tp.vsAvg[pos] >= 0.15 || tp.rank[pos] <= 2))
+      .sort((a,b) => tp.vsAvg[b] - tp.vsAvg[a])
+      .slice(0, 2);
+  });
+  return {teams, league, n};
+}
+
+// How much a roster change addresses a team's needs: starter-level gain at
+// each need position, weighted up by how severe that need is.
+function needGains(profile, oldRoster, newRoster){
+  if(!profile || !profile.needs.length) return {bonus: 0, filled: []};
+  const before = positionScores(oldRoster), after = positionScores(newRoster);
+  const filled = [];
+  let bonus = 0;
+  for(const nd of profile.needs){
+    const gain = after[nd.pos] - before[nd.pos];
+    if(gain > 0.3){
+      filled.push({pos: nd.pos, gain});
+      bonus += gain * (1 + nd.severity * 2);
+    }
+  }
+  return {bonus, filled};
+}
+
+// =====================================================================
 // SUGGESTED TRADES ENGINE
 // Scans the whole league for 2-team and 3-team trades that (a) improve
 // each side's optimal starting lineup and (b) keep raw asset value
@@ -2565,6 +2765,15 @@ function renderAll(){
 // =====================================================================
 const MIN_TRADE_VALUE = 1.5; // ignore waiver-scrap players as trade pieces
 let suggestionCache = null;
+
+// Throws away the current pool and cancels any scan still running against the
+// old rosters/values; the next visit to Suggested Trades rescans.
+function invalidateSuggestions(){
+  suggestionCache = null;
+  suggestionBuildToken++;
+  suggestionBuildPromise = null;
+  refreshSuggPlayerList();
+}
 
 function tradeable(team){
   return LEAGUE[team].filter(p => p.pos !== 'K' && p.pos !== 'DEF' && p.value >= MIN_TRADE_VALUE);
@@ -2575,85 +2784,86 @@ function swapRoster(roster, outNames, inPlayers){
   return roster.filter(p => !outSet.has(p.name)).concat(inPlayers);
 }
 
-function generate1for1(){
+// ---------------------------------------------------------------------
+// The suggestion pool is meant to be the whole sea of workable trades, not
+// a curated shortlist — the filters on the tab are what narrow it down. So
+// generation only applies loose sanity gates (value within ±75%, no team's
+// lineup meaningfully worse, somebody actually better off); everything
+// stricter (fairness, every-team-improves, value, size, partners) is a
+// filter the user controls.
+// ---------------------------------------------------------------------
+const SUGG_MAX_SWING = 0.75;      // widest value gap ever generated; the Fairness filter narrows from here
+const SUGG_IMPACT_FLOOR = -0.5;   // a team can roughly break even on lineup, but not get meaningfully worse
+const SUGG_MIN_TOTAL_GAIN = 0.4;  // combined lineup gain needed for a trade to be worth listing at all
+const SUGG_POOL_CAP = 40000;
+const NEED_SCORE_WEIGHT = 0.5;  // how much filling a team need counts on top of raw lineup gain      // memory guard for phones; keeps the highest-scoring trades if exceeded
+
+function valueSwing(a, b){
+  const avg = (a + b) / 2 || 1;
+  return Math.abs(a - b) / avg;
+}
+
+function suggestionScore(impacts, swing){
+  const vals = Object.values(impacts);
+  return vals.reduce((s,v)=>s+v,0) - swing * 4;
+}
+
+function makeSuggestion(type, teams, moves, impacts, swing){
+  return {type, teams, moves, impacts, swing, score: suggestionScore(impacts, swing)};
+}
+
+// Every combination of 1..maxSize players from pool, with combined value.
+function playerCombos(pool, maxSize){
   const out = [];
-  for(let i=0;i<TEAM_NAMES.length;i++){
-    for(let j=i+1;j<TEAM_NAMES.length;j++){
-      const A = TEAM_NAMES[i], B = TEAM_NAMES[j];
-      const rosterA = LEAGUE[A], rosterB = LEAGUE[B];
-      const baseA = optimalLineupValue(rosterA), baseB = optimalLineupValue(rosterB);
-      const poolA = tradeable(A), poolB = tradeable(B);
-      let best = [];
-      for(const a of poolA){
-        for(const b of poolB){
-          const valueDiff = Math.abs(a.value - b.value);
-          const avgVal = (a.value + b.value) / 2 || 1;
-          const swing = valueDiff / avgVal;
-          if(swing > 0.68) continue;
-          const newA = swapRoster(rosterA, [a.name], [b]);
-          const newB = swapRoster(rosterB, [b.name], [a]);
-          const impA = optimalLineupValue(newA) - baseA;
-          const impB = optimalLineupValue(newB) - baseB;
-          if(impA <= 0.4 || impB <= 0.4) continue;
-          const score = impA + impB - swing * 4;
-          best.push({
-            type: '2team', teams: [A, B],
-            moves: [{player: a.name, from: A, to: B}, {player: b.name, from: B, to: A}],
-            impacts: {[A]: impA, [B]: impB}, swing, score
-          });
-        }
-      }
-      best.sort((x, y) => y.score - x.score);
-      out.push(...best.slice(0, 8));
+  function rec(start, combo, val){
+    if(combo.length) out.push({players: combo.slice(), value: val});
+    if(combo.length === maxSize) return;
+    for(let i = start; i < pool.length; i++){
+      combo.push(pool[i]);
+      rec(i + 1, combo, val + pool[i].value);
+      combo.pop();
     }
   }
+  rec(0, [], 0);
   return out;
 }
 
-function generate2for1(){
-  const out = [];
-  for(let i=0;i<TEAM_NAMES.length;i++){
-    for(let j=0;j<TEAM_NAMES.length;j++){
-      if(i === j) continue;
-      const A = TEAM_NAMES[i], B = TEAM_NAMES[j]; // A sends 2 -> B, B sends 1 -> A
-      const rosterA = LEAGUE[A], rosterB = LEAGUE[B];
-      const baseA = optimalLineupValue(rosterA), baseB = optimalLineupValue(rosterB);
-      const sortedA = tradeable(A).sort((x, y) => y.value - x.value);
-      const poolA = sortedA.slice(2, 12); // depth pieces, protect top-2 assets
-      const poolB = tradeable(B);
-      let best = [];
-      for(const b of poolB){
-        for(let x = 0; x < poolA.length; x++){
-          for(let y = x + 1; y < poolA.length; y++){
-            const a1 = poolA[x], a2 = poolA[y];
-            const bundleVal = a1.value + a2.value;
-            const valueDiff = Math.abs(bundleVal - b.value);
-            const avgVal = (bundleVal + b.value) / 2 || 1;
-            const swing = valueDiff / avgVal;
-            if(swing > 0.62) continue;
-            const newA = swapRoster(rosterA, [a1.name, a2.name], [b]);
-            const newB = swapRoster(rosterB, [b.name], [a1, a2]);
-            const impA = optimalLineupValue(newA) - baseA;
-            const impB = optimalLineupValue(newB) - baseB;
-            if(impA <= 0.4 || impB <= 0.4) continue;
-            const score = impA + impB - swing * 4;
-            best.push({
-              type: '2team', teams: [A, B],
-              moves: [
-                {player: a1.name, from: A, to: B},
-                {player: a2.name, from: A, to: B},
-                {player: b.name, from: B, to: A}
-              ],
-              impacts: {[A]: impA, [B]: impB}, swing, score
-            });
-          }
-        }
-      }
-      best.sort((x, y) => y.score - x.score);
-      out.push(...best.slice(0, 8));
+// Exhaustive 2-team scan for one pair: every 1-for-1, 2-for-1, 1-for-2,
+// 2-for-2, 3-for-1 and 1-for-3 between the two teams' tradeable players.
+// Combos are sorted by value so each side only checks the other side's
+// combos inside the value window, which skips the hopeless mismatches
+// without ever evaluating them.
+const PAIR_SIZE_OK = (nA, nB) => nA + nB <= 4;
+function generatePairTrades(A, B, out){
+  const rosterA = LEAGUE[A], rosterB = LEAGUE[B];
+  const baseA = optimalLineupValue(rosterA), baseB = optimalLineupValue(rosterB);
+  const combosA = playerCombos(tradeable(A), 3);
+  const combosB = playerCombos(tradeable(B), 3).sort((x,y)=>x.value-y.value);
+  const bVals = combosB.map(c=>c.value);
+  const lo = (2 - SUGG_MAX_SWING) / (2 + SUGG_MAX_SWING);
+  const hi = (2 + SUGG_MAX_SWING) / (2 - SUGG_MAX_SWING);
+  function lowerBound(v){
+    let l = 0, h = bVals.length;
+    while(l < h){ const m = (l + h) >> 1; if(bVals[m] < v) l = m + 1; else h = m; }
+    return l;
+  }
+  for(const ca of combosA){
+    const minV = ca.value * lo, maxV = ca.value * hi;
+    for(let k = lowerBound(minV); k < combosB.length && bVals[k] <= maxV; k++){
+      const cb = combosB[k];
+      if(!PAIR_SIZE_OK(ca.players.length, cb.players.length)) continue;
+      const newA = swapRoster(rosterA, ca.players.map(p=>p.name), cb.players);
+      const impA = optimalLineupValue(newA) - baseA;
+      if(impA < SUGG_IMPACT_FLOOR) continue;
+      const newB = swapRoster(rosterB, cb.players.map(p=>p.name), ca.players);
+      const impB = optimalLineupValue(newB) - baseB;
+      if(impB < SUGG_IMPACT_FLOOR || impA + impB < SUGG_MIN_TOTAL_GAIN) continue;
+      out.push(makeSuggestion('2team', [A, B], [
+        ...ca.players.map(p => ({player: p.name, from: A, to: B})),
+        ...cb.players.map(p => ({player: p.name, from: B, to: A}))
+      ], {[A]: impA, [B]: impB}, valueSwing(ca.value, cb.value)));
     }
   }
-  return out;
 }
 
 // Greedy incremental bundle builder: repeatedly adds the single tradeable
@@ -2683,65 +2893,29 @@ function greedyBundleSequence(fromTeam, toRoster, maxSize, protect){
 
 // Larger bundle trades (up to 4 players per side), built by pairing prefixes
 // of each team's greedy sequence rather than brute-forcing every combo.
-function generateBundleTrades(){
-  const out = [];
-  const sizePairs = [];
-  for(let nA=1; nA<=5; nA++){
-    for(let nB=1; nB<=5; nB++){
-      if(nA===1 && nB===1) continue;   // covered by generate1for1
-      if(nA===2 && nB===1) continue;   // covered by generate2for1
-      if(nA===1 && nB===2) continue;
-      sizePairs.push([nA, nB]);
+function generateBundleTradesForPair(A, B, out){
+  const rosterA = LEAGUE[A], rosterB = LEAGUE[B];
+  const baseA = optimalLineupValue(rosterA), baseB = optimalLineupValue(rosterB);
+  const protectA = new Set([...rosterA].sort((x,y)=>y.value-x.value).slice(0,2).map(p=>p.name));
+  const protectB = new Set([...rosterB].sort((x,y)=>y.value-x.value).slice(0,2).map(p=>p.name));
+  // sequence of "what A would send to B", greedily maximizing B's lineup
+  const seqAtoB = greedyBundleSequence(A, rosterB, 5, protectA);
+  const seqBtoA = greedyBundleSequence(B, rosterA, 5, protectB);
+  for(let nA = 1; nA <= seqAtoB.length; nA++){
+    for(let nB = 1; nB <= seqBtoA.length; nB++){
+      if(PAIR_SIZE_OK(nA, nB)) continue; // the exhaustive scan already covers these sizes
+      const bundleAtoB = seqAtoB.slice(0, nA), bundleBtoA = seqBtoA.slice(0, nB);
+      const swing = valueSwing(bundleAtoB.reduce((s,p)=>s+p.value,0), bundleBtoA.reduce((s,p)=>s+p.value,0));
+      if(swing > SUGG_MAX_SWING) continue;
+      const impA = optimalLineupValue(swapRoster(rosterA, bundleAtoB.map(p=>p.name), bundleBtoA)) - baseA;
+      const impB = optimalLineupValue(swapRoster(rosterB, bundleBtoA.map(p=>p.name), bundleAtoB)) - baseB;
+      if(impA < SUGG_IMPACT_FLOOR || impB < SUGG_IMPACT_FLOOR || impA + impB < SUGG_MIN_TOTAL_GAIN) continue;
+      out.push(makeSuggestion('2team', [A, B], [
+        ...bundleAtoB.map(p => ({player: p.name, from: A, to: B})),
+        ...bundleBtoA.map(p => ({player: p.name, from: B, to: A}))
+      ], {[A]: impA, [B]: impB}, swing));
     }
   }
-
-  for(let i=0;i<TEAM_NAMES.length;i++){
-    for(let j=i+1;j<TEAM_NAMES.length;j++){
-      const A = TEAM_NAMES[i], B = TEAM_NAMES[j];
-      const rosterA = LEAGUE[A], rosterB = LEAGUE[B];
-      const baseA = optimalLineupValue(rosterA), baseB = optimalLineupValue(rosterB);
-
-      const protectA = new Set([...rosterA].sort((x,y)=>y.value-x.value).slice(0,2).map(p=>p.name));
-      const protectB = new Set([...rosterB].sort((x,y)=>y.value-x.value).slice(0,2).map(p=>p.name));
-
-      // sequence of "what A would send to B", greedily maximizing B's lineup
-      const seqAtoB = greedyBundleSequence(A, rosterB, 5, protectA);
-      const seqBtoA = greedyBundleSequence(B, rosterA, 5, protectB);
-      if(seqAtoB.length === 0 || seqBtoA.length === 0) continue;
-
-      let best = [];
-      for(const [nA, nB] of sizePairs){
-        if(nA > seqAtoB.length || nB > seqBtoA.length) continue;
-        const bundleAtoB = seqAtoB.slice(0, nA);
-        const bundleBtoA = seqBtoA.slice(0, nB);
-
-        const bundleValA = bundleAtoB.reduce((s,p)=>s+p.value,0);
-        const bundleValB = bundleBtoA.reduce((s,p)=>s+p.value,0);
-        const avgVal = (bundleValA + bundleValB) / 2 || 1;
-        const swing = Math.abs(bundleValA - bundleValB) / avgVal;
-        if(swing > 0.58) continue;
-
-        const newA = swapRoster(rosterA, bundleAtoB.map(p=>p.name), bundleBtoA);
-        const newB = swapRoster(rosterB, bundleBtoA.map(p=>p.name), bundleAtoB);
-        const impA = optimalLineupValue(newA) - baseA;
-        const impB = optimalLineupValue(newB) - baseB;
-        if(impA <= 0.4 || impB <= 0.4) continue;
-
-        const score = impA + impB - swing * 4;
-        best.push({
-          type: '2team', teams: [A, B],
-          moves: [
-            ...bundleAtoB.map(p => ({player: p.name, from: A, to: B})),
-            ...bundleBtoA.map(p => ({player: p.name, from: B, to: A}))
-          ],
-          impacts: {[A]: impA, [B]: impB}, swing, score
-        });
-      }
-      best.sort((x,y)=>y.score-x.score);
-      out.push(...best.slice(0, 5));
-    }
-  }
-  return out;
 }
 
 // Multi-player version of a "gift": instead of finding the single best
@@ -2777,86 +2951,118 @@ function buildGiftMatrix(maxSize){
   return matrix;
 }
 
+// singles: how many individual players each leg may try (the ones that help
+// the receiver most); bundleSizes: which multi-player packages it may try
+// (prefixes of the greedy best-fit bundle); topK: how many partners each
+// team fans out to while walking cycles.
 const CYCLE_CONFIG = {
-  3: {topK: 10, swingCap: 0.60, minBeneficiaries: 2, minImpactFloor: -4, maxOut: 20},
-  4: {topK: 7, swingCap: 0.55, minBeneficiaries: 3, minImpactFloor: -6, maxOut: 16},
-  5: {topK: 6, swingCap: 0.50, minBeneficiaries: 4, minImpactFloor: -7, maxOut: 14}
+  3: {topK: 99, singles: 5, bundleSizes: [2,3], minBeneficiaries: 2},
+  4: {topK: 99, singles: 3, bundleSizes: [2],   minBeneficiaries: 3},
+  5: {topK: 8,  singles: 2, bundleSizes: [],    minBeneficiaries: 4}
 };
 
-// Generalized N-team cycle search: team[0] sends a bundle to team[1], who
-// sends to team[2], ..., last team sends back to team[0]. Handles 3, 4, and
-// 5-team cycles with the same logic — each team's bundle can be a multi-
-// player package (from buildGiftMatrix), not just a single card.
-function generateMultiTeamCycles(giftMatrix, n, overrides){
-  const cfg = {...CYCLE_CONFIG[n], ...(overrides||{})};
-  const raw = [];
+// For every ordered pair of teams, the packages the first could send the
+// second in a multi-team deal: its best individual fits plus a few greedy
+// multi-player bundles. legScore ranks partners for the cycle walk.
+function buildLegOptions(cfg){
+  const opts = {};
+  for(const A of TEAM_NAMES){
+    opts[A] = {};
+    const sortedA = [...LEAGUE[A]].sort((x,y)=>y.value-x.value);
+    const protect = new Set(sortedA.length > 2 ? sortedA.slice(0,2).map(p=>p.name) : []);
+    for(const B of TEAM_NAMES){
+      if(A === B) continue;
+      const baseB = optimalLineupValue(LEAGUE[B]);
+      const singles = tradeable(A)
+        .map(p => ({p, gain: optimalLineupValue(LEAGUE[B].concat([p])) - baseB}))
+        .filter(x => x.gain > 0.15)
+        .sort((x,y) => y.gain - x.gain)
+        .slice(0, cfg.singles);
+      const legs = singles.map(x => [x.p]);
+      if(cfg.bundleSizes.length){
+        const seq = greedyBundleSequence(A, LEAGUE[B], Math.max(...cfg.bundleSizes), protect);
+        cfg.bundleSizes.forEach(k => { if(seq.length >= k) legs.push(seq.slice(0, k)); });
+      }
+      opts[A][B] = {
+        legs: legs.map(players => ({players, names: players.map(p=>p.name), value: players.reduce((s,p)=>s+p.value,0)})),
+        legScore: singles.length ? singles[0].gain : -Infinity
+      };
+    }
+  }
+  return opts;
+}
+
+// Generalized N-team cycle search: team[0] sends a package to team[1], who
+// sends to team[2], ..., last team sends back to team[0]. Every combination
+// of each leg's package options is checked.
+function generateMultiTeamCycles(n, out){
+  const cfg = CYCLE_CONFIG[n];
+  const legOptions = buildLegOptions(cfg);
+  const bases = {};
+  TEAM_NAMES.forEach(t => bases[t] = optimalLineupValue(LEAGUE[t]));
 
   function topTargets(from, exclude){
-    return Object.entries(giftMatrix[from])
-      .filter(([team,g]) => !exclude.has(team) && g.bundle && g.bundle.length > 0)
-      .sort((x,y) => y[1].score - x[1].score)
+    return Object.entries(legOptions[from])
+      .filter(([team,o]) => !exclude.has(team) && o.legs.length > 0)
+      .sort((x,y) => y[1].legScore - x[1].legScore)
       .slice(0, cfg.topK)
       .map(([team]) => team);
   }
 
+  // Legs are chosen one at a time; as soon as a team's incoming and outgoing
+  // packages are both known, its lineup impact is checked, so hopeless
+  // branches are cut before the remaining legs are ever enumerated.
   function tryCycle(path){
-    const gifts = path.map((t,i) => giftMatrix[t][path[(i+1)%n]]);
-    if(gifts.some(g => !g || !g.bundle || g.bundle.length === 0)) return;
-
-    const allNames = gifts.flatMap(g => g.bundle.map(p=>p.name));
-    if(new Set(allNames).size < allNames.length) return; // no player used twice
-
-    const bases = path.map(t => optimalLineupValue(LEAGUE[t]));
-    const newRosters = path.map((t,i) => {
-      const outgoing = gifts[i].bundle.map(p=>p.name);
-      const incoming = gifts[(i-1+n)%n].bundle;
-      return swapRoster(LEAGUE[t], outgoing, incoming);
-    });
-    const impacts = newRosters.map((r,i) => optimalLineupValue(r) - bases[i]);
-
-    const sentVals = gifts.map(g => g.value);
-    const recVals = path.map((t,i) => gifts[(i-1+n)%n].value);
-    const avgVal = sentVals.reduce((s,v)=>s+v,0)/n || 1;
-    const maxSwing = Math.max(...path.map((t,i) => Math.abs(recVals[i]-sentVals[i]))) / avgVal;
-    if(maxSwing > cfg.swingCap) return;
-
-    const beneficiaries = impacts.filter(v => v > 0.3).length;
-    if(beneficiaries < cfg.minBeneficiaries) return;
-    if(Math.min(...impacts) < cfg.minImpactFloor) return;
-
-    const score = impacts.reduce((s,v)=>s+v,0) - maxSwing * 6;
-    const moves = [];
-    path.forEach((t,i) => {
-      const to = path[(i+1)%n];
-      gifts[i].bundle.forEach(p => moves.push({player: p.name, from: t, to}));
-    });
-
-    raw.push({
-      type: `${n}team`, teams: [...path], moves,
-      impacts: Object.fromEntries(path.map((t,i)=>[t, impacts[i]])),
-      swing: maxSwing, score
-    });
+    const options = path.map((t,i) => legOptions[t][path[(i+1)%n]].legs);
+    if(options.some(o => o.length === 0)) return;
+    const legs = new Array(n), impacts = new Array(n);
+    function impactOf(i){ // team i sends legs[i], receives legs[i-1]
+      return optimalLineupValue(swapRoster(LEAGUE[path[i]], legs[i].names, legs[(i-1+n)%n].players)) - bases[path[i]];
+    }
+    function overlaps(leg, upto){
+      for(let j=0;j<upto;j++) for(const nm of leg.names) if(legs[j].names.includes(nm)) return true;
+      return false;
+    }
+    function finish(){
+      let sum = 0;
+      for(let i=0;i<n;i++) sum += legs[i].value;
+      const avgVal = sum / n || 1;
+      let maxSwing = 0;
+      for(let i=0;i<n;i++) maxSwing = Math.max(maxSwing, Math.abs(legs[(i-1+n)%n].value - legs[i].value) / avgVal);
+      if(maxSwing > SUGG_MAX_SWING) return;
+      impacts[0] = impactOf(0);
+      if(impacts[0] < SUGG_IMPACT_FLOOR) return;
+      let total = 0, beneficiaries = 0;
+      for(let i=0;i<n;i++){ total += impacts[i]; if(impacts[i] > 0.3) beneficiaries++; }
+      if(beneficiaries < cfg.minBeneficiaries || total < SUGG_MIN_TOTAL_GAIN) return;
+      const moves = [];
+      path.forEach((t,i) => legs[i].players.forEach(p => moves.push({player: p.name, from: t, to: path[(i+1)%n]})));
+      out.push(makeSuggestion(`${n}team`, [...path], moves, Object.fromEntries(path.map((t,i)=>[t, impacts[i]])), maxSwing));
+    }
+    (function rec(i){
+      if(i === n){ finish(); return; }
+      for(const o of options[i]){
+        if(overlaps(o, i)) continue;
+        legs[i] = o;
+        if(i >= 1){
+          impacts[i] = impactOf(i);
+          if(impacts[i] < SUGG_IMPACT_FLOOR) continue;
+        }
+        rec(i + 1);
+      }
+    })(0);
   }
 
+  // each cycle is only walked from its alphabetically-first team so the same
+  // loop isn't generated once per starting point
   function backtrack(path, used){
     if(path.length === n){ tryCycle(path); return; }
     for(const next of topTargets(path[path.length-1], used)){
+      if(next < path[0]) continue;
       backtrack([...path, next], new Set([...used, next]));
     }
   }
-
-  for(const A of TEAM_NAMES) backtrack([A], new Set([A]));
-
-  raw.sort((a,b) => b.score - a.score);
-  const seen = new Set(), out = [];
-  for(const s of raw){
-    const key = [...s.teams].sort().join('|');
-    if(seen.has(key)) continue;
-    seen.add(key);
-    out.push(s);
-    if(out.length >= cfg.maxOut) break;
-  }
-  return out;
+  return { run(){ for(const A of TEAM_NAMES) backtrack([A], new Set([A])); }, startFrom: A => backtrack([A], new Set([A])) };
 }
 
 // Single-player convenience wrapper over bestGiftBundle, kept for Trade
@@ -2866,72 +3072,150 @@ function bestGift(fromTeam, toTeam){
   return {player: b.bundle[0] || null, score: b.score, gain: b.gain};
 }
 
-function generate3team(giftMatrix){
-  return generateMultiTeamCycles(giftMatrix || buildGiftMatrix(3), 3);
-}
-function generate4team(giftMatrix){
-  return generateMultiTeamCycles(giftMatrix || buildGiftMatrix(3), 4);
-}
-function generate5team(giftMatrix){
-  return generateMultiTeamCycles(giftMatrix || buildGiftMatrix(2), 5);
+function moveSignature(moves){
+  return moves.map(m => m.player + '>' + m.to).sort().join('|');
 }
 
-function buildSuggestions(){
-  const twoTeam = [...generate1for1(), ...generate2for1(), ...generateBundleTrades()].sort((a,b)=>b.score-a.score);
+// Runs the full scan in small slices (yielding to the browser between them)
+// so the page stays responsive and can show progress; resolves with the
+// deduped, scored pool. A newer scan supersedes an older one mid-flight.
+let suggestionBuildToken = 0;
+let suggestionBuildPromise = null;
+function buildSuggestionsAsync(onProgress){
+  const token = ++suggestionBuildToken;
+  const pairs = [];
+  for(let i=0;i<TEAM_NAMES.length;i++) for(let j=i+1;j<TEAM_NAMES.length;j++) pairs.push([TEAM_NAMES[i], TEAM_NAMES[j]]);
+  const steps = [
+    ...pairs.map(([A,B]) => out => { generatePairTrades(A, B, out); generateBundleTradesForPair(A, B, out); }),
+  ];
+  // multi-team searches are split per starting team so no single slice of
+  // work blocks the page for long
+  const cycleSearches = {};
+  [3,4,5].forEach(n => {
+    TEAM_NAMES.forEach((A, idx) => steps.push(out => {
+      if(idx === 0) cycleSearches[n] = generateMultiTeamCycles(n, out);
+      cycleSearches[n].startFrom(A);
+    }));
+  });
+  const raw = [];
+  const promise = new Promise(resolve => {
+    let i = 0;
+    function slice(){
+      if(token !== suggestionBuildToken) return resolve(null); // superseded
+      const until = performance.now() + 30;
+      while(i < steps.length && performance.now() < until) steps[i++](raw);
+      if(onProgress) onProgress(i / steps.length, raw.length);
+      if(i < steps.length){ setTimeout(slice, 0); return; }
+      resolve(finalizeSuggestions(raw));
+    }
+    setTimeout(slice, 0);
+  });
+  suggestionBuildPromise = promise;
+  return promise;
+}
 
-  // build once, share across all cycle lengths — the expensive part is the
-  // pairwise bundle matrix, not the cycle search itself
-  const matrix3 = buildGiftMatrix(3);
-  const threeTeam = generate3team(matrix3);
-  const fourTeam = generate4team(matrix3);
-  const matrix2 = buildGiftMatrix(2);
-  const fiveTeam = generate5team(matrix2);
-
-  const seenPairs = new Set(), out = [];
-  function add(s){
-    const key = s.type + ':' + [...s.teams].sort().join('|') + ':' + s.moves.length;
-    if(seenPairs.has(key)) return false;
-    seenPairs.add(key);
+function finalizeSuggestions(raw){
+  raw.sort((a,b) => b.score - a.score);
+  const seen = new Set(), out = [];
+  for(const s of raw){
+    const key = moveSignature(s.moves);
+    if(seen.has(key)) continue;
+    seen.add(key);
     out.push(s);
-    return true;
+    if(out.length >= SUGG_POOL_CAP) break;
   }
-
-  // guarantee a spread of 3/4/5-team trades get a seat, so the tool's
-  // multi-team capability shows up even when 2-team fits happen to score higher
-  let added3 = 0;
-  for(const s of threeTeam){
-    if(added3 >= 8) break;
-    if(add(s)) added3++;
-  }
-  let added4 = 0;
-  for(const s of fourTeam){
-    if(added4 >= 8) break;
-    if(add(s)) added4++;
-  }
-  let added5 = 0;
-  for(const s of fiveTeam){
-    if(added5 >= 6) break;
-    if(add(s)) added5++;
-  }
-
-  const combined = [...twoTeam, ...threeTeam, ...fourTeam, ...fiveTeam].sort((a,b)=>b.score-a.score);
-  for(const s of combined){
-    if(out.length >= 600) break; // keep a very deep pool so filtering & variety have real options
-    add(s);
-  }
-
-  // attach a % lineup improvement figure to each suggestion, relative to
-  // league-average starting-lineup strength, for the filter/sort controls
+  // per-suggestion figures the filters and sorts use
   const avgVals = TEAM_NAMES.map(t=>optimalLineupValue(LEAGUE[t]));
   const leagueAvg = avgVals.reduce((a,b)=>a+b,0) / avgVals.length || 1;
+  const profiles = computeLeagueProfiles();
   out.forEach(s=>{
     const impactVals = Object.values(s.impacts);
     const avgImpact = impactVals.reduce((a,b)=>a+b,0) / impactVals.length;
     s.pctImprovement = (avgImpact / leagueAvg) * 100;
+    s.minImpact = Math.min(...impactVals);
+    s.valueMoved = s.moves.reduce((sum,m)=>sum + findPlayer(m.from, m.player).value, 0);
+    // team needs: which teams get a starter-level upgrade at a need position.
+    // That's weighted into the overall score, so a trade that plugs a real
+    // hole can outrank one with a bigger raw gain at a position of strength.
+    s.needsFilled = [];
+    s.needBonus = 0;
+    for(const t of s.teams){
+      const outNames = s.moves.filter(m=>m.from===t).map(m=>m.player);
+      const incoming = s.moves.filter(m=>m.to===t).map(m=>findPlayer(m.from, m.player));
+      const g = needGains(profiles.teams[t], LEAGUE[t], swapRoster(LEAGUE[t], outNames, incoming));
+      g.filled.forEach(f => s.needsFilled.push({team: t, pos: f.pos, gain: f.gain}));
+      s.needBonus += g.bonus;
+    }
+    s.score += s.needBonus * NEED_SCORE_WEIGHT;
   });
-
-  out.sort((a,b)=>b.score-a.score);
   return out;
+}
+
+function ensureSuggestionCache(){
+  if(suggestionCache || suggestionBuildPromise) return; // done, or already scanning
+  const list = document.getElementById('suggestionsList');
+  const countEl = document.getElementById('suggCount');
+  if(countEl) countEl.textContent = '';
+  list.innerHTML = `<div class="sugg-loading" id="suggProgress">Scanning every possible trade in the league…</div>`;
+  const startedFor = ACTIVE_LEAGUE_ID;
+  buildSuggestionsAsync((frac, found)=>{
+    const el = document.getElementById('suggProgress');
+    if(el) el.textContent = `Scanning every possible trade in the league… ${Math.round(frac*100)}% · ${found.toLocaleString()} candidates so far`;
+  }).then(result=>{
+    if(!result || startedFor !== ACTIVE_LEAGUE_ID) return; // superseded by a newer scan
+    suggestionCache = result;
+    suggestionBuildPromise = null;
+    if(document.getElementById('tab-suggested').classList.contains('active')) renderSuggestions();
+  });
+}
+
+function suggestionMatchesFilters(s){
+  const team1 = state.suggTeam1, team2 = state.suggTeam2;
+  if(team1 && !s.teams.includes(team1)) return false;
+  if(team2 && !s.teams.includes(team2)) return false;
+  if(state.suggTeamCount && s.teams.length !== state.suggTeamCount) return false;
+  if(s.swing > state.suggMaxSwing) return false;
+  if(s.pctImprovement < state.suggMinImprovement) return false;
+  if(s.valueMoved < state.suggMinValue) return false;
+  if(state.suggMaxPlayers && s.moves.length > state.suggMaxPlayers) return false;
+  if(state.suggEveryoneWins && s.minImpact <= 0) return false;
+  if(state.suggFillsNeed){
+    const needTeam = team1 || team2;
+    if(!s.needsFilled.some(f => !needTeam || f.team === needTeam)) return false;
+  }
+  if(state.suggPlayer){
+    const q = normStr(state.suggPlayer);
+    if(!s.moves.some(m => normStr(m.player).includes(q))) return false;
+  }
+  const tradeForPos = state.suggTradeForPos || 'ALL';
+  if(tradeForPos !== 'ALL'){
+    const primaryTeam = team1 || team2;
+    if(primaryTeam){
+      const wantsPos = (p) => tradeForPos === 'FLEX' ? ['RB','WR','TE'].includes(p) : (tradeForPos === 'DST' ? p === 'DEF' : p === tradeForPos);
+      if(!s.moves.some(m => m.to === primaryTeam && wantsPos(findPlayer(m.from, m.player).pos))) return false;
+    }
+  }
+  return true;
+}
+
+function needGainFor(s, team){
+  return s.needsFilled.reduce((sum,f) => sum + (f.team === team ? f.gain : 0), 0);
+}
+
+function sortSuggestions(list){
+  const sortBy = state.suggSortBy;
+  const t1 = state.suggTeam1 || state.suggTeam2;
+  const cmp = {
+    balance: (a,b) => a.swing - b.swing || b.score - a.score,
+    fewest: (a,b) => a.moves.length - b.moves.length || b.score - a.score,
+    value: (a,b) => b.valueMoved - a.valueMoved || b.score - a.score,
+    even: (a,b) => b.minImpact - a.minImpact || b.score - a.score,
+    needs: t1
+      ? (a,b) => needGainFor(b, t1) - needGainFor(a, t1) || b.score - a.score
+      : (a,b) => b.needBonus - a.needBonus || b.score - a.score,
+    team1: t1 ? (a,b) => (b.impacts[t1] ?? -Infinity) - (a.impacts[t1] ?? -Infinity) || b.score - a.score : null
+  }[sortBy] || ((a,b) => b.score - a.score);
+  return list.sort(cmp);
 }
 
 function renderSuggestions(){
@@ -2939,83 +3223,29 @@ function renderSuggestions(){
   const t1El = document.getElementById('suggTeam1'), t2El = document.getElementById('suggTeam2');
   if(t1El) t1El.value = state.suggTeam1 || '';
   if(t2El) t2El.value = state.suggTeam2 || '';
-  if(!suggestionCache){
-    list.innerHTML = `<div class="sugg-loading">Scanning the league for fits…</div>`;
-    setTimeout(()=>{
-      suggestionCache = buildSuggestions();
-      renderSuggestions();
-    }, 20);
-    return;
+  if(!suggestionCache){ ensureSuggestionCache(); return; }
+
+  let filtered = sortSuggestions(suggestionCache.filter(suggestionMatchesFilters));
+  if(state.suggVariety){
+    const seenTeamSets = new Set();
+    filtered = filtered.filter(s => {
+      const key = [...s.teams].sort().join('|');
+      if(seenTeamSets.has(key)) return false;
+      seenTeamSets.add(key);
+      return true;
+    });
   }
+  const shown = filtered.slice(0, state.suggShowCount);
 
-  const team1 = state.suggTeam1;
-  const team2 = state.suggTeam2;
-  const tradeForPos = state.suggTradeForPos || 'ALL';
-  const minImprovement = state.suggMinImprovement;
-  const sortBy = state.suggSortBy;
-
-  let filtered = suggestionCache;
-  if(team1 && team2){
-    filtered = filtered.filter(s => s.teams.includes(team1) && s.teams.includes(team2));
-  } else if(team1 || team2){
-    const t = team1 || team2;
-    filtered = filtered.filter(s => s.teams.includes(t));
-  }
-  filtered = filtered.filter(s => s.pctImprovement >= minImprovement);
-
-  if(tradeForPos !== 'ALL'){
-    const primaryTeam = team1 || team2;
-    if(primaryTeam){
-      const wantsPos = (p) => tradeForPos === 'FLEX' ? ['RB','WR','TE'].includes(p) : (tradeForPos === 'DST' ? p === 'DEF' : p === tradeForPos);
-      filtered = filtered.filter(s => {
-        if(!s.teams.includes(primaryTeam)) return false;
-        return s.moves.some(m => m.to === primaryTeam && wantsPos(findPlayer(m.from, m.player).pos));
-      });
-    }
-  }
-
-  // keep at most one suggestion per unique team combination for variety
-  const seenTeamSets = new Set();
-  let deduped = [];
-  for(const s of filtered){
-    const key = [...s.teams].sort().join('|');
-    if(seenTeamSets.has(key)) continue;
-    seenTeamSets.add(key);
-    deduped.push(s);
-  }
-
-  if(sortBy === 'balance'){
-    deduped.sort((a,b) => a.swing - b.swing);
-  } else if(sortBy === 'fewest'){
-    deduped.sort((a,b) => a.moves.length - b.moves.length || b.score - a.score);
-  } else {
-    deduped.sort((a,b) => b.score - a.score); // 'impact' default (cache is already this order, re-sort defensively)
-  }
-
-  // The top slots are always the objectively best trades available. Beyond
-  // that, rotate a random slice of the rest of the qualifying pool on each
-  // render — so "Refresh trades" surfaces a genuinely different mix of
-  // still-legitimate options each time, instead of the same fixed 30 forever.
-  const GUARANTEED_TOP = 12;
-  const TOTAL_SHOWN = 30;
-  let shown;
-  if(deduped.length <= TOTAL_SHOWN){
-    shown = deduped;
-  } else {
-    const guaranteed = deduped.slice(0, GUARANTEED_TOP);
-    const rest = deduped.slice(GUARANTEED_TOP);
-    for(let i = rest.length - 1; i > 0; i--){
-      const j = Math.floor(Math.random() * (i + 1));
-      [rest[i], rest[j]] = [rest[j], rest[i]];
-    }
-    shown = [...guaranteed, ...rest.slice(0, TOTAL_SHOWN - GUARANTEED_TOP)];
-    if(sortBy === 'balance') shown.sort((a,b) => a.swing - b.swing);
-    else if(sortBy === 'fewest') shown.sort((a,b) => a.moves.length - b.moves.length || b.score - a.score);
-    else shown.sort((a,b) => b.score - a.score);
+  const countEl = document.getElementById('suggCount');
+  if(countEl){
+    countEl.innerHTML = filtered.length
+      ? `<b>${filtered.length.toLocaleString()}</b> trade${filtered.length===1?'':'s'} match your filters, out of ${suggestionCache.length.toLocaleString()} found · showing ${shown.length.toLocaleString()}`
+      : `0 of ${suggestionCache.length.toLocaleString()} trades match your filters`;
   }
 
   if(shown.length === 0){
-    list.innerHTML = `<div class="sugg-loading">No trades clear the current filters — try lowering the minimum improvement or widening the team filter.</div>`;
+    list.innerHTML = `<div class="sugg-loading">No trades clear the current filters. Try loosening fairness, turning off "Every team's lineup improves", or widening the team filter.</div>`;
     return;
   }
 
@@ -3047,14 +3277,23 @@ function renderSuggestions(){
         <span class="sugg-type-tag">${typeLabel}</span>
       </div>
       <div class="sugg-moves-list">${movesHtml}</div>
+      ${s.needsFilled.length ? `<div class="need-tags">${s.needsFilled.map(f => `<span class="need-tag" title="Starting ${f.pos} value +${fmt(f.gain)}">Fills ${f.pos} need · ${f.team}</span>`).join('')}</div>` : ''}
       <div class="sugg-card-foot">
         <div class="sugg-impact-line">Lineup impact: <span class="figure">${impactStr}</span></div>
-        <div class="sugg-swing-line">Value balance: <span class="figure">±${swingPct}%</span> · Avg improvement: <span class="figure">${s.pctImprovement>=0?'+':''}${s.pctImprovement.toFixed(1)}%</span></div>
+        <div class="sugg-swing-line">Value balance: <span class="figure">±${swingPct}%</span> · Value moved: <span class="figure">${fmt(s.valueMoved)}</span> · Avg improvement: <span class="figure">${s.pctImprovement>=0?'+':''}${s.pctImprovement.toFixed(1)}%</span></div>
         <button class="load-btn" data-idx="${idx}">Load into builder</button>
       </div>
     `;
     list.appendChild(card);
   });
+
+  if(filtered.length > shown.length){
+    const more = document.createElement('button');
+    more.className = 'reset-btn sugg-more-btn';
+    more.textContent = `Show ${Math.min(48, filtered.length - shown.length)} more`;
+    more.addEventListener('click', ()=>{ state.suggShowCount += 48; renderSuggestions(); });
+    list.appendChild(more);
+  }
 
   list.querySelectorAll('.load-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -3126,27 +3365,37 @@ const suggTeam2El = document.getElementById('suggTeam2');
 });
 suggTeam1El.value = state.suggTeam1 || '';
 suggTeam2El.value = state.suggTeam2 || '';
-suggTeam1El.addEventListener('change', (e)=>{
-  state.suggTeam1 = e.target.value;
-  renderSuggestions();
+// Every filter change starts back at the top of the list.
+function onSuggFilterChange(key, parse){
+  return (e)=>{
+    state[key] = parse(e.target);
+    state.suggShowCount = 48;
+    renderSuggestions();
+  };
+}
+const asValue = el => el.value;
+const asNumber = el => parseFloat(el.value);
+const asChecked = el => el.checked;
+[
+  ['suggTeam1', 'suggTeam1', asValue], ['suggTeam2', 'suggTeam2', asValue],
+  ['suggTradeForPos', 'suggTradeForPos', asValue], ['suggMinImprovement', 'suggMinImprovement', asNumber],
+  ['suggSortBy', 'suggSortBy', asValue], ['suggTeamCount', 'suggTeamCount', asNumber],
+  ['suggMaxSwing', 'suggMaxSwing', asNumber], ['suggMinValue', 'suggMinValue', asNumber],
+  ['suggMaxPlayers', 'suggMaxPlayers', asNumber],
+  ['suggEveryoneWins', 'suggEveryoneWins', asChecked], ['suggVariety', 'suggVariety', asChecked],
+  ['suggFillsNeed', 'suggFillsNeed', asChecked]
+].forEach(([id, key, parse])=>{
+  document.getElementById(id).addEventListener('change', onSuggFilterChange(key, parse));
 });
-suggTeam2El.addEventListener('change', (e)=>{
-  state.suggTeam2 = e.target.value;
-  renderSuggestions();
-});
-document.getElementById('suggTradeForPos').addEventListener('change', (e)=>{
-  state.suggTradeForPos = e.target.value;
-  renderSuggestions();
-});
+document.getElementById('suggPlayer').addEventListener('input', onSuggFilterChange('suggPlayer', el => el.value.trim()));
 
-document.getElementById('suggMinImprovement').addEventListener('change', (e)=>{
-  state.suggMinImprovement = parseFloat(e.target.value);
-  renderSuggestions();
-});
-document.getElementById('suggSortBy').addEventListener('change', (e)=>{
-  state.suggSortBy = e.target.value;
-  renderSuggestions();
-});
+function refreshSuggPlayerList(){
+  const dl = document.getElementById('suggPlayerList');
+  if(!dl) return;
+  dl.innerHTML = TEAM_NAMES.flatMap(t => LEAGUE[t].map(p => p.name)).sort()
+    .map(n => `<option value="${n.replace(/"/g,'&quot;')}"></option>`).join('');
+}
+refreshSuggPlayerList();
 
 document.getElementById('refreshTradesBtn').addEventListener('click', ()=>{
   const btn = document.getElementById('refreshTradesBtn');
@@ -3154,14 +3403,15 @@ document.getElementById('refreshTradesBtn').addEventListener('click', ()=>{
   btn.textContent = 'Refreshing…';
   const list = document.getElementById('suggestionsList');
   list.innerHTML = `<div class="sugg-loading">Recalculating trade values and rescanning the league…</div>`;
-  setTimeout(()=>{
-    recomputeAllValues();      // pick up any settings/roster changes since the last scan
-    suggestionCache = buildSuggestions();
-    renderSuggestions();
+  recomputeAllValues();      // pick up any settings/roster changes since the last scan
+  invalidateSuggestions();
+  state.suggShowCount = 48;
+  ensureSuggestionCache();
+  suggestionBuildPromise.then(result=>{
     btn.disabled = false;
     btn.textContent = 'Refresh trades';
-    showToast(`Refreshed — ${suggestionCache.length} qualifying trade${suggestionCache.length===1?'':'s'} found.`);
-  }, 20);
+    if(result) showToast(`Refreshed — ${result.length.toLocaleString()} possible trade${result.length===1?'':'s'} found.`);
+  });
 });
 
 renderSuggestions();
@@ -3313,6 +3563,137 @@ function analyzeTradeForHelp(){
   return {teamStats, loser, winner, gap, swingPct, suggestions};
 }
 
+// ---------------------------------------------------------------------
+// TRADE HELP OPTIMIZER — refines the trade being built toward the version
+// that's as fair as possible (asset value balanced) while being as good as
+// possible for EVERY team in it (starting-lineup gain, with extra weight
+// for filling a team need). Beam search over small edits to the current
+// deal — add a piece, pull a piece, swap a piece for a teammate, or send a
+// piece to a different team in the deal — up to three edits deep, so the
+// results stay recognizably "your trade, tuned" rather than a new trade.
+// ---------------------------------------------------------------------
+const TH_BEAM_WIDTH = 12;
+const TH_DEPTH = 3;
+
+function evaluateTradeMoves(moves, teams, ctx){
+  const names = new Set();
+  for(const m of moves){ if(names.has(m.player)) return null; names.add(m.player); }
+  const per = teams.map(team=>{
+    const sends = moves.filter(m=>m.from===team), recs = moves.filter(m=>m.to===team);
+    return {team, sends, recs};
+  });
+  // every team in the deal has to both give and get something
+  if(per.some(t => t.sends.length === 0 || t.recs.length === 0 || t.sends.length > MAX_PER_TEAM)) return null;
+  let totalMoved = 0;
+  const stats = per.map(t=>{
+    const sendTotal = t.sends.reduce((s,m)=>s + findPlayer(m.from,m.player).value, 0);
+    const recPlayers = t.recs.map(m=>findPlayer(m.from,m.player));
+    const recTotal = recPlayers.reduce((s,p)=>s+p.value, 0);
+    totalMoved += sendTotal;
+    const newRoster = swapRoster(LEAGUE[t.team], t.sends.map(m=>m.player), recPlayers);
+    const lineupDelta = optimalLineupValue(newRoster) - ctx.bases[t.team];
+    const need = needGains(ctx.profiles.teams[t.team], LEAGUE[t.team], newRoster);
+    return {team: t.team, sendTotal, recTotal, net: recTotal - sendTotal, lineupDelta, needBonus: need.bonus, needsFilled: need.filled};
+  });
+  const avgPerTeam = totalMoved / teams.length || 1;
+  const swing = Math.max(...stats.map(t=>Math.abs(t.net))) / avgPerTeam;
+  const minDelta = Math.min(...stats.map(t=>t.lineupDelta));
+  const avgDelta = stats.reduce((s,t)=>s+t.lineupDelta,0) / stats.length;
+  const avgNeed = stats.reduce((s,t)=>s+t.needBonus,0) / stats.length;
+  const allPositive = stats.every(t=>t.lineupDelta > 0.2);
+  // weakest team's gain counts double: "positive for each party" beats a
+  // big win for one side; each 10% of value gap costs about 1 lineup point
+  const score = 2*minDelta + avgDelta + NEED_SCORE_WEIGHT*avgNeed - 10*swing + (allPositive ? 3 : 0);
+  return {moves, stats, swing, minDelta, avgDelta, allPositive, score};
+}
+
+function optimizeTrade(){
+  const teams = state.teams.slice(0, state.size);
+  const ctx = {bases: {}, profiles: computeLeagueProfiles()};
+  teams.forEach(t => ctx.bases[t] = optimalLineupValue(LEAGUE[t]));
+  const original = state.moves.map(m=>({...m}));
+  const originalSig = moveSignature(original);
+  const originalNames = new Set(original.map(m=>m.player));
+  const pools = {};
+  teams.forEach(t => pools[t] = tradeable(t));
+
+  const current = evaluateTradeMoves(original, teams, ctx);
+  const seen = new Map();
+  function consider(moves){
+    const sig = moveSignature(moves);
+    if(seen.has(sig)) return null;
+    // keep at least one piece of the original deal — refine it, don't replace it
+    if(original.length && !moves.some(m => originalNames.has(m.player) && original.some(o => o.player === m.player && o.to === m.to))) { seen.set(sig, null); return null; }
+    const ev = evaluateTradeMoves(moves, teams, ctx);
+    seen.set(sig, ev);
+    return ev;
+  }
+
+  function neighbors(moves){
+    const used = new Set(moves.map(m=>m.player));
+    const out = [];
+    moves.forEach((m, i)=>{
+      out.push(moves.filter((_, j) => j !== i));                                      // pull a piece
+      for(const p of pools[m.from]) if(!used.has(p.name))                             // swap for a teammate
+        out.push(moves.map((x, j) => j === i ? {player: p.name, from: m.from, to: m.to} : x));
+      if(teams.length > 2) for(const t of teams) if(t !== m.from && t !== m.to)       // re-route
+        out.push(moves.map((x, j) => j === i ? {...x, to: t} : x));
+    });
+    for(const from of teams) for(const to of teams){                                  // add a piece
+      if(from === to) continue;
+      for(const p of pools[from]) if(!used.has(p.name)) out.push([...moves, {player: p.name, from, to}]);
+    }
+    return out;
+  }
+
+  let beam = [{moves: original}];
+  seen.set(originalSig, current);
+  for(let depth = 0; depth < TH_DEPTH; depth++){
+    const next = [];
+    for(const node of beam){
+      for(const mv of neighbors(node.moves)){
+        const ev = consider(mv);
+        if(ev) next.push(ev);
+      }
+    }
+    if(!next.length) break;
+    next.sort((a,b)=>b.score-a.score);
+    beam = next.slice(0, TH_BEAM_WIDTH);
+  }
+
+  const baseline = current ? current.score : -Infinity;
+  const results = [...seen.entries()]
+    .filter(([sig, ev]) => ev && sig !== originalSig && ev.score > baseline + 0.25)
+    .map(([, ev]) => ev)
+    .sort((a,b)=>b.score-a.score);
+
+  // keep the options meaningfully different from each other
+  const picked = [];
+  for(const r of results){
+    const sig = new Set(r.moves.map(m=>m.player+'>'+m.to));
+    const tooClose = picked.some(p => {
+      const other = new Set(p.moves.map(m=>m.player+'>'+m.to));
+      let diff = 0;
+      sig.forEach(k => { if(!other.has(k)) diff++; });
+      other.forEach(k => { if(!sig.has(k)) diff++; });
+      return diff < 2;
+    });
+    if(tooClose) continue;
+    picked.push(r);
+    if(picked.length >= 4) break;
+  }
+  return {current, options: picked, original};
+}
+
+function describeTradeChanges(original, moves){
+  const key = m => m.player + '>' + m.to;
+  const origKeys = new Set(original.map(key)), newKeys = new Set(moves.map(key));
+  const lines = [];
+  moves.filter(m => !origKeys.has(key(m))).forEach(m => lines.push(`<div class="th-change add">+ ${m.player} <span>${m.from} → ${m.to}</span></div>`));
+  original.filter(m => !newKeys.has(key(m))).forEach(m => lines.push(`<div class="th-change remove">− ${m.player} <span>${m.from} → ${m.to}</span></div>`));
+  return lines.join('');
+}
+
 function applyTradeHelpSuggestion(s){
   if(s.type === 'addition'){
     s.bundle.forEach(p => state.moves.push({player: p.name, from: s.from, to: s.to}));
@@ -3341,33 +3722,66 @@ function renderTradeHelpModal(){
   const analysis = analyzeTradeForHelp();
 
   let html = '<div class="modal-body">';
+  let optimized = null;
   if(analysis.empty){
     html += `<p class="sugg-loading">Select at least one player in the trade above first — Trade Help looks at what you've already built and suggests how to balance or complete it.</p>`;
-  } else if(analysis.balanced){
-    html += `<p class="sugg-loading">This trade already looks well balanced — no adjustments needed.</p>`;
   } else {
-    html += `<p class="th-summary"><b>${analysis.winner.team}</b> is currently getting the better end of this deal (net ${fmtSigned(analysis.winner.net)}), while <b>${analysis.loser.team}</b> is giving up the most (net ${fmtSigned(analysis.loser.net)}). Here's how to close that gap:</p>`;
-    if(analysis.suggestions.length === 0){
-      html += `<p class="sugg-loading">No clean fix found automatically — try adjusting the trade manually, or add more teams to open up more options.</p>`;
+    optimized = optimizeTrade();
+    const cur = optimized.current;
+    if(cur){
+      html += `<p class="th-summary">Current deal: value ${cur.swing < 0.08 ? 'balanced' : `off by ±${Math.round(cur.swing*100)}%`} · ${cur.allPositive ? 'every team\'s lineup improves' : `weakest lineup change ${fmtSigned(cur.minDelta)}`}.</p>`;
     }
-    analysis.suggestions.forEach((s, idx)=>{
-      const labelText = {addition:'Add a piece', subtraction:'Remove a piece', thirdparty:'Bring in a third team'}[s.type];
+    html += `<div class="th-section-title">Refined versions <span>fairest value, best result for every team</span></div>`;
+    if(optimized.options.length === 0){
+      html += `<p class="sugg-loading">This is already about as fair and mutually helpful as small changes can make it.</p>`;
+    }
+    optimized.options.forEach((o, idx)=>{
+      const tags = [
+        o.allPositive ? `<span class="need-tag good">Every team improves</span>` : '',
+        `<span class="need-tag ${o.swing < 0.1 ? 'good' : ''}">Value within ±${Math.round(o.swing*100)}%</span>`,
+        ...o.stats.flatMap(t => t.needsFilled.map(f => `<span class="need-tag">Fills ${f.pos} need · ${t.team}</span>`))
+      ].join('');
+      const perTeam = o.stats.map(t => `<div class="th-team-line"><b>${t.team}</b> lineup <span class="${t.lineupDelta>=0?'delta-pos':'delta-neg'}">${fmtSigned(t.lineupDelta)}</span> · value net <span class="${t.net>=0?'delta-pos':'delta-neg'}">${fmtSigned(t.net)}</span></div>`).join('');
       html += `
         <div class="th-card">
-          <div class="th-label ${s.type}">${labelText}</div>
-          <div class="th-note">${s.note}</div>
-          <button class="th-apply-btn" data-idx="${idx}">Apply</button>
-        </div>
-      `;
+          <div class="th-label optimize">${idx === 0 ? 'Best refinement' : 'Option ' + (idx + 1)}</div>
+          <div class="need-tags">${tags}</div>
+          <div class="th-changes">${describeTradeChanges(optimized.original, o.moves)}</div>
+          <div class="th-teams">${perTeam}</div>
+          <button class="th-apply-btn" data-opt="${idx}">Apply this version</button>
+        </div>`;
     });
+
+    if(!analysis.balanced && analysis.suggestions.length){
+      html += `<div class="th-section-title">Quick fixes <span>one-step value balancing</span></div>`;
+      html += `<p class="th-summary"><b>${analysis.winner.team}</b> is currently getting the better end of this deal (net ${fmtSigned(analysis.winner.net)}), while <b>${analysis.loser.team}</b> is giving up the most (net ${fmtSigned(analysis.loser.net)}).</p>`;
+      analysis.suggestions.forEach((s, idx)=>{
+        const labelText = {addition:'Add a piece', subtraction:'Remove a piece', thirdparty:'Bring in a third team'}[s.type];
+        html += `
+          <div class="th-card">
+            <div class="th-label ${s.type}">${labelText}</div>
+            <div class="th-note">${s.note}</div>
+            <button class="th-apply-btn" data-idx="${idx}">Apply</button>
+          </div>
+        `;
+      });
+    }
   }
   html += '</div>';
   content.innerHTML = html;
 
-  content.querySelectorAll('.th-apply-btn').forEach(btn=>{
+  content.querySelectorAll('.th-apply-btn[data-idx]').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       applyTradeHelpSuggestion(analysis.suggestions[parseInt(btn.dataset.idx,10)]);
       closeTradeHelpModal();
+    });
+  });
+  content.querySelectorAll('.th-apply-btn[data-opt]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      state.moves = optimized.options[parseInt(btn.dataset.opt,10)].moves.map(m=>({...m}));
+      renderAll();
+      closeTradeHelpModal();
+      showToast('Refined trade applied — review it on the board.');
     });
   });
 
@@ -3538,7 +3952,7 @@ document.getElementById('playerCSVInput').addEventListener('change', (e)=>{
           Done — ${summary.updated} player${summary.updated===1?'':'s'} updated, ${summary.added} new player${summary.added===1?'':'s'} added, ${summary.droppedOff} no longer ranked (kept, just pushed down)${summary.skipped ? `, ${summary.skipped} row${summary.skipped===1?'':'s'} skipped` : ''}. Every league's trade values now reflect this file.
         </div>`;
         renderPlayerDataStatus();
-        suggestionCache = null;
+        invalidateSuggestions();
         powerRankingsCache = null;
         renderAll();
         renderRostersTab();
@@ -3658,7 +4072,7 @@ function promptValueOverride(playerName){
   }
   recomputeAllValues();
   persistRosterState();
-  suggestionCache = null;
+  invalidateSuggestions();
   powerRankingsCache = null;
   renderAll();
   renderRostersTab();
@@ -4039,13 +4453,92 @@ function runPowerRankings(){
   return powerRankingsCache;
 }
 
+document.getElementById('powerTeamSelect').addEventListener('change', (e)=>{
+  state.powerTeam = e.target.value;
+  renderPowerTeamBreakdown();
+});
+
 document.getElementById('powerPosFilter').addEventListener('change', (e)=>{
   state.powerFilterPos = e.target.value;
   renderPowerRankingsTab();
 });
 
+function ordinal(n){ const s=['th','st','nd','rd'], v=n%100; return n + (s[(v-20)%10] || s[v] || s[0]); }
+
+function renderPowerTeamBreakdown(){
+  const box = document.getElementById('powerTeamBreakdown');
+  const sel = document.getElementById('powerTeamSelect');
+  if(!box) return;
+  if(sel && sel.options.length <= 1) repopulateTeamOptions(sel, 'Select a team…', state.powerTeam);
+  if(sel) sel.value = state.powerTeam || '';
+  const team = state.powerTeam;
+  if(!team || !LEAGUE[team]){ box.innerHTML = ''; return; }
+
+  const prof = computeLeagueProfiles();
+  const tp = prof.teams[team];
+  const overallRank = [...powerRankingsCache.teams].sort((a,b)=>b.overallScore-a.overallScore).findIndex(t=>t.team===team) + 1;
+  const pr = powerRankingsCache.teams.find(t=>t.team===team);
+  const colorVar = {QB:'--pos-qb', RB:'--pos-rb', WR:'--pos-wr', TE:'--pos-te', FLEX:'--chalk-dim', K:'--pos-k', DEF:'--pos-def'};
+  const n = prof.n;
+
+  const needTags = tp.needs.length
+    ? tp.needs.map(nd => `<span class="need-tag bad">Needs ${nd.pos} · ${Math.round(nd.severity*100)}% below avg</span>`).join('')
+    : `<span class="need-tag good">No glaring needs</span>`;
+  const strengthTags = tp.strengths.length
+    ? tp.strengths.map(pos => `<span class="need-tag good">Strength: ${pos} · ${ordinal(tp.rank[pos])} in league</span>`).join('')
+    : `<span class="pr-breakdown-note">No position well above the pack</span>`;
+
+  let rows = `<div class="pr-pos-row head"><span>Slot</span><span>Starter value vs. league (line = average)</span><span style="text-align:right">Value</span><span style="text-align:right">vs. avg</span><span style="text-align:right">Rank</span></div>`;
+  BREAKDOWN_POSITIONS.forEach(pos=>{
+    const score = tp.scores[pos], lg = prof.league[pos];
+    const pct = Math.max(2, (score / lg.best) * 100);
+    const avgPct = (lg.avg / lg.best) * 100;
+    const vs = tp.vsAvg[pos];
+    const cls = vs >= 0.05 ? 'good' : (vs <= -0.05 ? 'bad' : '');
+    const starters = tp.slots[pos].map(p=>p.name).join(', ') || 'None rostered';
+    const benchPos = pos === 'FLEX' ? [] : tp.bench[pos].slice(0,2);
+    const depth = benchPos.length ? ` · Bench: ${benchPos.map(p=>`${p.name} (${fmt(p.value)})`).join(', ')}` : '';
+    rows += `
+      <div class="pr-pos-row">
+        <span class="poschip ${pos}">${pos}</span>
+        <div class="pr-pos-track"><div class="pr-pos-fill" style="width:${pct}%;background:var(${colorVar[pos]});"></div><div class="pr-pos-avg" style="left:${avgPct}%;"></div></div>
+        <span class="pr-pos-num">${fmt(score)}</span>
+        <span class="pr-pos-num ${cls}">${vs>=0?'+':''}${Math.round(vs*100)}%</span>
+        <span class="pr-pos-num">${ordinal(tp.rank[pos])}<span style="color:var(--chalk-faint);font-weight:500;font-size:11px;"> /${n}</span></span>
+        <div class="pr-pos-players">${starters}${depth}</div>
+      </div>`;
+  });
+
+  box.innerHTML = `
+    <div class="pr-breakdown">
+      <div class="pr-breakdown-head">
+        <div>
+          <h4>${team}${team===state.myTeam?' <span style="font-size:11px;color:var(--chalk-faint);font-weight:600;">· My Team</span>':''}</h4>
+          <div class="pr-breakdown-sub">${ordinal(overallRank)} of ${n} overall · Power score ${fmt(pr.overallScore)} · ${pr.playoffOdds.toFixed(0)}% playoff odds</div>
+        </div>
+      </div>
+      <div class="pr-tag-group"><span class="pr-tag-label">Team needs</span>${needTags}</div>
+      <div class="pr-tag-group"><span class="pr-tag-label">Strengths</span>${strengthTags}</div>
+      ${rows}
+      <div class="pr-breakdown-foot">
+        ${tp.needs.length ? `<button class="reset-btn" id="prFindNeedTrades">Find trades that fill ${tp.needs.map(nd=>nd.pos).join(' / ')}</button>` : ''}
+        <span class="pr-breakdown-note">A need is a starting slot at least 10% below league average, or in the league's bottom two. Suggested Trades tags and ranks trades that fill them.</span>
+      </div>
+    </div>`;
+
+  const btn = document.getElementById('prFindNeedTrades');
+  if(btn) btn.addEventListener('click', ()=>{
+    state.suggTeam1 = team; state.suggTeam2 = '';
+    state.suggFillsNeed = true; state.suggSortBy = 'needs'; state.suggShowCount = 48;
+    document.getElementById('suggFillsNeed').checked = true;
+    document.getElementById('suggSortBy').value = 'needs';
+    document.querySelector('.tab-btn[data-tab="suggested"]').click();
+  });
+}
+
 function renderPowerRankingsTab(){
   if(!powerRankingsCache) runPowerRankings();
+  renderPowerTeamBreakdown();
   const filterPos = state.powerFilterPos || 'ALL';
   const wrap = document.getElementById('powerRankingsList');
   wrap.innerHTML = '';
@@ -4417,7 +4910,7 @@ function renderSettingsTab(){
 function refreshEverythingAfterSettingsChange(){
   recomputeAllValues();
   persistRosterState();
-  suggestionCache = null;
+  invalidateSuggestions();
   powerRankingsCache = null;
   sanitizeMoves();
   renderAll();
